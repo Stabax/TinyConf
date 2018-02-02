@@ -76,7 +76,7 @@ public:
      * unordered_multiset
      */
     template <>
-    void set<std::tuple>(const std::string &key, const std::tuple &value, bool serialize = false)
+    void set<std::array>(const std::string &key, const std::array &value, bool serialize = false)
     {
         setContainer(key, value, serialize);
     }
