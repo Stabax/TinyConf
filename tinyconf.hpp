@@ -9,7 +9,22 @@
 
 #include <string>
 #include <fstream>
+// Stl Containers
 #include <map>
+#include <array>
+#include <vector>
+#include <list>
+#include <queue>
+#include <deque>
+#include <set>
+#include <multiset>
+#include <map>
+#include <multimap>
+#include <forward_list>
+#include <unordered_set>
+#include <unordered_map>
+#include <unordered_multiset>
+#include <unordered_multiset>
 
 /* Everything is defined within stb:: scope */
 namespace stb {
