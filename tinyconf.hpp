@@ -129,7 +129,6 @@ protected:
      * unordered_set
      * unordered_multiset
      * unordered_map
-     */
     template <>
     void Config::set<std::vector>(const std::string &key, const std::vector &value, bool serialize = false)
     {
@@ -195,6 +194,7 @@ protected:
     {
         setContainer(key, value, serialize);
     }
+    */
 
 }
 
