@@ -11,20 +11,15 @@
 #include <fstream>
 // Stl Containers
 #include <map>
-#include <array>
 #include <vector>
 #include <list>
 #include <queue>
 #include <deque>
 #include <set>
-#include <multiset>
 #include <map>
-#include <multimap>
 #include <forward_list>
 #include <unordered_set>
 #include <unordered_map>
-#include <unordered_multiset>
-#include <unordered_multiset>
 
 /* Everything is defined within stb:: scope */
 namespace stb {
@@ -74,92 +69,6 @@ public:
     {
 
     }
-    /* set specilization for following stl containers:
-     * array
-     * vector
-     * list
-     * queue
-     * deque
-     * set
-     * multiset
-     * map
-     * multimap
-     * forward_list
-     * unordered_set
-     * unordered_multiset
-     * unordered_map
-     * unordered_multiset
-     */
-    template <>
-    void set<std::array>(const std::string &key, const std::array &value, bool serialize = false)
-    {
-        setContainer(key, value, serialize);
-    }
-    template <>
-    void set<std::vector>(const std::string &key, const std::vector &value, bool serialize = false)
-    {
-        setContainer(key, value, serialize);
-    }
-    template <>
-    void set<std::list>(const std::string &key, const std::list &value, bool serialize = false)
-    {
-        setContainer(key, value, serialize);
-    }
-    template <>
-    void set<std::queue>(const std::string &key, const std::deque &value, bool serialize = false)
-    {
-        setContainer(key, value, serialize);
-    }
-    template <>
-    void set<std::deque>(const std::string &key, const std::deque &value, bool serialize = false)
-    {
-        setContainer(key, value, serialize);
-    }
-    template <>
-    void set<std::set>(const std::string &key, const std::set &value, bool serialize = false)
-    {
-        setContainer(key, value, serialize);
-    }
-    template <>
-    void set<std::multiset>(const std::string &key, const std::multiset &value, bool serialize = false)
-    {
-        setContainer(key, value, serialize);
-    }
-    template <>
-    void set<std::map>(const std::string &key, const std::map &value, bool serialize = false)
-    {
-        setContainer(key, value, serialize);
-    }
-    template <>
-    void set<std::multimap>(const std::string &key, const std::multimap &value, bool serialize = false)
-    {
-        setContainer(key, value, serialize);
-    }
-    template <>
-    void set<std::forward_list>(const std::string &key, const std::forward_list &value, bool serialize = false)
-    {
-        setContainer(key, value, serialize);
-    }
-    template <>
-    void set<std::unordered_set>(const std::string &key, const std::unordered_set &value, bool serialize = false)
-    {
-        setContainer(key, value, serialize);
-    }
-    template <>
-    void set<std::unordered_multiset>(const std::string &key, const std::unordered_multiset &value, bool serialize = false)
-    {
-        setContainer(key, value, serialize);
-    }
-    template <>
-    void set<std::unordered_map>(const std::string &key, const std::unordered_map &value, bool serialize = false)
-    {
-        setContainer(key, value, serialize);
-    }
-    template <>
-    void set<std::unordered_multimap>(const std::string &key, const std::unordered_multimap &value, bool serialize = false)
-    {
-        setContainer(key, value, serialize);
-    }
 
     /* load(), no arguments
      * returns true on success, false on failure.
@@ -172,13 +81,14 @@ public:
 
         if (!file.good())
         {
-            return; //No config
+            return (false); //No config
         }
         while (std::getline(file, buffer))
         {
             _config.emplace(buffer.substr(0, buffer.find('=')), buffer.substr(buffer.find('=') + 1, buffer.size() - buffer.find('=')));
         }
         file.close();
+        return (true);
     }
 
     /* save(), no arguments
@@ -198,11 +108,93 @@ public:
             file << (it)->first + "=" + (it)->second << "\n";
         }
         file.close();
+        return (true);
     }
 
 protected:
+    std::map<std::string, std::string> _config;
     std::string _path;
 };
+
+    /* set specilization for following stl containers:
+     * vector
+     * list
+     * queue
+     * deque
+     * set
+     * multiset
+     * map
+     * multimap
+     * forward_list
+     * unordered_set
+     * unordered_multiset
+     * unordered_map
+     */
+    template <>
+    void Config::set<std::vector>(const std::string &key, const std::vector &value, bool serialize = false)
+    {
+        setContainer(key, value, serialize);
+    }
+    template <>
+    void Config::set<std::list>(const std::string &key, const std::list &value, bool serialize = false)
+    {
+        setContainer(key, value, serialize);
+    }
+    template <>
+    void Config::set<std::queue>(const std::string &key, const std::deque &value, bool serialize = false)
+    {
+        setContainer(key, value, serialize);
+    }
+    template <>
+    void Config::set<std::deque>(const std::string &key, const std::deque &value, bool serialize = false)
+    {
+        setContainer(key, value, serialize);
+    }
+    template <>
+    void Config::set<std::set>(const std::string &key, const std::set &value, bool serialize = false)
+    {
+        setContainer(key, value, serialize);
+    }
+    template <>
+    void Config::set<std::multiset>(const std::string &key, const std::multiset &value, bool serialize = false)
+    {
+        setContainer(key, value, serialize);
+    }
+    template <>
+    void Config::set<std::map>(const std::string &key, const std::map &value, bool serialize = false)
+    {
+        setContainer(key, value, serialize);
+    }
+    template <>
+    void Config::set<std::multimap>(const std::string &key, const std::multimap &value, bool serialize = false)
+    {
+        setContainer(key, value, serialize);
+    }
+    template <>
+    void Config::set<std::forward_list>(const std::string &key, const std::forward_list &value, bool serialize = false)
+    {
+        setContainer(key, value, serialize);
+    }
+    template <>
+    void Config::set<std::unordered_set>(const std::string &key, const std::unordered_set &value, bool serialize = false)
+    {
+        setContainer(key, value, serialize);
+    }
+    template <>
+    void Config::set<std::unordered_multiset>(const std::string &key, const std::unordered_multiset &value, bool serialize = false)
+    {
+        setContainer(key, value, serialize);
+    }
+    template <>
+    void Config::set<std::unordered_map>(const std::string &key, const std::unordered_map &value, bool serialize = false)
+    {
+        setContainer(key, value, serialize);
+    }
+    template <>
+    void Config::set<std::unordered_multimap>(const std::string &key, const std::unordered_multimap &value, bool serialize = false)
+    {
+        setContainer(key, value, serialize);
+    }
 
 }
 
