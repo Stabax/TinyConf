@@ -103,7 +103,7 @@ public:
         {
             return (false); //Couldnt open
         }
-        for (std::map<std::string, std::string>::iterator it = _config.begin(); it != _config.end(); it++)
+        for (std::map<std::string, std::string>::const_iterator it = _config.begin(); it != _config.end(); it++)
         {
             file << (it)->first + "=" + (it)->second << "\n";
         }
