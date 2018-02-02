@@ -21,6 +21,8 @@
 #include <unordered_set>
 #include <unordered_map>
 
+#define KEY_VALUE_SEPARATOR ":="
+
 /* Everything is defined within stb:: scope */
 namespace stb {
 
@@ -85,7 +87,9 @@ public:
         }
         while (std::getline(file, buffer))
         {
-            _config.emplace(buffer.substr(0, buffer.find('=')), buffer.substr(buffer.find('=') + 1, buffer.size() - buffer.find('=')));
+            size_t separator = buffer.find(KEY_VALUE_SEPARATOR);
+            if (separator == std::string::npos) continue;
+            _config.emplace(buffer.substr(0, separator), buffer.substr(separator + 1, buffer.size() - separator));
         }
         file.close();
         return (true);
@@ -105,7 +109,7 @@ public:
         }
         for (std::map<std::string, std::string>::const_iterator it = _config.begin(); it != _config.end(); it++)
         {
-            file << (it)->first + "=" + (it)->second << "\n";
+            file << (it)->first + KEY_VALUE_SEPARATOR + (it)->second << "\n";
         }
         file.close();
         return (true);
