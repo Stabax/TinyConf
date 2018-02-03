@@ -31,14 +31,17 @@
 #include <unordered_set>
 #include <unordered_map>
 
+/*! @brief This is the char sequence between the key and the value in configuration file */
 #define KEY_VALUE_SEPARATOR ":="
+/*! @brief This is the char sequence that separates multiple values in the field */
 #define VALUE_FIELD_SEPARATOR ":=:"
+/*! @brief This is the number of digits that floats displays (including left-positioned digits) */
 #define DECIMAL_PRECISION 10
 
 /* Everything is defined within stb:: scope */
 namespace stb {
 
-/*
+/*!
  * @class Config
  * @brief Main Config class: Defines the whole library more or less
  */
@@ -54,6 +57,20 @@ public:
         load();
     }
 
+    ~Config()
+    {
+
+    }
+
+   /*!
+     * @brief Used to get path of associated configuration
+     * @return String containing the path of the current associated cfg file
+     */
+    std::string getPath()
+    {
+        return (_path);
+    }
+
     /*!
      * @brief Used to switch current object to another configuration file
      * @param path : The path to relocate to
@@ -65,19 +82,9 @@ public:
         load();
     }
 
-    ~Config()
-    {
-
-    }
-
-   /*!
-     * @brief Used to get path of associated configuration
-     * @return String containing the path of the current associated cfg file
-     */
-     std::string getPath()
-     {
-         return (_path);
-     }
+    //
+    // GETTERS
+    //
 
     /*!
      * @brief Used to get values from configuration
@@ -86,7 +93,7 @@ public:
      * @return true if found, false if failed
      */
     template <typename T>
-    bool get(const std::string &key, T &value)
+    bool get(const std::string key, T &value)
     {
         if (_config.find(key) != _config.end())
         {
@@ -107,7 +114,7 @@ public:
      * @param value : The char array to set with value
      * @return true if found, false if failed
      */
-    bool get(const std::string &key, char *value)
+    bool get(const std::string key, char *value)
     {
         if (_config.find(key) != _config.end())
         {
@@ -126,7 +133,7 @@ public:
      * @param value : The string to set with value
      * @return true if found, false if failed
      */
-    bool get(const std::string &key, std::string &value)
+    bool get(const std::string key, std::string &value)
     {
         if (_config.find(key) != _config.end())
         {
@@ -146,7 +153,7 @@ public:
      * @return true if found, false if failed
      */
     template <typename T>
-    bool getAggregate(const std::string &key, T &pair)
+    bool getAggregate(const std::string key, T &pair)
     {
         if (_config.find(key) != _config.end())
         {
@@ -178,7 +185,7 @@ public:
 	 * @return true on success, false on failure.
      */
     template <typename T>
-    bool getArray(const std::string &key, T &container)
+    bool getArray(const std::string key, T &container)
     {
         if (_config.find(key) != _config.end())
         {
@@ -205,17 +212,10 @@ public:
 		return (true);
     }
 
-    /*!
-     * @brief Used to get values from configuration array
-     * @param key : The key identifying wanted array of values
-     * @param container : The container where the array of values will be pushed
-     * @return container of values associated with key, of T type
-     */
-    template <typename T>
-    bool getArray(const char *key, T &container)
-    {
-        return (getArray<T>(std::string(key), container));
-    }
+
+    //
+    // SETTERS
+    //
 
     /*!
      * @brief Used to set configuration values with String/String type.
@@ -223,7 +223,7 @@ public:
      * @param value : The formatted string value to set in key field
      * @param serialize : Set this to true to save the changes right away to file
      */
-    void set(const std::string &key, const std::string value, bool serialize = false)
+    void set(const std::string key, const std::string value, bool serialize = false)
     {
         if (_config.find(key) != _config.end())
         {
@@ -242,7 +242,7 @@ public:
      * @param serialize : Set this to true to save the changes right away to file
      */
     template <typename T>
-    void set(const std::string &key, const T &value, bool serialize = false)
+    void set(const std::string key, const T &value, bool serialize = false)
     {
          std::ostringstream out;
 
@@ -287,6 +287,10 @@ public:
         }
         set(key, fValue, serialize);
     }
+
+    //
+    // BASIC MECHANICS
+    //
 
     /*!
      * @brief Used to load associated the config file.
