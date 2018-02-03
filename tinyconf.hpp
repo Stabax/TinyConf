@@ -13,6 +13,7 @@
 #include <fstream>
 #include <sstream>
 #include <type_traits>
+#include <iomanip>
 // Stl Containers
 #include <map>
 #include <vector>
@@ -27,29 +28,12 @@
 
 #define KEY_VALUE_SEPARATOR ":="
 #define VALUE_FIELD_SEPARATOR ":=:"
+#define DECIMAL_PRECISION 10
 
 /* Everything is defined within stb:: scope */
 namespace stb {
 
-/*
- * @class Config
- * @brief Main Config class: Defines the whole library more or less
- */
-class Config
-{
-public:
-    Config(const std::string &path) : _path(path)
-    {
-
-    }
-
-    ~Config()
-    {
-
-    }
-
-
-/*
+/*!
  * @struct has_const_iterator
  * @brief Helper to determine whether there's a const_iterator for T.
  */
@@ -62,6 +46,37 @@ private:
 public:
     enum { value = sizeof(evaluate<T>(0)) == sizeof(char) };
 };
+
+/*
+ * @class Config
+ * @brief Main Config class: Defines the whole library more or less
+ */
+class Config
+{
+public:
+    /*!
+     * @brief Config default constructor
+     * @param path : The path where the file.cfg will reside
+     */
+    Config(const std::string &path) : _path(path)
+    {
+
+    }
+
+    /*!
+     * @brief Used to switch current object to another configuration file
+     * @param path : The path to relocate to
+     */
+    void relocate(const std::string &path)
+    {
+        _path = path;
+        _config.clear();
+    }
+
+    ~Config()
+    {
+
+    }
 
     /*!
      * @brief Used to get values from configuration
@@ -123,9 +138,10 @@ public:
     template <typename T>
     void set(const std::string &key, const T &value, bool serialize = false)
     {
-        std::string fValue = std::to_string(value);
+         std::ostringstream out;
 
-        set(key, fValue, serialize);
+        out << std::setprecision(DECIMAL_PRECISION) << value;
+        set(key, out.str(), serialize);
     }
 
     /*!
@@ -201,7 +217,8 @@ protected:
     std::string _path;
 };
 
-    /* set specilization for following stl containers:
+    /* 
+     * set specilization for following stl containers:
      * vector
      * list
      * queue
@@ -214,73 +231,7 @@ protected:
      * unordered_set
      * unordered_multiset
      * unordered_map
-    template <>
-    void Config::Config::set<std::vector>(const std::string &key, const std::vector &value, bool serialize = false)
-    {
-        setContainer(key, value, serialize);
-    }
-    template <>
-    void Config::Config::set<std::list>(const std::string &key, const std::list &value, bool serialize = false)
-    {
-        setContainer(key, value, serialize);
-    }
-    template <>
-    void Config::Config::set<std::queue>(const std::string &key, const std::deque &value, bool serialize = false)
-    {
-        setContainer(key, value, serialize);
-    }
-    template <>
-    void Config::Config::set<std::deque>(const std::string &key, const std::deque &value, bool serialize = false)
-    {
-        setContainer(key, value, serialize);
-    }
-    template <>
-    void Config::Config::set<std::set>(const std::string &key, const std::set &value, bool serialize = false)
-    {
-        setContainer(key, value, serialize);
-    }
-    template <>
-    void Config::Config::set<std::multiset>(const std::string &key, const std::multiset &value, bool serialize = false)
-    {
-        setContainer(key, value, serialize);
-    }
-    template <>
-    void Config::Config::set<std::map>(const std::string &key, const std::map &value, bool serialize = false)
-    {
-        setContainer(key, value, serialize);
-    }
-    template <>
-    void Config::Config::set<std::multimap>(const std::string &key, const std::multimap &value, bool serialize = false)
-    {
-        setContainer(key, value, serialize);
-    }
-    template <>
-    void Config::Config::set<std::forward_list>(const std::string &key, const std::forward_list &value, bool serialize = false)
-    {
-        setContainer(key, value, serialize);
-    }
-    template <>
-    void Config::Config::set<std::unordered_set>(const std::string &key, const std::unordered_set &value, bool serialize = false)
-    {
-        setContainer(key, value, serialize);
-    }
-    template <>
-    void Config::Config::set<std::unordered_multiset>(const std::string &key, const std::unordered_multiset &value, bool serialize = false)
-    {
-        setContainer(key, value, serialize);
-    }
-    template <>
-    void Config::Config::set<std::unordered_map>(const std::string &key, const std::unordered_map &value, bool serialize = false)
-    {
-        setContainer(key, value, serialize);
-    }
-    template <>
-    void Config::Config::set<std::unordered_multimap>(const std::string &key, const std::unordered_multimap &value, bool serialize = false)
-    {
-        setContainer(key, value, serialize);
-    }
-    */
-
+     */
 }
 
 #endif /* !TINYCONF_HPP_ */
