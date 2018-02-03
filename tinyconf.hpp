@@ -38,20 +38,6 @@
 /* Everything is defined within stb:: scope */
 namespace stb {
 
-/*!
- * @struct has_const_iterator
- * @brief Helper to determine whether there's a const_iterator for T.
- */
-template<typename T>
-struct has_const_iterator
-{
-private:
-    template<typename C> static char evaluate(typename C::const_iterator*);
-    template<typename C> static int  evaluate(...);
-public:
-    enum { value = sizeof(evaluate<T>(0)) == sizeof(char) };
-};
-
 /*
  * @class Config
  * @brief Main Config class: Defines the whole library more or less
