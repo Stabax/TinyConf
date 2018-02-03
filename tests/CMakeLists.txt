@@ -5,7 +5,7 @@ project (tinyconf_tests)
 #CORE FILES
 file(GLOB_RECURSE
      source_files
-     .
+     ./*
 )
 include_directories(${CMAKE_SOURCE_DIR})
 
