@@ -12,6 +12,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <type_traits>
 // Stl Containers
 #include <map>
 #include <vector>
@@ -46,6 +47,21 @@ public:
     {
 
     }
+
+
+/*
+ * @struct has_const_iterator
+ * @brief Helper to determine whether there's a const_iterator for T.
+ */
+template<typename T>
+struct has_const_iterator
+{
+private:
+    template<typename C> static char evaluate(typename C::const_iterator*);
+    template<typename C> static int  evaluate(...);
+public:
+    enum { value = sizeof(evaluate<T>(0)) == sizeof(char) };
+};
 
     /*!
      * @brief Used to get values from configuration
@@ -118,14 +134,15 @@ public:
      * @param value : The container with values to fill in key field
      * @param serialize : Set this to true to save the changes right away to file
      */
-    template <typename T>
-    void setContainer(const std::string &key, const T &value, bool serialize = false)
+    template <typename C,
+              typename std::enable_if<has_const_iterator<C>::value, void>::type>
+    void setContainer(const std::string &key, const C &container, typename C::value_type const &type, bool serialize = false)
     {
         std::string fValue;
 
-        for (typename T::const_iterator it = value.begin(); it != value.end(); it++)
+        for (typename C::const_iterator it = container.begin(); it != container.end(); it++)
         {
-            if (it != value.begin())
+            if (it != container.begin())
             {
                 fValue += VALUE_FIELD_SEPARATOR;
             }
