@@ -15,6 +15,7 @@
 #include <sstream>
 #include <type_traits>
 #include <iomanip>
+#include <cstdio>
 // Tmp
 #include <iostream>
 // Stl Aggregate
@@ -31,12 +32,14 @@
 #include <unordered_set>
 #include <unordered_map>
 
+/*! @brief This char represents beginning of comment lines */
+#define COMMENT_LINE_SEPARATOR  "#"
 /*! @brief This is the char sequence between the key and the value in configuration file */
-#define KEY_VALUE_SEPARATOR ":="
+#define KEY_VALUE_SEPARATOR     ":="
 /*! @brief This is the char sequence that separates multiple values in the field */
-#define VALUE_FIELD_SEPARATOR ":=:"
+#define VALUE_FIELD_SEPARATOR   ":=:"
 /*! @brief This is the number of digits that floats displays (including left-positioned digits) */
-#define DECIMAL_PRECISION 10
+#define DECIMAL_PRECISION       10
 
 /* Everything is defined within stb:: scope */
 namespace stb {
@@ -63,7 +66,7 @@ public:
     }
 
    /*!
-     * @brief Used to get path of associated configuration
+     * @brief Get path of associated configuration file
      * @return String containing the path of the current associated cfg file
      */
     std::string getPath()
@@ -72,8 +75,8 @@ public:
     }
 
     /*!
-     * @brief Used to switch current object to another configuration file
-     * @param path : The path to relocate to
+     * @brief Reset object and load another configuration file
+     * @param path : The path to the configuration file to relocate to
      */
     void relocate(const std::string &path)
     {
@@ -82,14 +85,51 @@ public:
         load();
     }
 
+    /*!
+     * @brief Removes associated configuration file from disk
+     * @return true on success, false on failure
+     */
+    bool deleteFile()
+    {
+        return (deleteFile(_path));
+    }
+
+    /*!
+     * @brief Removes a given configuration file from disk
+     * @param path : The path to the configuration file to delete
+     * @return true on success, false on failure
+     */
+    static bool deleteFile(const std::string &path)
+    {
+        if (remove(path.c_str()) != 0)
+        {
+            return (false); //Error on delete
+        }
+        return (true);
+    }
+
     //
     // GETTERS
     //
 
     /*!
-     * @brief Used to get values from configuration
+     * @brief Test if a key exists in configuration
+     * @param key : The key to search for
+     * @return true if found, false if failed
+     */
+    bool exists(const std::string key)
+    {
+        if (_config.find(key) != _config.end())
+        {
+            return (true);
+        }
+        return (false);
+    }
+
+    /*!
+     * @brief Get arithmetic values from configuration
      * @param key : The key identifying wanted value
-     * @param value : The variable to set with value
+     * @param value : The arithmetic-typed variable to set with value
      * @return true if found, false if failed
      */
     template <typename T>
@@ -100,16 +140,13 @@ public:
             std::istringstream iss;
             iss.str(_config[key]);
             iss >> value;
+            return (true);
         }
-        else
-        {
-            return (false);
-        }
-        return (true);
+        return (false);
     }
 
     /*!
-     * @brief Used to get values from configuration
+     * @brief Get C-style string values from configuration
      * @param key : The key identifying wanted value
      * @param value : The char array to set with value
      * @return true if found, false if failed
@@ -119,16 +156,13 @@ public:
         if (_config.find(key) != _config.end())
         {
             strcpy(value, _config[key].c_str());
+            return (true);
         }
-        else
-        {
-            return (false);
-        }
-        return (true);
+        return (false);
     }
 
     /*!
-     * @brief Used to get values from configuration
+     * @brief Get string values from configuration
      * @param key : The key identifying wanted value
      * @param value : The string to set with value
      * @return true if found, false if failed
@@ -138,22 +172,19 @@ public:
         if (_config.find(key) != _config.end())
         {
             value = _config[key];
+            return (true);
         }
-        else
-        {
-            return (false);
-        }
-        return (true);
+        return (false);
     }
 
     /*!
-     * @brief Used to get pair values from configuration
+     * @brief Get pair values from configuration
      * @param key : The key identifying wanted value
-     * @param pair : The pair to set with value
+     * @param pair : The pair to fill with values
      * @return true if found, false if failed
      */
-    template <typename T>
-    bool getAggregate(const std::string key, T &pair)
+    template<typename Tx, typename Ty>
+    bool getPair(const std::string key,  std::pair<Tx, Ty> &pair)
     {
         if (_config.find(key) != _config.end())
         {
@@ -170,12 +201,9 @@ public:
                                             buffer.size() - sep + strlen(VALUE_FIELD_SEPARATOR)));
                 iss >> pair.second;
             }
+            return (true);
         }
-        else
-        {
-            return (false);
-        }
-        return (true);
+        return (false);
     }
 
     /*!
@@ -204,12 +232,9 @@ public:
             iss.str(buffer);
             iss >> value;
             container.insert(container.end(), value);
+		    return (true);
         }
-        else
-        {
-            return (false);
-        }
-		return (true);
+        return (false);
     }
 
 
@@ -218,7 +243,7 @@ public:
     //
 
     /*!
-     * @brief Used to set configuration values with String/String type.
+     * @brief Set configuration values with string type.
      * @param key : The key indentifier to set
      * @param value : The formatted string value to set in key field
      * @param serialize : Set this to true to save the changes right away to file
@@ -236,7 +261,7 @@ public:
     }
 
     /*!
-     * @brief Used to set configuration values with any primitive type.
+     * @brief Set configuration values with arithmetic types.
      * @param key : The key indentifier to set
      * @param value : The primitive-typed value to set in key field
      * @param serialize : Set this to true to save the changes right away to file
@@ -251,13 +276,13 @@ public:
     }
 
     /*!
-     * @brief Used to set configuration values with an std::pair.
+     * @brief Set configuration values with the contents of an std::pair.
      * @param key : The key indentifier to set
      * @param pair : The pair with values to fill in key field
      * @param serialize : Set this to true to save the changes right away to file
      */
-    template <typename T>
-    void setAggregate(const std::string &key, const T &pair, bool serialize = false)
+    template<typename Tx, typename Ty>
+    void setPair(const std::string key, const std::pair<Tx, Ty> &pair, bool serialize = false)
     {
         std::string fValue;
         fValue += std::to_string(pair.first);
@@ -267,13 +292,13 @@ public:
     }
 
     /*!
-     * @brief Used to set configuration values with an stl container.
+     * @brief Set configuration values with the contents of any stl container implementing const_iterator.
      * @param key : The key indentifier to set
      * @param container : The container with values to fill in key field
      * @param serialize : Set this to true to save the changes right away to file
      */
     template <typename T>
-    void setArray(const std::string &key, const T &container, bool serialize = false)
+    void setArray(const std::string key, const T &container, bool serialize = false)
     {
         std::string fValue;
 
@@ -289,11 +314,57 @@ public:
     }
 
     //
+    // MODIFIERS
+    //
+
+    /*!
+     * @brief Used to copy configuration value into another
+     * @param srcKey : The source key containing the value to copy
+     * @param destKey : The destination key fill with source value
+     * @param serialize : Set this to true to save the changes right away to file
+     */
+    void copy(const std::string srcKey, const std::string destKey, bool serialize = false)
+    {
+        if (_config.find(srcKey) != _config.end())
+        {
+            if (_config.find(destKey) != _config.end())
+            {
+                _config[destKey] = _config[srcKey];
+            }
+            else
+            {
+                _config.emplace(destKey, srcKey);
+            }
+        }
+        else
+        {
+            throw (-1); //No source to copy from !
+        }
+    }
+
+    /*!
+     * @brief Erase a key from configuration
+     * @param key : The key to erase
+     * @param serialize : Set this to true to save the changes right away to file
+     */
+    void erase(const std::string key, bool serialize = false)
+    {
+        if (_config.find(key) != _config.end())
+        {
+            _config.erase(key);
+        }
+        else
+        {
+            throw (-1); //No key to erase !
+        }
+    }
+
+    //
     // BASIC MECHANICS
     //
 
     /*!
-     * @brief Used to load associated the config file.
+     * @brief Load config stored in the associated file.
      * @return true on success, false on failure.
      */
     bool load()
@@ -317,7 +388,7 @@ public:
 
 
     /*!
-     * @brief Used to save current state inside the config file.
+     * @brief Save current config state inside associated file.
      * @return true on success, false on failure.
      */
     bool save() const
@@ -335,6 +406,69 @@ public:
         file.close();
         return (true);
     }
+
+    //
+    // INTEROPERABILITY
+    //
+
+    /*!
+     * @brief Copies a given key to another configuration
+     * @param key : The key to copy
+     * @param target : The target configuration to copy to
+     * @param serialize : Set this to true to save the changes right away to file
+     */
+    void copyTo(const std::string key, Config &target, bool serialize = false)
+    {
+        if (exists(key))
+        {
+            target.set(key, _config[key], serialize);
+        }
+        else
+        {
+            throw (-1); //No key to copy !
+        }
+    }
+
+    /*!
+     * @brief Moves a given key to another configuration (removes key from caller)
+     * @param key : The key to move
+     * @param target : The target configuration to move to
+     */
+    void moveTo(const std::string key, Config &target, bool serialize = false)
+    {
+        try {
+            copyTo(key, target, serialize);
+        }
+        catch(...)
+        {
+            return; //Failed! do not erase
+        }
+        erase(key);
+    }
+
+    /*!
+     * @brief Append the target configuration to the caller
+     * @param source : The configuration to copy keys from
+     */
+    void append(const Config &source, bool serialize = false)
+    {
+        for (std::map<std::string, std::string>::const_iterator it = source._config.begin(); it != source._config.end(); it++)
+        {
+            set(it->first, it->second, serialize);
+        }
+    }
+
+    /*!
+     * @brief Append the configuration file to the caller
+     * @param path : The path to the configuration file to copy keys from
+     */
+    void append(const std::string &path)
+    {
+        Config source(path);
+
+        append(source);
+    }
+
 
 protected:
     std::map<std::string, std::string> _config;
