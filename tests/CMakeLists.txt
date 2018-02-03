@@ -3,9 +3,9 @@ cmake_minimum_required(VERSION 2.6)
 project (tinyconf_tests)
 
 #CORE FILES
-file(GLOB_RECURSE
+file(GLOB
      source_files
-     ./*
+     ./*.cpp
 )
 include_directories(${CMAKE_SOURCE_DIR})
 

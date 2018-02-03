@@ -107,42 +107,47 @@ public:
     /*!
      * @brief Used to get values from configuration array
      * @param key : The key identifying wanted array of values
-     * @return container of values associated with key, of T type
+     * @param container : The container where the array of values will be pushed
+	 * @return true on success, false on failure.
      */
     template <typename T>
-    T getArray(const std::string &key)
+    bool getArray(const std::string &key, T &container)
     {
-        T container;
-
         if (_config.find(key) != _config.end())
         {
+            std::istringstream iss;
             typename T::value_type value;
             std::string buffer = _config[key];
 
             for (size_t sep = buffer.find(VALUE_FIELD_SEPARATOR); sep != std::string::npos; sep = buffer.find(VALUE_FIELD_SEPARATOR))
             {
-                std::istringstream iss;
                 iss.str(buffer.substr(0, sep));
                 iss >> value;
                 container.insert(container.end(), value);
                 buffer.erase(0, sep + strlen(VALUE_FIELD_SEPARATOR));
+                iss.clear();
             }
+            iss.str(buffer);
+            iss >> value;
+            container.insert(container.end(), value);
         }
         else
         {
-            return (container);
+            return (false);
         }
+		return (true);
     }
 
     /*!
      * @brief Used to get values from configuration array
      * @param key : The key identifying wanted array of values
+     * @param container : The container where the array of values will be pushed
      * @return container of values associated with key, of T type
      */
     template <typename T>
-    T getArray(const char *key)
+    bool getArray(const char *key, T &container)
     {
-        return (getArray<T>(std::string(key)));
+        return (getArray<T>(std::string(key), container));
     }
 
     /*!
@@ -228,7 +233,7 @@ public:
         {
             size_t separator = buffer.find(KEY_VALUE_SEPARATOR);
             if (separator == std::string::npos) continue;
-            _config.emplace(buffer.substr(0, separator), buffer.substr(separator + 1, buffer.size() - separator));
+            _config.emplace(buffer.substr(0, separator), buffer.substr(separator + strlen(KEY_VALUE_SEPARATOR), buffer.size() - separator));
         }
         file.close();
         return (true);

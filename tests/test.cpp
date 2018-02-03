@@ -16,7 +16,7 @@ int main(int argc, char **argv)
     test.setArray("ArrayTest", array);
     test.save();
     test.relocate("./test.cfg");
-    sArray = test.getArray<std::vector<int>>("ArrayTest");
+    test.getArray<std::vector<int>>("ArrayTest", sArray);
     std::cout << "Array test:";
     for (size_t i = 0; i < sArray.size(); i++)
         std::cout << sArray[i] << ":";
