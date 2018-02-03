@@ -203,7 +203,7 @@ public:
      * @param value : The formatted string value to set in key field
      * @param serialize : Set this to true to save the changes right away to file
      */
-    void set(const std::string &key, const std::string &value, bool serialize = false)
+    void set(const std::string &key, const std::string value, bool serialize = false)
     {
         if (_config.find(key) != _config.end())
         {
@@ -213,17 +213,6 @@ public:
         {
             _config.emplace(key, value);
         }
-    }
-
-    /*!
-     * @brief Used to set configuration values with a char array.
-     * @param key : The key indentifier to set
-     * @param value : The char array to set in key field
-     * @param serialize : Set this to true to save the changes right away to file
-     */
-    void set(const std::string &key, const char *value, bool serialize = false)
-    {
-        set(key, std::string(value), serialize);
     }
 
     /*!
