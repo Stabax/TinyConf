@@ -103,24 +103,46 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a93f40242f6f306baa0933dad5976c74b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstb_1_1Config.html#a93f40242f6f306baa0933dad5976c74b">relocate</a> (const std::string &amp;path)</td></tr>
 <tr class="memdesc:a93f40242f6f306baa0933dad5976c74b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to switch current object to another configuration file.  <a href="#a93f40242f6f306baa0933dad5976c74b">More...</a><br /></td></tr>
 <tr class="separator:a93f40242f6f306baa0933dad5976c74b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6bec1b709799048ab7dee7bb0e2a0f70"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a6bec1b709799048ab7dee7bb0e2a0f70"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classstb_1_1Config.html#a6bec1b709799048ab7dee7bb0e2a0f70">get</a> (const std::string &amp;key)</td></tr>
-<tr class="memdesc:a6bec1b709799048ab7dee7bb0e2a0f70"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to get values from configuration.  <a href="#a6bec1b709799048ab7dee7bb0e2a0f70">More...</a><br /></td></tr>
-<tr class="separator:a6bec1b709799048ab7dee7bb0e2a0f70"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8ef68b0536ae3f36901aa2d0a05c5690"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstb_1_1Config.html#a8ef68b0536ae3f36901aa2d0a05c5690">set</a> (const std::string &amp;key, const std::string &amp;value, bool serialize=false)</td></tr>
-<tr class="memdesc:a8ef68b0536ae3f36901aa2d0a05c5690"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to set configuration values with String/String type.  <a href="#a8ef68b0536ae3f36901aa2d0a05c5690">More...</a><br /></td></tr>
-<tr class="separator:a8ef68b0536ae3f36901aa2d0a05c5690"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5999f8355ac1a73df4d72095e3276c7b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstb_1_1Config.html#a5999f8355ac1a73df4d72095e3276c7b">set</a> (const std::string &amp;key, const char *value, bool serialize=false)</td></tr>
-<tr class="memdesc:a5999f8355ac1a73df4d72095e3276c7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to set configuration values with a char array.  <a href="#a5999f8355ac1a73df4d72095e3276c7b">More...</a><br /></td></tr>
-<tr class="separator:a5999f8355ac1a73df4d72095e3276c7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99db3d9c7728a47ed03c87b5bdb8a035"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstb_1_1Config.html#a99db3d9c7728a47ed03c87b5bdb8a035">getPath</a> ()</td></tr>
+<tr class="memdesc:a99db3d9c7728a47ed03c87b5bdb8a035"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to get path of associated configuration.  <a href="#a99db3d9c7728a47ed03c87b5bdb8a035">More...</a><br /></td></tr>
+<tr class="separator:a99db3d9c7728a47ed03c87b5bdb8a035"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a581a04720272fe81c7bf652faaa52484"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a581a04720272fe81c7bf652faaa52484"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classstb_1_1Config.html#a581a04720272fe81c7bf652faaa52484">get</a> (const std::string &amp;key, T &amp;value)</td></tr>
+<tr class="memdesc:a581a04720272fe81c7bf652faaa52484"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to get values from configuration.  <a href="#a581a04720272fe81c7bf652faaa52484">More...</a><br /></td></tr>
+<tr class="separator:a581a04720272fe81c7bf652faaa52484"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae05d898e7f5e2e09d42c86f8386106c6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstb_1_1Config.html#ae05d898e7f5e2e09d42c86f8386106c6">get</a> (const std::string &amp;key, char *value)</td></tr>
+<tr class="memdesc:ae05d898e7f5e2e09d42c86f8386106c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to get values from configuration.  <a href="#ae05d898e7f5e2e09d42c86f8386106c6">More...</a><br /></td></tr>
+<tr class="separator:ae05d898e7f5e2e09d42c86f8386106c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe53626bb8a01624d07cc09ed433fc88"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstb_1_1Config.html#afe53626bb8a01624d07cc09ed433fc88">get</a> (const std::string &amp;key, std::string &amp;value)</td></tr>
+<tr class="memdesc:afe53626bb8a01624d07cc09ed433fc88"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to get values from configuration.  <a href="#afe53626bb8a01624d07cc09ed433fc88">More...</a><br /></td></tr>
+<tr class="separator:afe53626bb8a01624d07cc09ed433fc88"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a361ce31a41fce62a3e2a52092b00ff"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a1a361ce31a41fce62a3e2a52092b00ff"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classstb_1_1Config.html#a1a361ce31a41fce62a3e2a52092b00ff">getAggregate</a> (const std::string &amp;key, T &amp;pair)</td></tr>
+<tr class="memdesc:a1a361ce31a41fce62a3e2a52092b00ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to get pair values from configuration.  <a href="#a1a361ce31a41fce62a3e2a52092b00ff">More...</a><br /></td></tr>
+<tr class="separator:a1a361ce31a41fce62a3e2a52092b00ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a984680fb3b926ccf24f8ccab9d33fcdf"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a984680fb3b926ccf24f8ccab9d33fcdf"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classstb_1_1Config.html#a984680fb3b926ccf24f8ccab9d33fcdf">getArray</a> (const std::string &amp;key, T &amp;container)</td></tr>
+<tr class="memdesc:a984680fb3b926ccf24f8ccab9d33fcdf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to get values from configuration array.  <a href="#a984680fb3b926ccf24f8ccab9d33fcdf">More...</a><br /></td></tr>
+<tr class="separator:a984680fb3b926ccf24f8ccab9d33fcdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5cca36ac92a6359898495cf183246323"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a5cca36ac92a6359898495cf183246323"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classstb_1_1Config.html#a5cca36ac92a6359898495cf183246323">getArray</a> (const char *key, T &amp;container)</td></tr>
+<tr class="memdesc:a5cca36ac92a6359898495cf183246323"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to get values from configuration array.  <a href="#a5cca36ac92a6359898495cf183246323">More...</a><br /></td></tr>
+<tr class="separator:a5cca36ac92a6359898495cf183246323"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1540f96e5ddeea535d4b27aee4d57523"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstb_1_1Config.html#a1540f96e5ddeea535d4b27aee4d57523">set</a> (const std::string &amp;key, const std::string value, bool serialize=false)</td></tr>
+<tr class="memdesc:a1540f96e5ddeea535d4b27aee4d57523"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to set configuration values with String/String type.  <a href="#a1540f96e5ddeea535d4b27aee4d57523">More...</a><br /></td></tr>
+<tr class="separator:a1540f96e5ddeea535d4b27aee4d57523"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a49ab093b89c57ca5ab44b38b81b73fc7"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a49ab093b89c57ca5ab44b38b81b73fc7"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classstb_1_1Config.html#a49ab093b89c57ca5ab44b38b81b73fc7">set</a> (const std::string &amp;key, const T &amp;value, bool serialize=false)</td></tr>
 <tr class="memdesc:a49ab093b89c57ca5ab44b38b81b73fc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to set configuration values with any primitive type.  <a href="#a49ab093b89c57ca5ab44b38b81b73fc7">More...</a><br /></td></tr>
 <tr class="separator:a49ab093b89c57ca5ab44b38b81b73fc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a45cfb7690dcdc35eb76f772763ea483a"><td class="memTemplParams" colspan="2">template&lt;typename C , typename std::enable_if&lt; has_const_iterator&lt; C &gt;::value, void &gt;::type &gt; </td></tr>
-<tr class="memitem:a45cfb7690dcdc35eb76f772763ea483a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classstb_1_1Config.html#a45cfb7690dcdc35eb76f772763ea483a">setContainer</a> (const std::string &amp;key, const C &amp;container, typename C::value_type const &amp;type, bool serialize=false)</td></tr>
-<tr class="memdesc:a45cfb7690dcdc35eb76f772763ea483a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to set configuration values with an stl container.  <a href="#a45cfb7690dcdc35eb76f772763ea483a">More...</a><br /></td></tr>
-<tr class="separator:a45cfb7690dcdc35eb76f772763ea483a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0cbca6dd6324278a5f9e4e5f1585a42"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:aa0cbca6dd6324278a5f9e4e5f1585a42"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classstb_1_1Config.html#aa0cbca6dd6324278a5f9e4e5f1585a42">setAggregate</a> (const std::string &amp;key, const T &amp;pair, bool serialize=false)</td></tr>
+<tr class="memdesc:aa0cbca6dd6324278a5f9e4e5f1585a42"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to set configuration values with an std::pair.  <a href="#aa0cbca6dd6324278a5f9e4e5f1585a42">More...</a><br /></td></tr>
+<tr class="separator:aa0cbca6dd6324278a5f9e4e5f1585a42"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ac5c915b9e3ddf61ed90ba70b5927ef"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a4ac5c915b9e3ddf61ed90ba70b5927ef"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classstb_1_1Config.html#a4ac5c915b9e3ddf61ed90ba70b5927ef">setArray</a> (const std::string &amp;key, const T &amp;container, bool serialize=false)</td></tr>
+<tr class="memdesc:a4ac5c915b9e3ddf61ed90ba70b5927ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to set configuration values with an stl container.  <a href="#a4ac5c915b9e3ddf61ed90ba70b5927ef">More...</a><br /></td></tr>
+<tr class="separator:a4ac5c915b9e3ddf61ed90ba70b5927ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5b07d2e4f85af5d6ecbf849a519c9fb9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstb_1_1Config.html#a5b07d2e4f85af5d6ecbf849a519c9fb9">load</a> ()</td></tr>
 <tr class="memdesc:a5b07d2e4f85af5d6ecbf849a519c9fb9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to load associated the config file.  <a href="#a5b07d2e4f85af5d6ecbf849a519c9fb9">More...</a><br /></td></tr>
 <tr class="separator:a5b07d2e4f85af5d6ecbf849a519c9fb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -172,7 +194,7 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><b>_path</b></td>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a6bec1b709799048ab7dee7bb0e2a0f70"></a>
+<a class="anchor" id="a581a04720272fe81c7bf652faaa52484"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -182,11 +204,21 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">T stb::Config::get </td>
+          <td class="memname">bool stb::Config::get </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>key</em></td><td>)</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">T &amp;&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -200,10 +232,263 @@ template&lt;typename T &gt; </div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">key</td><td>: The key identifying wanted value </td></tr>
+    <tr><td class="paramname">value</td><td>: The variable to set with value </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>value associated with key, of T type </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>true if found, false if failed </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ae05d898e7f5e2e09d42c86f8386106c6"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool stb::Config::get </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Used to get values from configuration. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td>: The key identifying wanted value </td></tr>
+    <tr><td class="paramname">value</td><td>: The char array to set with value </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if found, false if failed </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="afe53626bb8a01624d07cc09ed433fc88"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool stb::Config::get </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string &amp;&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Used to get values from configuration. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td>: The key identifying wanted value </td></tr>
+    <tr><td class="paramname">value</td><td>: The string to set with value </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if found, false if failed </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a1a361ce31a41fce62a3e2a52092b00ff"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool stb::Config::getAggregate </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T &amp;&#160;</td>
+          <td class="paramname"><em>pair</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Used to get pair values from configuration. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td>: The key identifying wanted value </td></tr>
+    <tr><td class="paramname">pair</td><td>: The pair to set with value </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if found, false if failed </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a984680fb3b926ccf24f8ccab9d33fcdf"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool stb::Config::getArray </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T &amp;&#160;</td>
+          <td class="paramname"><em>container</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Used to get values from configuration array. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td>: The key identifying wanted array of values </td></tr>
+    <tr><td class="paramname">container</td><td>: The container where the array of values will be pushed </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true on success, false on failure. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a5cca36ac92a6359898495cf183246323"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool stb::Config::getArray </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T &amp;&#160;</td>
+          <td class="paramname"><em>container</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Used to get values from configuration array. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td>: The key identifying wanted array of values </td></tr>
+    <tr><td class="paramname">container</td><td>: The container where the array of values will be pushed </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>container of values associated with key, of T type </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a99db3d9c7728a47ed03c87b5bdb8a035"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string stb::Config::getPath </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Used to get path of associated configuration. </p>
+<dl class="section return"><dt>Returns</dt><dd>String containing the path of the current associated cfg file </dd></dl>
 
 </div>
 </div>
@@ -291,7 +576,7 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a8ef68b0536ae3f36901aa2d0a05c5690"></a>
+<a class="anchor" id="a1540f96e5ddeea535d4b27aee4d57523"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -307,7 +592,7 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramtype">const std::string&#160;</td>
           <td class="paramname"><em>value</em>, </td>
         </tr>
         <tr>
@@ -334,56 +619,6 @@ template&lt;typename T &gt; </div>
   <table class="params">
     <tr><td class="paramname">key</td><td>: The key indentifier to set </td></tr>
     <tr><td class="paramname">value</td><td>: The formatted string value to set in key field </td></tr>
-    <tr><td class="paramname">serialize</td><td>: Set this to true to save the changes right away to file </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a class="anchor" id="a5999f8355ac1a73df4d72095e3276c7b"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void stb::Config::set </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>key</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>value</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>serialize</em> = <code>false</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Used to set configuration values with a char array. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">key</td><td>: The key indentifier to set </td></tr>
-    <tr><td class="paramname">value</td><td>: The char array to set in key field </td></tr>
     <tr><td class="paramname">serialize</td><td>: Set this to true to save the changes right away to file </td></tr>
   </table>
   </dd>
@@ -443,17 +678,17 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a45cfb7690dcdc35eb76f772763ea483a"></a>
+<a class="anchor" id="aa0cbca6dd6324278a5f9e4e5f1585a42"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename C , typename std::enable_if&lt; has_const_iterator&lt; C &gt;::value, void &gt;::type &gt; </div>
+template&lt;typename T &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void stb::Config::setContainer </td>
+          <td class="memname">void stb::Config::setAggregate </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>key</em>, </td>
@@ -461,14 +696,60 @@ template&lt;typename C , typename std::enable_if&lt; has_const_iterator&lt; C &g
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const C &amp;&#160;</td>
-          <td class="paramname"><em>container</em>, </td>
+          <td class="paramtype">const T &amp;&#160;</td>
+          <td class="paramname"><em>pair</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">typename C::value_type const &amp;&#160;</td>
-          <td class="paramname"><em>type</em>, </td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>serialize</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Used to set configuration values with an std::pair. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td>: The key indentifier to set </td></tr>
+    <tr><td class="paramname">pair</td><td>: The pair with values to fill in key field </td></tr>
+    <tr><td class="paramname">serialize</td><td>: Set this to true to save the changes right away to file </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a4ac5c915b9e3ddf61ed90ba70b5927ef"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void stb::Config::setArray </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const T &amp;&#160;</td>
+          <td class="paramname"><em>container</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -494,7 +775,6 @@ template&lt;typename C , typename std::enable_if&lt; has_const_iterator&lt; C &g
   <table class="params">
     <tr><td class="paramname">key</td><td>: The key indentifier to set </td></tr>
     <tr><td class="paramname">container</td><td>: The container with values to fill in key field </td></tr>
-    <tr><td class="paramname">type</td><td>: Deducted type of container </td></tr>
     <tr><td class="paramname">serialize</td><td>: Set this to true to save the changes right away to file </td></tr>
   </table>
   </dd>
@@ -508,7 +788,7 @@ template&lt;typename C , typename std::enable_if&lt; has_const_iterator&lt; C &g
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Feb 3 2018 02:08:13 for TinyConf by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Feb 3 2018 04:59:10 for TinyConf by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>
