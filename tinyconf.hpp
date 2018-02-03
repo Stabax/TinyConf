@@ -10,10 +10,13 @@
  * * * * * * * * * * * * * * * * * * * * */
 
 #include <string>
+#include <cstring>
 #include <fstream>
 #include <sstream>
 #include <type_traits>
 #include <iomanip>
+// Tmp
+#include <iostream>
 // Stl Containers
 #include <map>
 #include <vector>
@@ -60,7 +63,7 @@ public:
      */
     Config(const std::string &path) : _path(path)
     {
-
+        load();
     }
 
     /*!
@@ -71,6 +74,7 @@ public:
     {
         _path = path;
         _config.clear();
+        load();
     }
 
     ~Config()
@@ -98,6 +102,47 @@ public:
         {
             return (value);
         }
+    }
+
+    /*!
+     * @brief Used to get values from configuration array
+     * @param key : The key identifying wanted array of values
+     * @return container of values associated with key, of T type
+     */
+    template <typename T>
+    T getArray(const std::string &key)
+    {
+        T container;
+
+        if (_config.find(key) != _config.end())
+        {
+            typename T::value_type value;
+            std::string buffer = _config[key];
+
+            for (size_t sep = buffer.find(VALUE_FIELD_SEPARATOR); sep != std::string::npos; sep = buffer.find(VALUE_FIELD_SEPARATOR))
+            {
+                std::istringstream iss;
+                iss.str(buffer.substr(0, sep));
+                iss >> value;
+                container.insert(container.end(), value);
+                buffer.erase(0, sep + strlen(VALUE_FIELD_SEPARATOR));
+            }
+        }
+        else
+        {
+            return (container);
+        }
+    }
+
+    /*!
+     * @brief Used to get values from configuration array
+     * @param key : The key identifying wanted array of values
+     * @return container of values associated with key, of T type
+     */
+    template <typename T>
+    T getArray(const char *key)
+    {
+        return (getArray<T>(std::string(key)));
     }
 
     /*!
@@ -148,16 +193,14 @@ public:
      * @brief Used to set configuration values with an stl container.
      * @param key : The key indentifier to set
      * @param container : The container with values to fill in key field
-     * @param type : Deducted type of container
      * @param serialize : Set this to true to save the changes right away to file
      */
-    template <typename C,
-              typename std::enable_if<has_const_iterator<C>::value, void>::type>
-    void setContainer(const std::string &key, const C &container, typename C::value_type const &type, bool serialize = false)
+    template <typename T>
+    void setArray(const std::string &key, const T &container, bool serialize = false)
     {
         std::string fValue;
 
-        for (typename C::const_iterator it = container.begin(); it != container.end(); it++)
+        for (typename T::const_iterator it = container.begin(); it != container.end(); it++)
         {
             if (it != container.begin())
             {
