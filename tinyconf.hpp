@@ -82,26 +82,73 @@ public:
 
     }
 
+   /*!
+     * @brief Used to get path of associated configuration
+     * @return String containing the path of the current associated cfg file
+     */
+     std::string getPath()
+     {
+         return (_path);
+     }
+
     /*!
      * @brief Used to get values from configuration
      * @param key : The key identifying wanted value
+     * @param value : The variable to set with value
      * @return value associated with key, of T type
      */
     template <typename T>
-    T get(const std::string &key)
+    bool get(const std::string &key, T &value)
     {
-        T value;
         if (_config.find(key) != _config.end())
         {
             std::istringstream iss;
             iss.str(_config[key]);
             iss >> value;
-            return (value);
         }
         else
         {
-            return (value);
+            return (false);
         }
+        return (true);
+    }
+
+    /*!
+     * @brief Used to get values from configuration
+     * @param key : The key identifying wanted value
+     * @param value : The char array to set with value
+     * @return value associated with key, of T type
+     */
+    bool get(const std::string &key, char *value)
+    {
+        if (_config.find(key) != _config.end())
+        {
+            strcpy(value, _config[key].c_str());
+        }
+        else
+        {
+            return (false);
+        }
+        return (true);
+    }
+
+    /*!
+     * @brief Used to get values from configuration
+     * @param key : The key identifying wanted value
+     * @param value : The string to set with value
+     * @return value associated with key, of T type
+     */
+    bool get(const std::string &key, std::string &value)
+    {
+        if (_config.find(key) != _config.end())
+        {
+            value = _config[key];
+        }
+        else
+        {
+            return (false);
+        }
+        return (true);
     }
 
     /*!
