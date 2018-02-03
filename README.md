@@ -25,4 +25,4 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ### Getting started ###
 
-Check out our [latest guide here](http://stabax.org/doc/stbxengine/md_doc_GettingStarted.html)
+Check out our [latest guide here](http://stabax.org/doc/tinyconf/)
