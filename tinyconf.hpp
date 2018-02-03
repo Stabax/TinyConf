@@ -131,7 +131,8 @@ public:
     /*!
      * @brief Used to set configuration values with an stl container.
      * @param key : The key indentifier to set
-     * @param value : The container with values to fill in key field
+     * @param container : The container with values to fill in key field
+     * @param type : Deducted type of container
      * @param serialize : Set this to true to save the changes right away to file
      */
     template <typename C,
