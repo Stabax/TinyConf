@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.8"/>
-<title>TinyConf: File List</title>
+<title>TinyConf: tinyconf.hpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -61,10 +61,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   </div>
   <div id="navrow2" class="tabs2">
     <ul class="tablist">
-      <li class="current"><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
     </ul>
   </div>
-</div><!-- top -->
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -79,17 +78,69 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </iframe>
 </div>
 
+</div><!-- top -->
 <div class="header">
+  <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#define-members">Macros</a>  </div>
   <div class="headertitle">
-<div class="title">File List</div>  </div>
+<div class="title">tinyconf.hpp File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock">Here is a list of all documented files with brief descriptions:</div><div class="directory">
-<table class="directory">
-<tr id="row_0_" class="even"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><a href="tinyconf_8hpp_source.html"><span class="icondoc"></span></a><a class="el" href="tinyconf_8hpp.html" target="_self">tinyconf.hpp</a></td><td class="desc">Single header for Config class </td></tr>
+
+<p>Single header for Config class.  
+<a href="#details">More...</a></p>
+<div class="textblock"><code>#include &lt;string&gt;</code><br />
+<code>#include &lt;fstream&gt;</code><br />
+<code>#include &lt;sstream&gt;</code><br />
+<code>#include &lt;type_traits&gt;</code><br />
+<code>#include &lt;iomanip&gt;</code><br />
+<code>#include &lt;map&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
+<code>#include &lt;list&gt;</code><br />
+<code>#include &lt;queue&gt;</code><br />
+<code>#include &lt;deque&gt;</code><br />
+<code>#include &lt;set&gt;</code><br />
+<code>#include &lt;forward_list&gt;</code><br />
+<code>#include &lt;unordered_set&gt;</code><br />
+<code>#include &lt;unordered_map&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Include dependency graph for tinyconf.hpp:</div>
+<div class="dyncontent">
+<div class="center"><img src="tinyconf_8hpp__incl.png" border="0" usemap="#tinyconf_8hpp" alt=""/></div>
+<map name="tinyconf_8hpp" id="tinyconf_8hpp">
+</map>
+</div>
+</div>
+<p><a href="tinyconf_8hpp_source.html">Go to the source code of this file.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstb_1_1has__const__iterator.html">stb::has_const_iterator&lt; T &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper to determine whether there's a const_iterator for T.  <a href="structstb_1_1has__const__iterator.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstb_1_1Config.html">stb::Config</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:ab713c086d0b8d00fe2db0a46cb805ec7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab713c086d0b8d00fe2db0a46cb805ec7"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>KEY_VALUE_SEPARATOR</b>&#160;&#160;&#160;&quot;:=&quot;</td></tr>
+<tr class="separator:ab713c086d0b8d00fe2db0a46cb805ec7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a59237e0e4117ba508faff00902865b68"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a59237e0e4117ba508faff00902865b68"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>VALUE_FIELD_SEPARATOR</b>&#160;&#160;&#160;&quot;:=:&quot;</td></tr>
+<tr class="separator:a59237e0e4117ba508faff00902865b68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:affe74f468bbe096b398a01dcaa8ea3dd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="affe74f468bbe096b398a01dcaa8ea3dd"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>DECIMAL_PRECISION</b>&#160;&#160;&#160;10</td></tr>
+<tr class="separator:affe74f468bbe096b398a01dcaa8ea3dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- directory -->
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Single header for Config class. </p>
+<hr/>
+<p> TinyConf Library </p><dl class="section version"><dt>Version</dt><dd>0.1</dd></dl>
+<dl class="section author"><dt>Author</dt><dd>Maxime 'Stalker2106' Martens <hr/>
+</dd></dl>
+</div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated on Sat Feb 3 2018 02:08:13 for TinyConf by &#160;<a href="http://www.doxygen.org/index.html">
