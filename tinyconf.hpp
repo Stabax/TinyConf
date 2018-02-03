@@ -1,7 +1,7 @@
 #ifndef TINYCONF_HPP_
 #define TINYCONF_HPP_
 
-/* * * * * * * * * * * * * * * * * * * * *
+/*! * * * * * * * * * * * * * * * * * * * *
  * TinyConf Library
  * @version 0.1
  * @file tinyconf.hpp
@@ -47,8 +47,7 @@ public:
 
     }
 
-    /*
-     * @fn T get(const std::string &key)
+    /*!
      * @brief Used to get values from configuration
      * @param key : The key identifying wanted value
      * @return value associated with key, of T type
@@ -70,8 +69,7 @@ public:
         }
     }
 
-    /* 
-     * @fn void set(const std::string &key, const std::string &value, bool serialize = false)
+    /*!
      * @brief Used to set configuration values with String/String type.
      * @param key : The key indentifier to set
      * @param value : The formatted string value to set in key field
@@ -89,8 +87,7 @@ public:
         }
     }
 
-    /* 
-     * @fn void set(const std::string &key, const char *value, bool serialize = false)
+    /*!
      * @brief Used to set configuration values with a char array.
      * @param key : The key indentifier to set
      * @param value : The char array to set in key field
@@ -101,8 +98,7 @@ public:
         set(key, std::string(value), serialize);
     }
 
-    /* 
-     * @fn void set(const std::string &key, const T &value, bool serialize = false)
+    /*!
      * @brief Used to set configuration values with any primitive type.
      * @param key : The key indentifier to set
      * @param value : The primitive-typed value to set in key field
@@ -116,8 +112,7 @@ public:
         set(key, fValue, serialize);
     }
 
-    /* 
-     * @fn void setContainer(const std::string &key, const T &value, bool serialize = false)
+    /*!
      * @brief Used to set configuration values with an stl container.
      * @param key : The key indentifier to set
      * @param value : The container with values to fill in key field
@@ -139,8 +134,7 @@ public:
         set(key, fValue,serialize);
     }
 
-    /* 
-     * @fn bool load()
+    /*!
      * @brief Used to load associated the config file.
      * @return true on success, false on failure.
      */
@@ -164,8 +158,7 @@ public:
     }
 
 
-    /* 
-     * @fn bool save() const
+    /*!
      * @brief Used to save current state inside the config file.
      * @return true on success, false on failure.
      */
