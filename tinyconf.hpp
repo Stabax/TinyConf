@@ -17,6 +17,8 @@
 #include <iomanip>
 // Tmp
 #include <iostream>
+// Stl Aggregate
+#include <utility>
 // Stl Containers
 #include <map>
 #include <vector>
@@ -95,7 +97,7 @@ public:
      * @brief Used to get values from configuration
      * @param key : The key identifying wanted value
      * @param value : The variable to set with value
-     * @return value associated with key, of T type
+     * @return true if found, false if failed
      */
     template <typename T>
     bool get(const std::string &key, T &value)
@@ -117,7 +119,7 @@ public:
      * @brief Used to get values from configuration
      * @param key : The key identifying wanted value
      * @param value : The char array to set with value
-     * @return value associated with key, of T type
+     * @return true if found, false if failed
      */
     bool get(const std::string &key, char *value)
     {
@@ -136,13 +138,45 @@ public:
      * @brief Used to get values from configuration
      * @param key : The key identifying wanted value
      * @param value : The string to set with value
-     * @return value associated with key, of T type
+     * @return true if found, false if failed
      */
     bool get(const std::string &key, std::string &value)
     {
         if (_config.find(key) != _config.end())
         {
             value = _config[key];
+        }
+        else
+        {
+            return (false);
+        }
+        return (true);
+    }
+
+    /*!
+     * @brief Used to get pair values from configuration
+     * @param key : The key identifying wanted value
+     * @param pair : The pair to set with value
+     * @return true if found, false if failed
+     */
+    template <typename T>
+    bool getAggregate(const std::string &key, T &pair)
+    {
+        if (_config.find(key) != _config.end())
+        {
+            size_t sep = _config[key].find(VALUE_FIELD_SEPARATOR);
+            if (sep != std::string::npos)
+            {
+                std::string buffer = _config[key];
+                std::istringstream iss;
+
+                iss.str(buffer.substr(0, sep));
+                iss >> pair.first;
+                iss.clear();
+                iss.str(buffer.substr(sep + strlen(VALUE_FIELD_SEPARATOR),
+                                            buffer.size() - sep + strlen(VALUE_FIELD_SEPARATOR)));
+                iss >> pair.second;
+            }
         }
         else
         {
@@ -231,6 +265,22 @@ public:
     }
 
     /*!
+     * @brief Used to set configuration values with an std::pair.
+     * @param key : The key indentifier to set
+     * @param pair : The pair with values to fill in key field
+     * @param serialize : Set this to true to save the changes right away to file
+     */
+    template <typename T>
+    void setAggregate(const std::string &key, const T &pair, bool serialize = false)
+    {
+        std::string fValue;
+        fValue += std::to_string(pair.first);
+        fValue += VALUE_FIELD_SEPARATOR;
+        fValue += std::to_string(pair.second);
+        set(key, fValue, serialize);
+    }
+
+    /*!
      * @brief Used to set configuration values with an stl container.
      * @param key : The key indentifier to set
      * @param container : The container with values to fill in key field
@@ -249,7 +299,7 @@ public:
             }
             fValue += std::to_string(*it);
         }
-        set(key, fValue,serialize);
+        set(key, fValue, serialize);
     }
 
     /*!

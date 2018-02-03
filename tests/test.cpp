@@ -4,6 +4,7 @@ int main(int argc, char **argv)
 {
     stb::Config test("./test.cfg");
     std::vector<int> sArray, array = {1, 2, 3};
+    std::pair<int, float> sPair, pair = {42, 5.12345f};
     char *sChar = new char[3];
     std::string sStr, str("OK");
     int sInteger, integer = 1;
@@ -16,6 +17,7 @@ int main(int argc, char **argv)
     test.set("IntTest", integer);
     test.set("DoubleTest", decimal);
     test.setArray("ArrayTest", array);
+    test.setAggregate("PairTest", pair);
     std::cout << "Serializing to file \"" << test.getPath() << "\"\n";
     test.save();
     test.relocate("./test.cfg");  
@@ -35,5 +37,8 @@ int main(int argc, char **argv)
     std::cout << "Vector Test => ";
     test.getArray("ArrayTest", sArray);
     std::cout << (sArray[0] == 1 && sArray[1] == 2 && sArray[2] == 3 ? "OK" : "FAIL") << "\n";
+    std::cout << "Pair Test => ";
+    test.getAggregate("PairTest", sPair);
+    std::cout << (sPair.first == 42 && sPair.second == 5.12345f ? "OK" : "FAIL") << "\n";
     return (0);
 }
