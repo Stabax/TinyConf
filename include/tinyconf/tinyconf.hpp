@@ -50,9 +50,9 @@ public:
 
     /*!
      * @class Node
-     * @brief Represent a key/value association in memory
+     * @brief Superclass holding templated node
      */
-    struct Node
+    struct SNode
     {
         /*! @brief Enum defining possible identifiable types from config file */
         enum ValueType {
@@ -61,6 +61,37 @@ public:
             String
         };
 
+        /*! @brief Node default constructor for stl container ordering */
+        SNode() { };
+        
+        /*!
+         * @brief Node constructor with value association
+         * @param kType : The predicted type of value associated to key
+         */
+        SNode(ValueType kType)
+         : type(kType)
+        {
+
+        }
+        
+        /*! @brief Set the position: the line containing the key in associated configuration file */
+        void setPos(const size_t kPos) { pos = kPos; }
+
+        /* Prepare for template
+        template <typename T>
+        T value() { return (dynamic_cast<Node<T>>(this)->value); }
+        */
+
+        size_t pos;
+        ValueType type;
+    };
+
+    /*!
+     * @class Node
+     * @brief Represent a key/value association in memory
+     */
+    struct Node : public SNode
+    {
         /*!
          * @brief Node default constructor for stl container ordering
          */
@@ -72,13 +103,12 @@ public:
          * @param kType : The predicted type of value associated to key
          */
         Node(const std::string &kValue, ValueType kType = String)
-         : value(kValue), type(kType)
+         : value(kValue), SNode(kType)
         {
 
         }
 
         std::string value;
-        ValueType type;
     };
 
     /*!
