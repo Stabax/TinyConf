@@ -469,9 +469,9 @@ public:
     }
 
     /*!
-     * @brief Check for separator between key and value
+     * @brief Get separator position between key and value in buffer
      * @param buffer : string to parse for separator
-     * @return position of first char of separator in buffer
+     * @return position of first char of separator in buffer, -1 if no separator found
      */
     size_t getSeparator(const std::string &buffer)
     {
@@ -494,6 +494,7 @@ public:
             }
             return (sep);
         }
+        return (-1);
     }
 
     /*!
@@ -515,7 +516,7 @@ public:
             if ((comment = filterComments(buffer, comment)) == false)
             {
                 size_t separator = getSeparator(buffer);
-                if (separator == std::string::npos) continue;
+                if (separator < 0) continue;
                 _config.emplace(buffer.substr(0, separator), Node(buffer.substr(separator + strlen(KEY_VALUE_SEPARATOR), buffer.size() - separator), Node::ValueType::String));
             }
         }
