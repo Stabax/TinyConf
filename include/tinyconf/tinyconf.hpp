@@ -32,12 +32,16 @@
 #include <unordered_set>
 #include <unordered_map>
 
-/*! @brief This char represents beginning of comment lines */
+/*! @brief This char represents the beginning of single line comment */
 #define COMMENT_LINE_SEPARATOR  "#"
-/*! @brief This is the char sequence between the key and the value in configuration file */
-#define KEY_VALUE_SEPARATOR     ":="
-/*! @brief This is the char sequence that separates multiple values in the field */
-#define VALUE_FIELD_SEPARATOR   ":=:"
+/*! @brief This char represents the beginning of a multi or single line comment block */
+#define COMMENT_BLOCK_BEGIN     "/*"
+/*! @brief This char represents the end of a multi or single line comment block */
+#define COMMENT_BLOCK_END       "*/"
+/*! @brief This is the char between the key and the value in configuration file */
+#define KEY_VALUE_SEPARATOR     "="
+/*! @brief This is the char that separates multiple values in the field */
+#define VALUE_FIELD_SEPARATOR   ":"
 /*! @brief This is the number of digits that floats displays (including left-positioned digits) */
 #define DECIMAL_PRECISION       10
 
@@ -46,11 +50,45 @@ namespace stb {
 
 /*!
  * @class Config
- * @brief Main Config class: Defines the whole library more or less
+ * @brief Main Config class: Defines the whole library
  */
 class Config
 {
 public:
+
+    /*!
+     * @class Node
+     * @brief Represent a key/value association in memory
+     */
+    struct Node
+    {
+        /*! @brief Enum defining possible identifiable types from config file */
+        enum ValueType {
+            Arithmetic,
+            Boolean,
+            String
+        };
+
+        /*!
+         * @brief Node default constructor for stl container ordering
+         */
+        Node() { };
+
+        /*!
+         * @brief Node constructor with value association
+         * @param kValue : The string holding value associated to key
+         * @param kType : The predicted type of value associated to key
+         */
+        Node(const std::string &kValue, ValueType kType = String)
+         : value(kValue), type(kType)
+        {
+
+        }
+
+        std::string value;
+        ValueType type;
+    };
+
     /*!
      * @brief Config default constructor
      * @param path : The path where the file.cfg will reside
@@ -60,12 +98,7 @@ public:
         load();
     }
 
-    ~Config()
-    {
-
-    }
-
-   /*!
+    /*!
      * @brief Get path of associated configuration file
      * @return String containing the path of the current associated cfg file
      */
@@ -138,7 +171,7 @@ public:
         if (_config.find(key) != _config.end())
         {
             std::istringstream iss;
-            iss.str(_config[key]);
+            iss.str(_config[key].value);
             iss >> value;
             return (true);
         }
@@ -155,7 +188,7 @@ public:
     {
         if (_config.find(key) != _config.end())
         {
-            strcpy(value, _config[key].c_str());
+            strcpy(value, _config[key].value.c_str());
             return (true);
         }
         return (false);
@@ -171,7 +204,7 @@ public:
     {
         if (_config.find(key) != _config.end())
         {
-            value = _config[key];
+            value = _config[key].value;
             return (true);
         }
         return (false);
@@ -188,10 +221,10 @@ public:
     {
         if (_config.find(key) != _config.end())
         {
-            size_t sep = _config[key].find(VALUE_FIELD_SEPARATOR);
+            size_t sep = _config[key].value.find(VALUE_FIELD_SEPARATOR);
             if (sep != std::string::npos)
             {
-                std::string buffer = _config[key];
+                std::string buffer = _config[key].value;
                 std::istringstream iss;
 
                 iss.str(buffer.substr(0, sep));
@@ -219,7 +252,7 @@ public:
         {
             std::istringstream iss;
             typename T::value_type value;
-            std::string buffer = _config[key];
+            std::string buffer = _config[key].value;
 
             for (size_t sep = buffer.find(VALUE_FIELD_SEPARATOR); sep != std::string::npos; sep = buffer.find(VALUE_FIELD_SEPARATOR))
             {
@@ -248,7 +281,7 @@ public:
      * @param value : The formatted string value to set in key field
      * @param serialize : Set this to true to save the changes right away to file
      */
-    void set(const std::string key, const std::string value, bool serialize = false)
+    void set(const std::string key, const Node &value, bool serialize = false)
     {
         if (_config.find(key) != _config.end())
         {
@@ -272,7 +305,18 @@ public:
          std::ostringstream out;
 
         out << std::setprecision(DECIMAL_PRECISION) << value;
-        set(key, out.str(), serialize);
+        set(key, Node(out.str(), Node::ValueType::String), serialize);
+    }
+
+    /*!
+     * @brief Set configuration values with arithmetic types.
+     * @param key : The key indentifier to set
+     * @param value : The primitive-typed value to set in key field
+     * @param serialize : Set this to true to save the changes right away to file
+     */
+    void set(const std::string key, const std::string &value, bool serialize = false)
+    {
+        set(key, Node(value, Node::ValueType::String), serialize);
     }
 
     /*!
@@ -285,10 +329,11 @@ public:
     void setPair(const std::string key, const std::pair<Tx, Ty> &pair, bool serialize = false)
     {
         std::string fValue;
+
         fValue += std::to_string(pair.first);
         fValue += VALUE_FIELD_SEPARATOR;
         fValue += std::to_string(pair.second);
-        set(key, fValue, serialize);
+        set(key, Node(fValue, Node::ValueType::String), serialize);
     }
 
     /*!
@@ -310,7 +355,7 @@ public:
             }
             fValue += std::to_string(*it);
         }
-        set(key, fValue, serialize);
+        set(key, Node(fValue, Node::ValueType::String), serialize);
     }
 
     //
@@ -360,8 +405,44 @@ public:
     }
 
     //
-    // BASIC MECHANICS
+    // BASIC MECHANICS & PARSER
     //
+
+    /*!
+     * @brief Check for comments in a given string, and removes them if any
+     * @param buffer : string to parse for comments
+     * @param inside : true when inside a comment, false when not
+     * @return true when inside a block, false when line should be treated as key/value
+     */
+    bool filterComments(std::string &buffer, bool inside = false)
+    {
+        size_t blocks, blocke;
+
+        if (inside)
+        {
+            if ((blocke = buffer.find(COMMENT_BLOCK_END)) != std::string::npos) //Already inside, search for ending
+            {
+                buffer.erase(0, blocke + strlen(COMMENT_BLOCK_END)); //Removes comment from buffer
+            }
+            else
+            {
+                return (true); //Comment does not end in this buffer
+            }
+        }
+        while ((blocks = buffer.find(COMMENT_BLOCK_BEGIN)) != std::string::npos) //Search for block comments to remove
+        {
+            if ((blocke = buffer.find(COMMENT_BLOCK_END)) != std::string::npos && blocke > blocks) //It ends inside, and after opening
+            {
+                buffer.erase(blocks, blocke + strlen(COMMENT_BLOCK_BEGIN) + strlen(COMMENT_BLOCK_END) - blocks); //Removes comment from buffer
+            }
+            return (true); //EOL inside block, don't treat buffer
+        }        
+        while ((blocks = buffer.find(COMMENT_LINE_SEPARATOR)) != std::string::npos) //There is a line comment
+        {
+            buffer = buffer.substr(0, blocks); //Removes comment from buffer
+        }
+        return (false); //Comments were removed from buffer
+    }
 
     /*!
      * @brief Load config stored in the associated file.
@@ -371,6 +452,7 @@ public:
     {
         std::ifstream file(_path, std::ifstream::in);
         std::string buffer;
+        bool comment = false;
 
         if (!file.good())
         {
@@ -378,9 +460,12 @@ public:
         }
         while (std::getline(file, buffer))
         {
-            size_t separator = buffer.find(KEY_VALUE_SEPARATOR);
-            if (separator == std::string::npos) continue;
-            _config.emplace(buffer.substr(0, separator), buffer.substr(separator + strlen(KEY_VALUE_SEPARATOR), buffer.size() - separator));
+            if ((comment = filterComments(buffer, comment)) == false)
+            {
+                size_t separator = buffer.find(KEY_VALUE_SEPARATOR);
+                if (separator == std::string::npos) continue;
+                _config.emplace(buffer.substr(0, separator), Node(buffer.substr(separator + strlen(KEY_VALUE_SEPARATOR), buffer.size() - separator), Node::ValueType::String));
+            }
         }
         file.close();
         return (true);
@@ -399,9 +484,9 @@ public:
         {
             return (false); //Couldnt open
         }
-        for (std::map<std::string, std::string>::const_iterator it = _config.begin(); it != _config.end(); it++)
+        for (std::map<std::string, Node>::const_iterator it = _config.begin(); it != _config.end(); it++)
         {
-            file << (it)->first + KEY_VALUE_SEPARATOR + (it)->second << "\n";
+            file << (it)->first + KEY_VALUE_SEPARATOR + (it)->second.value << "\n";
         }
         file.close();
         return (true);
@@ -452,7 +537,7 @@ public:
      */
     void append(const Config &source, bool serialize = false)
     {
-        for (std::map<std::string, std::string>::const_iterator it = source._config.begin(); it != source._config.end(); it++)
+        for (std::map<std::string, Node>::const_iterator it = source._config.begin(); it != source._config.end(); it++)
         {
             set(it->first, it->second, serialize);
         }
@@ -469,27 +554,11 @@ public:
         append(source);
     }
 
-
 protected:
-    std::map<std::string, std::string> _config;
+    std::map<std::string, Node> _config;
     std::string _path;
 };
 
-    /* 
-     * set specilization for following stl containers:
-     * vector
-     * list
-     * queue
-     * deque
-     * set
-     * multiset
-     * map
-     * multimap
-     * forward_list
-     * unordered_set
-     * unordered_multiset
-     * unordered_map
-     */
 }
 
 #endif /* !TINYCONF_HPP_ */
