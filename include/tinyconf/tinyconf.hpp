@@ -31,6 +31,8 @@
 /*! @brief This char represents the end of a multi or single line comment block */
 #define COMMENT_BLOCK_END       "*/"
 /*! @brief This is the char between the key and the value in configuration file */
+#define STRING_IDENTIFIER       "\""
+/*! @brief This is the char between the key and the value in configuration file */
 #define KEY_VALUE_SEPARATOR     "="
 /*! @brief This is the char that separates multiple values in the field */
 #define VALUE_FIELD_SEPARATOR   ":"
@@ -467,6 +469,34 @@ public:
     }
 
     /*!
+     * @brief Check for separator between key and value
+     * @param buffer : string to parse for separator
+     * @return position of first char of separator in buffer
+     */
+    size_t getSeparator(const std::string &buffer)
+    {
+        size_t sep;
+
+        if ((sep = buffer.find_last_of(KEY_VALUE_SEPARATOR)) != std::string::npos)
+        {
+            size_t cursor = sep + strlen(KEY_VALUE_SEPARATOR);
+
+            if (STRING_IDENTIFIER != buffer.substr(cursor, strlen(STRING_IDENTIFIER))) //Beginning of a string value, valid
+                return (sep);
+            while (cursor < buffer.length()) //Check for numeric values
+            {
+                if (isdigit(buffer[cursor]) != 0 && buffer[cursor] != '.') //Not a number or decimal
+                {
+                    if (VALUE_FIELD_SEPARATOR != buffer.substr(cursor, strlen(VALUE_FIELD_SEPARATOR))) //If value is not part of an array
+                        return (getSeparator(buffer.substr(0, sep))); //The separator was a false positive, backtrack
+                }
+                sep++;
+            }
+            return (sep);
+        }
+    }
+
+    /*!
      * @brief Load config stored in the associated file.
      * @return true on success, false on failure.
      */
@@ -484,7 +514,7 @@ public:
         {
             if ((comment = filterComments(buffer, comment)) == false)
             {
-                size_t separator = buffer.find(KEY_VALUE_SEPARATOR);
+                size_t separator = getSeparator(buffer);
                 if (separator == std::string::npos) continue;
                 _config.emplace(buffer.substr(0, separator), Node(buffer.substr(separator + strlen(KEY_VALUE_SEPARATOR), buffer.size() - separator), Node::ValueType::String));
             }
