@@ -75,16 +75,12 @@ public:
         {
 
         }
-        
-        /*! @brief Set the position: the line containing the key in associated configuration file */
-        void setPos(const size_t kPos) { pos = kPos; }
 
         /* Prepare for template
         template <typename T>
         T value() { return (dynamic_cast<Node<T>>(this)->value); }
         */
 
-        size_t pos;
         ValueType type;
     };
 
@@ -435,18 +431,21 @@ public:
     /*!
      * @brief Check for comments in a given string, and removes them if any
      * @param buffer : string to parse for comments
+     * @param remove : true when comment should be removed from buffer, false when not
      * @param inside : true when inside a comment, false when not
      * @return true when inside a block, false when line should be treated as key/value
      */
-    bool filterComments(std::string &buffer, bool inside = false)
+    bool filterComments(std::string &line, bool remove, bool inside = false)
     {
+		std::string buffer = line;
         size_t blocks, blocke;
+		if (remove)
 
         if (inside)
         {
             if ((blocke = buffer.find(COMMENT_BLOCK_END)) != std::string::npos) //Already inside, search for ending
             {
-                buffer.erase(0, blocke + strlen(COMMENT_BLOCK_END)); //Removes comment from buffer
+				buffer.erase(0, blocke + strlen(COMMENT_BLOCK_END)); //Removes comment from buffer
             }
             else
             {
@@ -465,6 +464,8 @@ public:
         {
             buffer = buffer.substr(0, blocks); //Removes comment from buffer
         }
+		if (remove)
+			line = buffer;
         return (false); //Comments were removed from buffer
     }
 
@@ -503,43 +504,84 @@ public:
      */
     bool load()
     {
-        std::ifstream file(_path, std::ifstream::in);
-        std::string buffer;
+		std::vector<std::string> buffer = dump();
+        std::pair<std::string, Node> pair;
         bool comment = false;
 
-        if (!file.good())
+        for (size_t i = 0; i < buffer.size(); i++)
         {
-            return (false); //No config
-        }
-        while (std::getline(file, buffer))
-        {
-            if ((comment = filterComments(buffer, comment)) == false)
+            if ((comment = filterComments(buffer[i], true, comment)) == false)
             {
-                size_t separator = getSeparator(buffer);
+                size_t separator = getSeparator(buffer[i]);
                 if (separator < 0) continue;
-                _config.emplace(buffer.substr(0, separator), Node(buffer.substr(separator + strlen(KEY_VALUE_SEPARATOR), buffer.size() - separator), Node::ValueType::String));
+                pair.first = buffer[i].substr(0, separator);
+                pair.second = Node(buffer[i].substr(separator + strlen(KEY_VALUE_SEPARATOR), buffer[i].length() - separator), Node::ValueType::String);
+                set(pair.first, pair.second);
             }
         }
-        file.close();
         return (true);
     }
 
+    /*!
+     * @brief Dump current config file into a vector buffer.
+     * @return A vector buffer containing a dump of the config file.
+     */
+    std::vector<std::string> dump() const
+    {
+        std::ifstream file(_path, std::ifstream::in);
+        std::vector<std::string> buffer;
+        std::string line;
+
+        if (!file.good()) //No config, or could not open
+        {
+			return (buffer);
+        }
+        while (std::getline(file, line))
+            buffer.push_back(line);
+        file.close();
+        return (buffer);
+    }
 
     /*!
      * @brief Save current config state inside associated file.
      * @return true on success, false on failure.
      */
-    bool save() const
+    bool save()
     {
+        std::map<std::string, Node> config = _config;
+        std::vector<std::string> serialized, buffer = dump();
         std::ofstream file(_path, std::ofstream::out | std::ofstream::trunc);
+        std::string key;
+        bool comment = false;
 
         if (!file.good())
         {
             return (false); //Couldnt open
         }
-        for (std::map<std::string, Node>::const_iterator it = _config.begin(); it != _config.end(); it++)
+        for (size_t i = 0; i < buffer.size(); i++)
         {
-            file << (it)->first + KEY_VALUE_SEPARATOR + (it)->second.value << "\n";
+            if ((comment = filterComments(buffer[i], false, comment)) == false)
+            {
+                size_t separator = getSeparator(buffer[i]);
+                if (separator < 0) continue;
+                key = buffer[i].substr(0, separator);
+                if (config.find(key) != config.end())
+                {
+                    size_t eov = separator + strlen(KEY_VALUE_SEPARATOR);
+                    while (buffer[i][eov] != ' ' && eov < buffer[i].length()) eov++;
+                    eov -= separator + strlen(KEY_VALUE_SEPARATOR);
+                    buffer[i].replace(separator + strlen(KEY_VALUE_SEPARATOR), eov, config[key].value);
+                    config.erase(key);
+                }
+            }
+        }
+        for (std::map<std::string, Node>::iterator it = config.begin(); it != config.end(); it++)
+        {
+            buffer.push_back(it->first + KEY_VALUE_SEPARATOR + it->second.value);
+        }
+        for (size_t i = 0; i < buffer.size(); i++)
+        {
+            file << buffer[i] << '\n';
         }
         file.close();
         return (true);
