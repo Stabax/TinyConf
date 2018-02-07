@@ -299,9 +299,8 @@ public:
      * @brief Set configuration values with string type.
      * @param key : The key indentifier to set
      * @param value : The formatted string value to set in key field
-     * @param serialize : Set this to true to save the changes right away to file
      */
-    void set(const std::string key, const Node &value, bool serialize = false)
+    void set(const std::string key, const Node &value)
     {
         if (_config.find(key) != _config.end())
         {
@@ -317,53 +316,49 @@ public:
      * @brief Set configuration values with arithmetic types.
      * @param key : The key indentifier to set
      * @param value : The primitive-typed value to set in key field
-     * @param serialize : Set this to true to save the changes right away to file
      */
     template <typename T>
-    void set(const std::string key, const T &value, bool serialize = false)
+    void set(const std::string key, const T &value)
     {
          std::ostringstream out;
 
         out << std::setprecision(DECIMAL_PRECISION) << value;
-        set(key, Node(out.str(), Node::ValueType::String), serialize);
+        set(key, Node(out.str(), Node::ValueType::String));
     }
 
     /*!
      * @brief Set configuration values with arithmetic types.
      * @param key : The key indentifier to set
      * @param value : The primitive-typed value to set in key field
-     * @param serialize : Set this to true to save the changes right away to file
      */
-    void set(const std::string key, const std::string &value, bool serialize = false)
+    void set(const std::string key, const std::string &value)
     {
-        set(key, Node(value, Node::ValueType::String), serialize);
+        set(key, Node(value, Node::ValueType::String));
     }
 
     /*!
      * @brief Set configuration values with the contents of an std::pair.
      * @param key : The key indentifier to set
      * @param pair : The pair with values to fill in key field
-     * @param serialize : Set this to true to save the changes right away to file
      */
     template<typename Tx, typename Ty>
-    void setPair(const std::string key, const std::pair<Tx, Ty> &pair, bool serialize = false)
+    void setPair(const std::string key, const std::pair<Tx, Ty> &pair)
     {
         std::string fValue;
 
         fValue += std::to_string(pair.first);
         fValue += VALUE_FIELD_SEPARATOR;
         fValue += std::to_string(pair.second);
-        set(key, Node(fValue, Node::ValueType::String), serialize);
+        set(key, Node(fValue, Node::ValueType::String));
     }
 
     /*!
      * @brief Set configuration values with the contents of any stl container implementing const_iterator.
      * @param key : The key indentifier to set
      * @param container : The container with values to fill in key field
-     * @param serialize : Set this to true to save the changes right away to file
      */
     template <typename T>
-    void setArray(const std::string key, const T &container, bool serialize = false)
+    void setArray(const std::string key, const T &container)
     {
         std::string fValue;
 
@@ -375,7 +370,7 @@ public:
             }
             fValue += std::to_string(*it);
         }
-        set(key, Node(fValue, Node::ValueType::String), serialize);
+        set(key, Node(fValue, Node::ValueType::String));
     }
 
     //
@@ -386,9 +381,8 @@ public:
      * @brief Used to copy configuration value into another
      * @param srcKey : The source key containing the value to copy
      * @param destKey : The destination key fill with source value
-     * @param serialize : Set this to true to save the changes right away to file
      */
-    void copy(const std::string srcKey, const std::string destKey, bool serialize = false)
+    void copy(const std::string srcKey, const std::string destKey)
     {
         if (_config.find(srcKey) != _config.end())
         {
@@ -410,9 +404,8 @@ public:
     /*!
      * @brief Erase a key from configuration
      * @param key : The key to erase
-     * @param serialize : Set this to true to save the changes right away to file
      */
-    void erase(const std::string key, bool serialize = false)
+    void erase(const std::string key)
     {
         if (_config.find(key) != _config.end())
         {
@@ -595,13 +588,12 @@ public:
      * @brief Copies a given key to another configuration
      * @param key : The key to copy
      * @param target : The target configuration to copy to
-     * @param serialize : Set this to true to save the changes right away to file
      */
-    void copyTo(const std::string key, Config &target, bool serialize = false)
+    void copyTo(const std::string key, Config &target)
     {
         if (exists(key))
         {
-            target.set(key, _config[key], serialize);
+            target.set(key, _config[key]);
         }
         else
         {
@@ -614,10 +606,10 @@ public:
      * @param key : The key to move
      * @param target : The target configuration to move to
      */
-    void moveTo(const std::string key, Config &target, bool serialize = false)
+    void moveTo(const std::string key, Config &target)
     {
         try {
-            copyTo(key, target, serialize);
+            copyTo(key, target);
         }
         catch(...)
         {
@@ -630,11 +622,11 @@ public:
      * @brief Append the target configuration to the caller
      * @param source : The configuration to copy keys from
      */
-    void append(const Config &source, bool serialize = false)
+    void append(const Config &source)
     {
         for (std::map<std::string, Node>::const_iterator it = source._config.begin(); it != source._config.end(); it++)
         {
-            set(it->first, it->second, serialize);
+            set(it->first, it->second);
         }
     }
 
