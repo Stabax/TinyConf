@@ -109,6 +109,11 @@ public:
         std::string value;
     };
 
+    /*! @brief Type used to represent associations in memory */
+    typedef std::pair<std::string, Node> association;
+    /*! @brief Container used to store associations in memory */
+    typedef std::map<std::string, Node> associationMap;
+
     /*!
      * @brief Config default constructor
      * @param path : The path where the file.cfg will reside
@@ -426,23 +431,23 @@ public:
      * @param buffer : string to parse for comments
      * @param remove : true when comment should be removed from buffer, false when not
      * @param inside : true when inside a comment, false when not
-     * @return true when inside a block, false when line should be treated as key/value
+     * @return true when the buffer contains a valid key/value node
      */
-    bool filterComments(std::string &line, bool remove, bool inside = false)
+    bool filterComments(std::string &line, bool remove, bool &inside)
     {
 		std::string buffer = line;
         size_t blocks, blocke;
-		if (remove)
 
         if (inside)
         {
             if ((blocke = buffer.find(COMMENT_BLOCK_END)) != std::string::npos) //Already inside, search for ending
             {
 				buffer.erase(0, blocke + strlen(COMMENT_BLOCK_END)); //Removes comment from buffer
+				inside = false;
             }
             else
             {
-                return (true); //Comment does not end in this buffer
+                return (false); //Comment does not end in this buffer, don't treat
             }
         }
         while ((blocks = buffer.find(COMMENT_BLOCK_BEGIN)) != std::string::npos) //Search for block comments to remove
@@ -450,8 +455,13 @@ public:
             if ((blocke = buffer.find(COMMENT_BLOCK_END)) != std::string::npos && blocke > blocks) //It ends inside, and after opening
             {
                 buffer.erase(blocks, blocke + strlen(COMMENT_BLOCK_BEGIN) + strlen(COMMENT_BLOCK_END) - blocks); //Removes comment from buffer
+				inside = false;
             }
-            return (true); //EOL inside block, don't treat buffer
+			else
+			{
+				inside = true;
+				return (true); //EOL inside comment block
+			}
         }        
         while ((blocks = buffer.find(COMMENT_LINE_SEPARATOR)) != std::string::npos) //There is a line comment
         {
@@ -459,7 +469,7 @@ public:
         }
 		if (remove)
 			line = buffer;
-        return (false); //Comments were removed from buffer
+        return (true); //Comments were removed from buffer
     }
 
     /*!
@@ -488,7 +498,16 @@ public:
             }
             return (sep);
         }
-        return (-1);
+        return (std::string::npos);
+    }
+
+    /*!
+     * @brief Load config stored in the associated file.
+     * @return true on success, false on failure.
+     */
+    association extractNode(const std::string &buffer)
+    {
+
     }
 
     /*!
@@ -498,16 +517,18 @@ public:
     bool load()
     {
 		std::vector<std::string> buffer = dump();
-        std::pair<std::string, Node> pair;
+        association pair;
         bool comment = false;
 
         for (size_t i = 0; i < buffer.size(); i++)
         {
-            if ((comment = filterComments(buffer[i], true, comment)) == false)
+            if (filterComments(buffer[i], true, comment))
             {
                 size_t separator = getSeparator(buffer[i]);
-                if (separator < 0) continue;
-                pair.first = buffer[i].substr(0, separator);
+                if (separator == std::string::npos) continue;
+                size_t bov = separator;
+                while (bov > 0 && buffer[i][bov-1] != ' ') bov--;
+                pair.first = buffer[i].substr(bov, separator - bov);
                 pair.second = Node(buffer[i].substr(separator + strlen(KEY_VALUE_SEPARATOR), buffer[i].length() - separator), Node::ValueType::String);
                 set(pair.first, pair.second);
             }
@@ -541,7 +562,7 @@ public:
      */
     bool save()
     {
-        std::map<std::string, Node> config = _config;
+        associationMap config = _config;
         std::vector<std::string> serialized, buffer = dump();
         std::ofstream file(_path, std::ofstream::out | std::ofstream::trunc);
         std::string key;
@@ -553,22 +574,22 @@ public:
         }
         for (size_t i = 0; i < buffer.size(); i++)
         {
-            if ((comment = filterComments(buffer[i], false, comment)) == false)
+            if (filterComments(buffer[i], false, comment))
             {
                 size_t separator = getSeparator(buffer[i]);
-                if (separator < 0) continue;
+                if (separator == std::string::npos) continue;
                 key = buffer[i].substr(0, separator);
                 if (config.find(key) != config.end())
                 {
                     size_t eov = separator + strlen(KEY_VALUE_SEPARATOR);
-                    while (buffer[i][eov] != ' ' && eov < buffer[i].length()) eov++;
+                    while (eov < buffer[i].length() && buffer[i][eov] != ' ') eov++;
                     eov -= separator + strlen(KEY_VALUE_SEPARATOR);
                     buffer[i].replace(separator + strlen(KEY_VALUE_SEPARATOR), eov, config[key].value);
                     config.erase(key);
                 }
             }
         }
-        for (std::map<std::string, Node>::iterator it = config.begin(); it != config.end(); it++)
+        for (associationMap::iterator it = config.begin(); it != config.end(); it++)
         {
             buffer.push_back(it->first + KEY_VALUE_SEPARATOR + it->second.value);
         }
@@ -624,7 +645,7 @@ public:
      */
     void append(const Config &source)
     {
-        for (std::map<std::string, Node>::const_iterator it = source._config.begin(); it != source._config.end(); it++)
+        for (associationMap::const_iterator it = source._config.begin(); it != source._config.end(); it++)
         {
             set(it->first, it->second);
         }
@@ -642,7 +663,7 @@ public:
     }
 
 protected:
-    std::map<std::string, Node> _config;
+    associationMap _config;
     std::string _path;
 };
 

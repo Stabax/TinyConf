@@ -5,7 +5,7 @@ int main(int argc, char **argv)
     stb::Config test("./test.cfg");
     std::vector<int> sArray, array = {1, 2, 3};
     std::pair<int, float> sPair, pair = {42, 5.12345f};
-    char *sChar = new char[3];
+    char *sCharstr = new char[3], charstr[] = "ISOK";
     std::string sStr, str("OK");
     int8_t sInteger8, integer8 = 1;
     int16_t sInteger16, integer16 = 2;
@@ -17,7 +17,7 @@ int main(int argc, char **argv)
     std::cout << "TinyConf Tests:\n";
     std::cout << "Setting tests into config\n";
 
-    test.set("CharTest", "OK");
+    test.set("CharTest", charstr);
     test.set("StringTest", str);
     test.set("Int8Test", integer8);
     test.set("Int16Test", integer16);
@@ -35,8 +35,8 @@ int main(int argc, char **argv)
     std::cout << "Reloading file \"" << test.getPath() << "\"\n";
 
     std::cout << "Char Test => ";
-    test.get("CharTest", sChar);
-    std::cout << (strcmp(sChar, "OK") == 0 ? "OK" : "FAIL") << "\n";
+    test.get("CharTest", sCharstr);
+    std::cout << (strcmp(sCharstr, charstr) == 0 ? "OK" : "FAIL") << "\n";
 
     std::cout << "String Test => ";
     test.get("StringTest", sStr);
