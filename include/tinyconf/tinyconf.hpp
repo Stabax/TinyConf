@@ -429,13 +429,12 @@ public:
     /*!
      * @brief Check for comments in a given string, and removes them if any
      * @param buffer : string to parse for comments
-     * @param remove : true when comment should be removed from buffer, false when not
      * @param inside : true when inside a comment, false when not
      * @return true when the buffer contains a valid key/value node
      */
-    bool filterComments(std::string &line, bool remove, bool &inside)
+    bool filterComments(std::string &line, bool &inside)
     {
-		std::string buffer = line;
+        std::string buffer = line;
         size_t blocks, blocke;
 
         if (inside)
@@ -467,8 +466,6 @@ public:
         {
             buffer = buffer.substr(0, blocks); //Removes comment from buffer
         }
-		if (remove)
-			line = buffer;
         return (true); //Comments were removed from buffer
     }
 
@@ -522,7 +519,7 @@ public:
 
         for (size_t i = 0; i < buffer.size(); i++)
         {
-            if (filterComments(buffer[i], true, comment))
+            if (filterComments(buffer[i], comment))
             {
                 size_t separator = getSeparator(buffer[i]);
                 if (separator == std::string::npos) continue;
@@ -574,11 +571,13 @@ public:
         }
         for (size_t i = 0; i < buffer.size(); i++)
         {
-            if (filterComments(buffer[i], false, comment))
+            if (filterComments(buffer[i], comment))
             {
                 size_t separator = getSeparator(buffer[i]);
                 if (separator == std::string::npos) continue;
-                key = buffer[i].substr(0, separator);
+				size_t bov = separator;
+				while (bov > 0 && buffer[i][bov - 1] != ' ') bov--;
+				key = buffer[i].substr(bov, separator - bov);
                 if (config.find(key) != config.end())
                 {
                     size_t eov = separator + strlen(KEY_VALUE_SEPARATOR);
