@@ -58,9 +58,11 @@ public:
     {
         /*! @brief Enum defining possible identifiable types from config file */
         enum ValueType {
-            Arithmetic,
+            Integer,
+            Floating,
             Boolean,
-            String
+            String,
+            Char
         };
 
         /*! @brief Node default constructor for stl container ordering */
