@@ -45,18 +45,13 @@
 /* Everything is defined within stb:: scope */
 namespace stb {
 
-/*!
- * @class Config
- * @brief Main Config class: Defines the whole library
- */
-class Config
-{
-public:
+namespace config {
 
     /*!
-     * @class Node
+     * @class SNode
      * @brief Superclass holding templated node
      */
+    template <typename T> struct Node; //Forward
     struct SNode
     {
         /*! @brief Enum defining possible identifiable types from config file */
@@ -71,30 +66,55 @@ public:
 
         /*! @brief Node default constructor for stl container ordering */
         SNode() { };
+        /*! @brief Node default destructor for polymorphism */
+        virtual ~SNode() = default;
         
         /*!
          * @brief Node constructor with value association
          * @param kType : The predicted type of value associated to key
          * @param kISArray : true if the node is an array, false if not
          */
-        SNode(ValueType kType, bool kIsArray = false)
-         : type(kType), isArray(kIsArray)
+        SNode(ValueType kType)
+         : type(kType)
         {
 
         }
 
-        /* Prepare for template
         template <typename T>
-        T value() { return (dynamic_cast<Node<T>>(this)->value); }
-        */
-        bool isArray;
+        T getValue()
+        {
+            ValueType target = getValueType<T>();
+            T value = dynamic_cast<Node<T>*>(this)->value;
+
+            if (target == type)
+                return (value);
+            return (T());
+        }
+
+        /*!
+         * @brief get a ValueType based on template call
+         * @return A ValueType corresponding to template argument type
+         */
+        template <typename T>
+        static SNode::ValueType getValueType()
+        {
+            if (std::is_integral<T>::value) return (SNode::ValueType::Integral);
+            else if (std::is_floating_point<T>::value) return (SNode::ValueType::Floating);
+            else if (std::is_same<T, bool>::value) return (SNode::ValueType::Boolean);
+            else if (std::is_same<T, char>::value) return (SNode::ValueType::Char);
+            else if (std::is_same<T, char *>::value
+                    || std::is_same<T, std::string>::value) return (SNode::ValueType::String);
+        }
+
         ValueType type;
+        std::shared_ptr<SNode> prev, next;
     };
 
     /*!
      * @class Node
      * @brief Represent a key/value association in memory
      */
+    class SNode;
     template <typename T>
     struct Node : public SNode
     {
@@ -113,49 +133,47 @@ public:
 
         }
 
-        T getValue() { return (value); }
-        
-        void setValue(const T &kValue) { value = kValue; }
-
-        T value;
-    };
-
-    /*!
-     * @class NodeArray
-     * @brief Represent a key / array of value association in memory
-     */
-    template <typename T>
-    struct NodeArray : public SNode
-    {
-        /*!
-         * @brief NodeArray default constructor for stl container ordering
-         */
-        NodeArray() { };
-
-        /*!
-         * @brief NodeArray constructor with value association
-         * @param kType : The predicted type of value associated to key
-         */
-        NodeArray(ValueType kType = SNode::ValueType::String)
-         : SNode(kType)
+        Node(T kValue, ValueType kType = SNode::ValueType::String)
+         : SNode(kType), value(kValue)
         {
 
         }
 
-        T getValue(size_t index) { return (values[index]); }
-        std::vector<T> getArray() { return (values); }
-        
-        void setValue(size_t index, const T &kValue) { values[index] = kValue; }
-        void pushValue(const T &kValue) { values.push_back(kValue); }
-        void setArray(const std::vector<T> &kValues) { values = kValues; }
-
-        std::vector<T> values;
+        T value;
     };
 
+    template<>
+    std::string SNode::getValue<std::string>()
+    {
+        std::ostringstream oss;
+
+        if (type = ValueType::Integral)
+        {
+            oss << dynamic_cast<Node<int>*>(this)->value;
+        }
+        else if (type = ValueType::Floating)
+        {
+            oss << dynamic_cast<Node<float>*>(this)->value;
+        }
+        else if (type == ValueType::String)
+        {
+            return (dynamic_cast<Node<std::string>*>(this)->value);
+        }
+        return (oss.str());
+    }
+}
+
+/*!
+ * @class Config
+ * @brief Main Config class: Defines the whole library
+ */
+class Config
+{
+public:
     /*! @brief Type used to represent associations in memory */
-    typedef std::pair<std::string, SNode> association;
+    typedef std::pair<std::string, std::shared_ptr<config::SNode>> association;
     /*! @brief Container used to store associations in memory */
-    typedef std::map<std::string, SNode> associationMap;
+    typedef std::map<std::string, std::shared_ptr<config::SNode>> associationMap;
 
     /*!
      * @brief Config default constructor
@@ -238,39 +256,7 @@ public:
     {
         if (_config.find(key) != _config.end())
         {
-            value = _config[key].getValue();
-            return (true);
-        }
-        return (false);
-    }
-
-    /*!
-     * @brief Get C-style string values from configuration
-     * @param key : The key identifying wanted value
-     * @param value : The char array to set with value
-     * @return true if found, false if failed
-     */
-    bool get(const std::string key, char *value)
-    {
-        if (_config.find(key) != _config.end())
-        {
-            //Fill any value
-            return (true);
-        }
-        return (false);
-    }
-
-    /*!
-     * @brief Get string values from configuration
-     * @param key : The key identifying wanted value
-     * @param value : The string to set with value
-     * @return true if found, false if failed
-     */
-    bool get(const std::string key, std::string &value)
-    {
-        if (_config.find(key) != _config.end())
-        {
-            //Fill any value
+            value = _config[key]->getValue<T>();
             return (true);
         }
         return (false);
@@ -320,7 +306,7 @@ public:
      * @param key : The key indentifier to set
      * @param value : The formatted string value to set in key field
      */
-    void set(const std::string key, const SNode &value)
+    void setNode(const std::string key, const std::shared_ptr<config::SNode> value)
     {
         if (_config.find(key) != _config.end())
         {
@@ -340,7 +326,7 @@ public:
     template <typename T>
     void set(const std::string key, const T &value)
     {
-        set(key, Node<T>(value, getValueType<T>()));
+        setNode(key, std::make_shared<config::Node<T>>(value, config::SNode::getValueType<T>()));
     }
 
     /*!
@@ -359,8 +345,8 @@ public:
      * @param key : The key indentifier to set
      * @param container : The container with values to fill in key field
      */
-    template <typename T, typename Tx>
-    void setArray(const std::string key, const T<Tx> &container)
+    template <typename T>
+    void setArray(const std::string key, const T &container)
     {
         /* Find a way to set array */
     }
@@ -384,7 +370,7 @@ public:
             }
             else
             {
-                _config.emplace(destKey, srcKey);
+                //_config.emplace(destKey, srcKey);
             }
         }
         else
@@ -489,32 +475,28 @@ public:
     }
 
     /*!
-     * @brief creates a Node based on given predicted type
+     * @brief Factory that creates a Node based on given predicted type
      * @param type : The predicted type of node
      * @return A Node built from the given predicted type
      */
-    template <typename T>
-    std::shared_ptr<SNode> createNodeType(SNode::ValueType type)
+    std::shared_ptr<config::SNode> createNodeType(config::SNode::ValueType type)
     {
-        bool array = false;
-
-        if (std::is_same<T, NodeArray>::value) array = true;
         switch (type)
         {
-            case SNode::ValueType::Boolean:
-                return (std::make_shared<T<bool>>(type, array));
+            case config::SNode::ValueType::Boolean:
+                return (std::make_shared<config::Node<bool>>(type));
                 break;
-            case SNode::ValueType::Char:
-                return (std::make_shared<T<char>>(type, array));
+            case config::SNode::ValueType::Char:
+                return (std::make_shared<config::Node<char>>(type));
                 break;
-            case SNode::ValueType::String:
-                return (std::make_shared<T<std::string>>(type, array));
+            case config::SNode::ValueType::String:
+                return (std::make_shared<config::Node<std::string>>(type));
                 break;
-            case SNode::ValueType::Integral:
-                return (std::make_shared<T<int>>(type, array));
+            case config::SNode::ValueType::Integral:
+                return (std::make_shared<config::Node<int>>(type));
                 break;
-            case SNode::ValueType::Floating:
-                return (std::make_shared<T<float>>(type, array));
+            case config::SNode::ValueType::Floating:
+                return (std::make_shared<config::Node<float>>(type));
                 break;
             default:
                 return (nullptr);
@@ -523,91 +505,75 @@ public:
     }
 
     /*!
-     * @brief get a ValueType based on template call
-     * @return A ValueType corresponding to template argument type
-     */
-    template <typename T>
-    SNode::ValueType getValueType()
-    {
-        if (std::is_integral<T>::value) return (SNode::ValueType::Integral);
-        else if (std::is_floating_point<T>::value) return (SNode::ValueType::Floating);
-        else if (std::is_same<T, bool>::value) return (SNode::ValueType::Boolean);
-        else if (std::is_same<T, char>::value) return (SNode::ValueType::Char);
-        else if (std::is_same<T, char *>::value
-              || std::is_same<T, std::string>::value) return (SNode::ValueType::String);
-    }
-
-    /*!
      * @brief parse a buffer and extract a Node from it
      * @param buffer : The buffer to parse for Node
      * @return An association built from the value with its predicted type
      */
-    std::shared_ptr<SNode> extractNode(const std::string &buffer)
+    std::shared_ptr<config::SNode> extractNode(const std::string &buffer)
     {
         size_t bov = 0, eov = 0;
-        SNode::ValueType type = None;
-        bool array = false, vfound;
-        SNode node;
+        config::SNode::ValueType type = config::SNode::ValueType::None;
+        bool array = false, eol = false, vfound;
+        std::shared_ptr<config::SNode> node, pnode;
 
-        while (bov < buffer.length())
+        while (!eol && bov < buffer.length())
         {
-            if (buffer.compare(cursor, strlen(CHAR_IDENTIFIER), CHAR_IDENTIFIER) == 0) //Value is a char
+            if (buffer.compare(bov, strlen(CHAR_IDENTIFIER), CHAR_IDENTIFIER) == 0) //Value is a char
             {
-                type = SNode::ValueType::Char;
-                bov = cursor + strlen(CHAR_IDENTIFIER);
+                type = config::SNode::ValueType::Char;
+                bov = bov + strlen(CHAR_IDENTIFIER);
             }
-            else if (buffer.compare(cursor, strlen(STRING_IDENTIFIER), STRING_IDENTIFIER) == 0) //Value is a string
+            else if (buffer.compare(bov, strlen(STRING_IDENTIFIER), STRING_IDENTIFIER) == 0) //Value is a string
             {
-                type = SNode::ValueType::String;
-                bov = cursor + strlen(STRING_IDENTIFIER);
+                type = config::SNode::ValueType::String;
+                bov = bov + strlen(STRING_IDENTIFIER);
             }
             else if (buffer.compare(bov, 4, "true") == 0 || buffer.compare(bov, 5, "false") == 0) //Value is bool
             {
-                type = SNode::ValueType::Boolean;
+                type = config::SNode::ValueType::Boolean;
             }
             //Beginning found. Now we need to predicate if not done already, and find eov
             vfound = false;
             while (eov < buffer.length() && !vfound)
             {
-                if (type != SNode::ValueType::None) //Braced expression
+                if (type != config::SNode::ValueType::None) //Braced expression
                 {
-                    if (type == Char && buffer.compare(eov, strlen(STRING_IDENTIFIER), STRING_IDENTIFIER) == 0) //End of Char
+                    if (type == config::SNode::ValueType::Char && buffer.compare(eov, strlen(STRING_IDENTIFIER), STRING_IDENTIFIER) == 0) //End of Char
                     {
                         vfound = true;
                     }
-                    else if (type == String && buffer.compare(eov, strlen(STRING_IDENTIFIER), STRING_IDENTIFIER) == 0) //End of String
+                    else if (type == config::SNode::ValueType::String && buffer.compare(eov, strlen(STRING_IDENTIFIER), STRING_IDENTIFIER) == 0) //End of String
                     {
                         vfound = true;
                     }
                 }
-                else if (buffer[eov] == '.' || buffer[eov] == ',') //Value is Floating
+                if (buffer[eov] == '.' || buffer[eov] == ',') //Value is Floating
                 {
-                    type = SNode::ValueType::Floating;
+                    type = config::SNode::ValueType::Floating;
                 }
                 if (buffer.compare(eov, strlen(VALUE_FIELD_SEPARATOR), VALUE_FIELD_SEPARATOR) == 0) //End of value, is an array
                 {
                     array = true;
                     vfound = true;
                 }
-                else if (!isdigit(buffer[eov] && buffer[eov] != '.' && buffer[eov] != ',') //End of scalar/braced value
+                else if (!isdigit(buffer[eov]) && buffer[eov] != '.' && buffer[eov] != ',') //End of any value
                 {
-                    if (type == SNode::ValueType::None) type = SNode::ValueType::Integral;
+                    if (type == config::SNode::ValueType::None) type = config::SNode::ValueType::Integral;
                     vfound = true;
+                    eol = true;
                 }
                 eov++;
             }
+            if (node == nullptr) //First item, create node
+            {
+                node = createNodeType(type);
+            }
+            //node.value = 
             if (array)
             {
-                if (node == nullptr) //First item, create array
-                {
-                    node = createNodeType<NodeArray>(type);
-                }
-                node.pushValue();
-            }
-            else //Cast and fill single value
-            {
-                node = createNodeType<Node>(type);
-                node.setValue();
+                node->prev = pnode;
+                pnode->next = node;
+                pnode = node;
             }
         }
         return (node);
@@ -632,7 +598,7 @@ public:
                 size_t bov = separator;
                 while (bov > 0 && buffer[i][bov-1] != ' ') bov--;
                 pair.first = buffer[i].substr(bov, separator - bov);
-                pair.second = Node(buffer[i].substr(separator + strlen(KEY_VALUE_SEPARATOR), buffer[i].length() - separator), Node::ValueType::String);
+                pair.second = extractNode(buffer[i].substr(separator + strlen(KEY_VALUE_SEPARATOR), buffer[i].length() - separator));
                 set(pair.first, pair.second);
             }
         }
@@ -689,14 +655,14 @@ public:
                     size_t eov = separator + strlen(KEY_VALUE_SEPARATOR);
                     while (eov < buffer[i].length() && buffer[i][eov+1] != ' ') eov++;
                     eov -= separator + strlen(KEY_VALUE_SEPARATOR);
-                    buffer[i].replace(separator + strlen(KEY_VALUE_SEPARATOR), eov, config[key].value);
+                    buffer[i].replace(separator + strlen(KEY_VALUE_SEPARATOR), eov, config[key]->getValue<std::string>());
                     config.erase(key);
                 }
             }
         }
         for (associationMap::iterator it = config.begin(); it != config.end(); it++)
         {
-            buffer.push_back(it->first + KEY_VALUE_SEPARATOR + it->second.value);
+            buffer.push_back(it->first + KEY_VALUE_SEPARATOR + it->second->getValue<std::string>());
         }
         for (size_t i = 0; i < buffer.size(); i++)
         {
