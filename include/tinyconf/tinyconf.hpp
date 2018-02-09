@@ -72,23 +72,18 @@ namespace config {
         /*!
          * @brief Node constructor with value association
          * @param kType : The predicted type of value associated to key
-         * @param kISArray : true if the node is an array, false if not
+         * @param kModified : True if the key is in an different state from file
          */
-        SNode(ValueType kType)
-         : type(kType)
+        SNode(ValueType kType, size_t kSize)
+         : type(kType), size(kSize)
         {
-
+            modified = false;
         }
 
         template <typename T>
         T getValue()
         {
-            ValueType target = getValueType<T>();
-            T value = dynamic_cast<Node<T>*>(this)->value;
-
-            if (target == type)
-                return (value);
-            return (T());
+			return (dynamic_cast<Node<T>*>(this)->value);
         }
 
         /*!
@@ -98,14 +93,16 @@ namespace config {
         template <typename T>
         static SNode::ValueType getValueType()
         {
-            if (std::is_integral<T>::value) return (SNode::ValueType::Integral);
+			if (std::is_same<T, bool>::value) return (SNode::ValueType::Boolean);
+            else if (std::is_integral<T>::value) return (SNode::ValueType::Integral);
             else if (std::is_floating_point<T>::value) return (SNode::ValueType::Floating);
-            else if (std::is_same<T, bool>::value) return (SNode::ValueType::Boolean);
             else if (std::is_same<T, char>::value) return (SNode::ValueType::Char);
             else if (std::is_same<T, char *>::value
-                    || std::is_same<T, std::string>::value) return (SNode::ValueType::String);
+                  || std::is_same<T, std::string>::value) return (SNode::ValueType::String);
         }
 
+        bool modified;
+		size_t size;
         ValueType type;
         std::shared_ptr<SNode> prev, next;
     };
@@ -114,7 +111,6 @@ namespace config {
      * @class Node
      * @brief Represent a key/value association in memory
      */
-    class SNode;
     template <typename T>
     struct Node : public SNode
     {
@@ -125,42 +121,71 @@ namespace config {
 
         /*!
          * @brief Node constructor with value association
-         * @param kType : The predicted type of value associated to key
+         * @param kValue : The value associated to key
          */
-        Node(ValueType kType = SNode::ValueType::String)
-         : SNode(kType)
+        Node(T kValue)
+         : SNode(SNode::getValueType<T>(), sizeof(T)), value(kValue)
         {
 
         }
 
-        Node(T kValue, ValueType kType = SNode::ValueType::String)
-         : SNode(kType), value(kValue)
-        {
+		/*!
+		* @brief Node constructor from string with value association
+		* @param kType : The wanted type of value
+		* @param kValue : The value associated to key
+		*/
+		Node(ValueType kType, std::string kValue)
+			: SNode(kType, kValue.length())
+		{
+			std::istringstream iss;
 
-        }
+			if (type == ValueType::Integral
+			 || type == ValueType::Floating)
+			{
+				iss.str(kValue);
+				iss >> value;
+			}
+			else if (type == ValueType::Char)
+			{
+				value = kValue[0];
+			}
+		}
 
         T value;
     };
 
-    template<>
+    /*
+     * @brief Used to get string versions of values to serialize
+     */
+    template <>
     std::string SNode::getValue<std::string>()
     {
         std::ostringstream oss;
 
-        if (type = ValueType::Integral)
+        if (type == ValueType::Integral)
         {
-            oss << dynamic_cast<Node<int>*>(this)->value;
+            if (size == sizeof(int16_t))
+                oss << dynamic_cast<Node<int16_t>*>(this)->value;
+            if (size == sizeof(int32_t))
+                oss << dynamic_cast<Node<int32_t>*>(this)->value;
+            if (size == sizeof(int64_t))
+                oss << dynamic_cast<Node<int64_t>*>(this)->value;
+            return (oss.str());
         }
-        else if (type = ValueType::Floating)
+        else if (type == ValueType::Floating)
         {
-            oss << dynamic_cast<Node<float>*>(this)->value;
+            if (size == sizeof(float))
+                oss << dynamic_cast<Node<float>*>(this)->value;
+            if (size == sizeof(double))
+                oss << dynamic_cast<Node<double>*>(this)->value;
+            return (oss.str());
         }
         else if (type == ValueType::String)
         {
             return (dynamic_cast<Node<std::string>*>(this)->value);
         }
-        return (oss.str());
     }
+
 }
 
 /*!
@@ -326,7 +351,7 @@ public:
     template <typename T>
     void set(const std::string key, const T &value)
     {
-        setNode(key, std::make_shared<config::Node<T>>(value, config::SNode::getValueType<T>()));
+        setNode(key, std::make_shared<config::Node<T>>(value));
     }
 
     /*!
@@ -479,24 +504,24 @@ public:
      * @param type : The predicted type of node
      * @return A Node built from the given predicted type
      */
-    std::shared_ptr<config::SNode> createNodeType(config::SNode::ValueType type)
+    std::shared_ptr<config::SNode> createNodeFromString(config::SNode::ValueType type, const std::string &value)
     {
         switch (type)
         {
             case config::SNode::ValueType::Boolean:
-                return (std::make_shared<config::Node<bool>>(type));
+                return (std::make_shared<config::Node<bool>>(type, value));
                 break;
             case config::SNode::ValueType::Char:
-                return (std::make_shared<config::Node<char>>(type));
+                return (std::make_shared<config::Node<char>>(type, value));
                 break;
             case config::SNode::ValueType::String:
-                return (std::make_shared<config::Node<std::string>>(type));
+                return (std::make_shared<config::Node<std::string>>(type, value));
                 break;
             case config::SNode::ValueType::Integral:
-                return (std::make_shared<config::Node<int>>(type));
+                return (std::make_shared<config::Node<int>>(type, value));
                 break;
             case config::SNode::ValueType::Floating:
-                return (std::make_shared<config::Node<float>>(type));
+                return (std::make_shared<config::Node<float>>(type, value));
                 break;
             default:
                 return (nullptr);
@@ -511,13 +536,14 @@ public:
      */
     std::shared_ptr<config::SNode> extractNode(const std::string &buffer)
     {
-        size_t bov = 0, eov = 0;
-        config::SNode::ValueType type = config::SNode::ValueType::None;
+        size_t bov = 0, eov;
+		config::SNode::ValueType type;
         bool array = false, eol = false, vfound;
         std::shared_ptr<config::SNode> node, pnode;
 
         while (!eol && bov < buffer.length())
         {
+			type = config::SNode::ValueType::None;
             if (buffer.compare(bov, strlen(CHAR_IDENTIFIER), CHAR_IDENTIFIER) == 0) //Value is a char
             {
                 type = config::SNode::ValueType::Char;
@@ -534,6 +560,7 @@ public:
             }
             //Beginning found. Now we need to predicate if not done already, and find eov
             vfound = false;
+			eov = 0;
             while (eov < buffer.length() && !vfound)
             {
                 if (type != config::SNode::ValueType::None) //Braced expression
@@ -566,15 +593,16 @@ public:
             }
             if (node == nullptr) //First item, create node
             {
-                node = createNodeType(type);
+                node = createNodeFromString(type, "VALUE");
             }
-            //node.value = 
+            //node.value = push!!
             if (array)
             {
                 node->prev = pnode;
                 pnode->next = node;
                 pnode = node;
             }
+			bov = eov;
         }
         return (node);
     }
