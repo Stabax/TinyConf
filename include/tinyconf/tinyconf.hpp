@@ -396,95 +396,96 @@ public:
 
     /*!
      * @brief Check for comments in a given string, and removes them if any
-     * @param line : string to parse for comments
-     * @param inside : true when inside a comment, false when not
-     * @param remove : if true, comments will be removed from line
+     * @param buffer : string to parse for comments
      * @return true when the buffer contains a valid key/value node
      */
-    bool filterComments(std::string &line, bool &inside, bool remove = false)
+    bool formatBuffer(std::string &buffer)
     {
-        std::string buffer = line;
-        size_t blocks, blocke;
+        static bool inside = false;
+        size_t begin = 0;
 
-        if (inside)
+        for (size_t cursor = 0; cursor < buffer.length(); cursor++) //Parse line
         {
-            if ((blocke = buffer.find(COMMENT_BLOCK_END)) != std::string::npos) //Already inside, ending found!
+            if (inside) //If we are inside block
             {
-				buffer.erase(0, blocke + strlen(COMMENT_BLOCK_END)); //Removes comment from buffer
-				inside = false;
-            }
-            else
-            {
-                return (false); //Comment does not end in this buffer, don't treat
-            }
-        }
-        while ((blocks = buffer.find(COMMENT_BLOCK_BEGIN)) != std::string::npos) //Found block comment to remove
-        {
-            if ((blocke = buffer.find(COMMENT_BLOCK_END)) != std::string::npos && blocke > blocks) //It ends inside, and after opening
-            {
-                buffer.erase(blocks, blocke + strlen(COMMENT_BLOCK_BEGIN) + strlen(COMMENT_BLOCK_END) - blocks); //Removes comment from buffer
-				inside = false;
-            }
-			else
-			{
-				inside = true;
-				return (true); //EOL inside comment block
-			}
-        }
-        for (size_t i = 0; i < strlen(COMMENT_LINE_SEPARATORS); i++)
-        {
-			for (size_t cursor = 0; cursor < buffer.size(); cursor++)
-            {
-                if (buffer[cursor] == COMMENT_LINE_SEPARATORS[i])   //There is a line comment
+                if (buffer.compare(cursor, strlen(COMMENT_BLOCK_END), COMMENT_BLOCK_END) == 0) //End found
                 {
-					if (cursor > 0 && buffer[cursor - 1] == CHARACTER_ESCAPE) continue; //the identifier is escaped, continue
-					buffer = buffer.substr(0, cursor); //Removes comment from buffer
+                    inside = false;
+                    buffer.erase(begin, cursor + strlen(COMMENT_BLOCK_END));
+                }
+            }
+            else //If not inside block
+            {
+                if (buffer.compare(cursor, strlen(COMMENT_BLOCK_BEGIN), COMMENT_BLOCK_BEGIN) == 0) //Block found
+                {
+                    inside = true;
+                    begin = cursor;
+                }
+                else //check for line separator
+                {
+                    for (size_t i = 0; i < strlen(COMMENT_LINE_SEPARATORS); i++)
+                    {
+                        if (buffer[cursor] == COMMENT_LINE_SEPARATORS[i]) //separator found
+                        {
+                            buffer = buffer.substr(0, cursor);
+                        }
+                    }
                 }
             }
         }
-        if (remove) line = buffer;
-        return (true); //Comments were removed from buffer
+        return (!inside);
     }
 
     /*!
-     * @brief Get separator position between key and value in buffer
-     * @param buffer : string to parse for separator
-     * @return position of first char of separator in buffer, -1 if no separator found
+     * @brief Check for key and value in a given string, and returns the association
+     * @param line : string to parse for key/value
+     * @return pair of key and value
      */
-    size_t getSeparator(const std::string &buffer)
+    association parseBuffer(std::string &buffer)
     {
-        size_t sep;
-
-        if ((sep = buffer.find_last_of(KEY_VALUE_SEPARATOR)) != std::string::npos) //A k/v separator was found
+        association pair;
+        size_t separator, begin;
+        bool sepFound = false;
+        
+        for (size_t cursor = 0; cursor < buffer.length(); cursor++) //Parse line
         {
-            size_t cursor = sep + strlen(KEY_VALUE_SEPARATOR); //Increment past separator
-
-            if (STRING_IDENTIFIERS != buffer.substr(cursor, strlen(STRING_IDENTIFIERS))) //Beginning of a string value, if it closes later, valid
+            while (buffer[cursor] == ' ') cursor++;
+            for (size_t i = 0; i < strlen(STRING_IDENTIFIERS); i++) //check for string identifiers
             {
-
-                return (sep);
-            }
-            while (cursor < buffer.length()) //Check for numeric values
-            {
-                if (isdigit(buffer[cursor]) != 0 && buffer[cursor] != '.') //Not a number or decimal
+                if (buffer[cursor] == STRING_IDENTIFIERS[i] //identifier found
+                && (cursor == 0 || (cursor > 0 && buffer[cursor-1] != CHARACTER_ESCAPE))) //check for non escaped sequence
                 {
-                    if (VALUE_FIELD_SEPARATOR != buffer.substr(cursor, strlen(VALUE_FIELD_SEPARATOR))) //If value is not part of an array
-                        return (getSeparator(buffer.substr(0, sep))); //The separator was a false positive, backtrack
+                    begin = cursor;
+                    while (cursor < buffer.length()) //while not at the end
+                    {
+                        if (buffer[cursor] == STRING_IDENTIFIERS[i] //if we are on an identifier
+                        && (cursor == 0 || (cursor > 0 && buffer[cursor-1] != CHARACTER_ESCAPE))) //check for non escaped sequence
+                        {
+                            if (!sepFound)
+                            {
+                                pair.first = buffer.substr(begin, cursor);
+                            }
+                            else
+                            {
+                                pair.second = buffer.substr(begin, cursor);
+                                return (pair);
+                            }
+                        }
+                        cursor++;
+                    }
                 }
-                sep++;
             }
-            return (sep);
+            if (buffer.compare(cursor, strlen(KEY_VALUE_SEPARATOR), KEY_VALUE_SEPARATOR) == 0 //sep found
+            && (cursor == 0 || (cursor > 0 && buffer[cursor-1] != CHARACTER_ESCAPE))) //check for non escaped sequence
+            {
+                separator = cursor;
+                sepFound = true;
+            }
         }
-        return (std::string::npos);
-    }
-
-    /*!
-     * @brief Load config stored in the associated file.
-     * @return true on success, false on failure.
-     */
-    association extractNode(const std::string &buffer)
-    {
-
+        //If we end here, no identifiers were found
+        pair.first = buffer.substr(0, separator);
+        pair.second = buffer.substr(separator + strlen(KEY_VALUE_SEPARATOR), buffer.length() - separator + strlen(KEY_VALUE_SEPARATOR));
+        return (pair);
     }
 
     /*!
@@ -496,21 +497,12 @@ public:
 		std::vector<std::string> buffer = dump();
 		size_t separator, bov, eov;
         association pair;
-        bool comment = false;
 
         for (size_t i = 0; i < buffer.size(); i++)
         {
-            if (filterComments(buffer[i], comment, true))
+            if (formatBuffer(buffer[i]))
             {
-                separator = getSeparator(buffer[i]);
-                if (separator == std::string::npos) continue;
-                bov = separator;
-                while (bov > 0 && buffer[i][bov-1] != ' ') bov--;
-                pair.first = buffer[i].substr(bov, separator - bov);
-				eov = separator + strlen(KEY_VALUE_SEPARATOR);
-				while (eov < buffer[i].length() && buffer[i][eov + 1] != ' ') eov++;
-				eov -= separator + strlen(KEY_VALUE_SEPARATOR);
-                pair.second = buffer[i].substr(separator + strlen(KEY_VALUE_SEPARATOR), eov);
+                pair = parseBuffer(buffer[i]);
                 set(pair.first, pair.second);
             }
         }
@@ -544,10 +536,9 @@ public:
     bool save()
     {
         associationMap config = _config;
-        std::vector<std::string> serialized, buffer = dump();
+        std::vector<std::string> buffer = dump(), serialized = buffer;
         std::ofstream file(_path, std::ofstream::out | std::ofstream::trunc);
-        std::string key;
-        bool comment = false;
+        association pair;
 
         if (!file.good())
         {
@@ -555,20 +546,13 @@ public:
         }
         for (size_t i = 0; i < buffer.size(); i++)
         {
-            if (filterComments(buffer[i], comment))
+            if (formatBuffer(serialized[i]))
             {
-                size_t separator = getSeparator(buffer[i]);
-                if (separator == std::string::npos) continue;
-				size_t bov = separator;
-				while (bov > 0 && buffer[i][bov - 1] != ' ') bov--;
-				key = buffer[i].substr(bov, separator - bov);
-                if (config.find(key) != config.end())
+                pair = parseBuffer(serialized[i]);
+                if (config.find(pair.first) != config.end())
                 {
-                    size_t eov = separator + strlen(KEY_VALUE_SEPARATOR);
-                    while (eov < buffer[i].length() && buffer[i][eov+1] != ' ') eov++;
-                    eov -= separator + strlen(KEY_VALUE_SEPARATOR);
-                    buffer[i].replace(separator + strlen(KEY_VALUE_SEPARATOR), eov, config[key]);
-                    config.erase(key);
+                    buffer[i].replace(buffer[i].find(pair.second), pair.second.length(), pair.second);
+                    config.erase(pair.first);
                 }
             }
         }

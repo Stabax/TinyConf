@@ -114,12 +114,12 @@ void comments_tests(stb::Config &test)
     if (!file.good()) return; //Error!
     std::cout << "Filling configuration with comments\n";
 
-    file << "LineComment1=WORKSFORME # Basic Comment test\n";
-    file << "LineComment2=MEFORWORKS ; Basic Comment test\n";
+    file << "LineComment1=WORKSFORME# Basic Comment test\n";
+    file << "LineComment2=MEFORWORKS; Basic Comment test\n";
     file << "FullLineComment=# Full Line Comment test\n";
     file << "/* Multiline\n";
     file << "NotAKey=This is a comment\n";
-    file << "*/ IsAKey=but this is not\n";
+    file << "*/IsAKey=but this is not\n";
 
     file.close();
     saveAndReload(test);
@@ -137,7 +137,7 @@ void comments_tests(stb::Config &test)
     std::cout << (fullLine.empty() ? "OK" : "FAIL") << "\n";
 
     std::cout << "Key Inside block => ";
-    test.get("IsAKey", nak);
+    test.get("NotAKey", nak);
     std::cout << (nak.empty() ? "OK" : "FAIL") << "\n";
 
     std::cout << "Past block comment => ";
