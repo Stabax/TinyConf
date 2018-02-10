@@ -70,15 +70,20 @@ int main(int argc, char **argv)
 
     std::cout << "Vector Test => ";
     test.getArray("ArrayTest", sArray);
-    for (size_t i = 0; i < sArray.size(); i++)
-    {
-        if (sArray[i] != array[i])
-        {
-            std::cout << "FAIL\n";
-            break;
-        }
-        if (i == array.size() - 1) std::cout << "OK\n";
-    }
+	if (sArray.size() != array.size())
+		std::cout << "FAIL\n";
+	else
+	{
+		for (size_t i = 0; i < sArray.size(); i++)
+		{
+			if (sArray[i] != array[i])
+			{
+				std::cout << "FAIL\n";
+				break;
+			}
+			if (i == array.size() - 1) std::cout << "OK\n";
+		}
+	}
 
     std::cout << "Pair Test => ";
     test.getPair("PairTest", sPair);

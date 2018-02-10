@@ -83,7 +83,14 @@ namespace config {
         template <typename T>
         T getValue()
         {
-			return (dynamic_cast<Node<T>*>(this)->value);
+			Node<T> *node;
+			if (node = dynamic_cast<Node<T>*>(this))
+				return (node->value);
+			else
+			{
+				node = new Node<T>;
+				return (node->value);
+			}
         }
 
         /*!
@@ -94,11 +101,11 @@ namespace config {
         static SNode::ValueType getValueType()
         {
 			if (std::is_same<T, bool>::value) return (SNode::ValueType::Boolean);
+			else if (std::is_same<T, char *>::value
+				|| std::is_same<T, std::string>::value) return (SNode::ValueType::String);
             else if (std::is_integral<T>::value) return (SNode::ValueType::Integral);
             else if (std::is_floating_point<T>::value) return (SNode::ValueType::Floating);
             else if (std::is_same<T, char>::value) return (SNode::ValueType::Char);
-            else if (std::is_same<T, char *>::value
-                  || std::is_same<T, std::string>::value) return (SNode::ValueType::String);
         }
 
         bool modified;
@@ -175,9 +182,9 @@ namespace config {
         else if (type == ValueType::Floating)
         {
             if (size == sizeof(float))
-                oss << dynamic_cast<Node<float>*>(this)->value;
+                oss << std::setprecision(10) << dynamic_cast<Node<float>*>(this)->value;
             if (size == sizeof(double))
-                oss << dynamic_cast<Node<double>*>(this)->value;
+                oss << std::setprecision(15) << dynamic_cast<Node<double>*>(this)->value;
             return (oss.str());
         }
         else if (type == ValueType::String)
@@ -593,7 +600,7 @@ public:
             }
             if (node == nullptr) //First item, create node
             {
-                node = createNodeFromString(type, "VALUE");
+                node = createNodeFromString(type, buffer.substr(bov, eov - bov));
             }
             //node.value = push!!
             if (array)
@@ -627,7 +634,7 @@ public:
                 while (bov > 0 && buffer[i][bov-1] != ' ') bov--;
                 pair.first = buffer[i].substr(bov, separator - bov);
                 pair.second = extractNode(buffer[i].substr(separator + strlen(KEY_VALUE_SEPARATOR), buffer[i].length() - separator));
-                set(pair.first, pair.second);
+                setNode(pair.first, pair.second);
             }
         }
         return (true);
