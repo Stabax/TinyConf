@@ -16,7 +16,6 @@
 #include <type_traits>
 #include <iomanip>
 #include <cstdio>
-#include <memory>
 // Tmp
 #include <iostream>
 // Stl Aggregate
@@ -25,19 +24,17 @@
 #include <vector>
 #include <map>
 
-/*! @brief This string represents the beginning of single line comment */
+/*! @brief This char represents the beginning of single line comment */
 #define COMMENT_LINE_SEPARATOR  "#"
-/*! @brief This string represents the beginning of a multi or single line comment block */
+/*! @brief This char represents the beginning of a multi or single line comment block */
 #define COMMENT_BLOCK_BEGIN     "/*"
-/*! @brief This string represents the end of a multi or single line comment block */
+/*! @brief This char represents the end of a multi or single line comment block */
 #define COMMENT_BLOCK_END       "*/"
-/*! @brief This is the string that braces a string to identify it */
+/*! @brief This is the char between the key and the value in configuration file */
 #define STRING_IDENTIFIER       "\""
-/*! @brief This is the string that braces a character to identify it */
-#define CHAR_IDENTIFIER         "'"
-/*! @brief This is the string between the key and the value in configuration file */
+/*! @brief This is the char between the key and the value in configuration file */
 #define KEY_VALUE_SEPARATOR     "="
-/*! @brief This is the string that separates multiple values in the field */
+/*! @brief This is the char that separates multiple values in the field */
 #define VALUE_FIELD_SEPARATOR   ":"
 /*! @brief This is the number of digits that floats displays (including left-positioned digits) */
 #define DECIMAL_PRECISION       10
@@ -45,19 +42,23 @@
 /* Everything is defined within stb:: scope */
 namespace stb {
 
-namespace config {
+/*!
+ * @class Config
+ * @brief Main Config class: Defines the whole library
+ */
+class Config
+{
+public:
 
     /*!
-     * @class SNode
+     * @class Node
      * @brief Superclass holding templated node
      */
-    template <typename T> struct Node; //Forward
     struct SNode
     {
         /*! @brief Enum defining possible identifiable types from config file */
         enum ValueType {
-            None,
-            Integral,
+            Integer,
             Floating,
             Boolean,
             String,
@@ -66,59 +67,29 @@ namespace config {
 
         /*! @brief Node default constructor for stl container ordering */
         SNode() { };
-        /*! @brief Node default destructor for polymorphism */
-        virtual ~SNode() = default;
         
         /*!
          * @brief Node constructor with value association
          * @param kType : The predicted type of value associated to key
-         * @param kModified : True if the key is in an different state from file
          */
-        SNode(ValueType kType, size_t kSize)
-         : type(kType), size(kSize)
+        SNode(ValueType kType)
+         : type(kType)
         {
-            modified = false;
+
         }
 
+        /* Prepare for template
         template <typename T>
-        T getValue()
-        {
-			Node<T> *node;
-			if (node = dynamic_cast<Node<T>*>(this))
-				return (node->value);
-			else
-			{
-				node = new Node<T>;
-				return (node->value);
-			}
-        }
+        T value() { return (dynamic_cast<Node<T>>(this)->value); }
+        */
 
-        /*!
-         * @brief get a ValueType based on template call
-         * @return A ValueType corresponding to template argument type
-         */
-        template <typename T>
-        static SNode::ValueType getValueType()
-        {
-			if (std::is_same<T, bool>::value) return (SNode::ValueType::Boolean);
-			else if (std::is_same<T, char *>::value
-				|| std::is_same<T, std::string>::value) return (SNode::ValueType::String);
-            else if (std::is_same<T, char>::value) return (SNode::ValueType::Char);
-            else if (std::is_integral<T>::value) return (SNode::ValueType::Integral);
-            else if (std::is_floating_point<T>::value) return (SNode::ValueType::Floating);
-        }
-
-        bool modified;
-		size_t size;
         ValueType type;
-        std::shared_ptr<SNode> prev, next;
     };
 
     /*!
      * @class Node
      * @brief Represent a key/value association in memory
      */
-    template <typename T>
     struct Node : public SNode
     {
         /*!
@@ -128,84 +99,22 @@ namespace config {
 
         /*!
          * @brief Node constructor with value association
-         * @param kValue : The value associated to key
+         * @param kValue : The string holding value associated to key
+         * @param kType : The predicted type of value associated to key
          */
-        Node(T kValue)
-         : SNode(SNode::getValueType<T>(), sizeof(T)), value(kValue)
+        Node(const std::string &kValue, ValueType kType = String)
+         : value(kValue), SNode(kType)
         {
 
         }
 
-		/*!
-		* @brief Node constructor from string with value association
-		* @param kType : The wanted type of value
-		* @param kValue : The value associated to key
-		*/
-		Node(ValueType kType, std::string kValue)
-			: SNode(kType, kValue.length())
-		{
-			std::istringstream iss;
-
-			if (type == ValueType::Integral
-			 || type == ValueType::Floating)
-			{
-				iss.str(kValue);
-				iss >> value;
-			}
-			else if (type == ValueType::Char)
-			{
-				value = kValue[0];
-			}
-		}
-
-        T value;
+        std::string value;
     };
 
-    /*
-     * @brief Used to get string versions of values to serialize
-     */
-    template <>
-    std::string SNode::getValue<std::string>()
-    {
-        std::ostringstream oss;
-
-        if (type == ValueType::Integral)
-        {
-            if (size == sizeof(int16_t))
-                oss << dynamic_cast<Node<int16_t>*>(this)->value;
-            if (size == sizeof(int32_t))
-                oss << dynamic_cast<Node<int32_t>*>(this)->value;
-            if (size == sizeof(int64_t))
-                oss << dynamic_cast<Node<int64_t>*>(this)->value;
-            return (oss.str());
-        }
-        else if (type == ValueType::Floating)
-        {
-            if (size == sizeof(float))
-                oss << std::setprecision(10) << dynamic_cast<Node<float>*>(this)->value;
-            if (size == sizeof(double))
-                oss << std::setprecision(15) << dynamic_cast<Node<double>*>(this)->value;
-            return (oss.str());
-        }
-        else if (type == ValueType::String)
-        {
-            return (dynamic_cast<Node<std::string>*>(this)->value);
-        }
-    }
-
-}
-
-/*!
- * @class Config
- * @brief Main Config class: Defines the whole library
- */
-class Config
-{
-public:
     /*! @brief Type used to represent associations in memory */
-    typedef std::pair<std::string, std::shared_ptr<config::SNode>> association;
+    typedef std::pair<std::string, Node> association;
     /*! @brief Container used to store associations in memory */
-    typedef std::map<std::string, std::shared_ptr<config::SNode>> associationMap;
+    typedef std::map<std::string, Node> associationMap;
 
     /*!
      * @brief Config default constructor
@@ -288,7 +197,41 @@ public:
     {
         if (_config.find(key) != _config.end())
         {
-            value = _config[key]->getValue<T>();
+            std::istringstream iss;
+            iss.str(_config[key].value);
+            iss >> value;
+            return (true);
+        }
+        return (false);
+    }
+
+    /*!
+     * @brief Get C-style string values from configuration
+     * @param key : The key identifying wanted value
+     * @param value : The char array to set with value
+     * @return true if found, false if failed
+     */
+    bool get(const std::string key, char *value)
+    {
+        if (_config.find(key) != _config.end())
+        {
+            strcpy(value, _config[key].value.c_str());
+            return (true);
+        }
+        return (false);
+    }
+
+    /*!
+     * @brief Get string values from configuration
+     * @param key : The key identifying wanted value
+     * @param value : The string to set with value
+     * @return true if found, false if failed
+     */
+    bool get(const std::string key, std::string &value)
+    {
+        if (_config.find(key) != _config.end())
+        {
+            value = _config[key].value;
             return (true);
         }
         return (false);
@@ -305,7 +248,19 @@ public:
     {
         if (_config.find(key) != _config.end())
         {
-            //fill pair
+            size_t sep = _config[key].value.find(VALUE_FIELD_SEPARATOR);
+            if (sep != std::string::npos)
+            {
+                std::string buffer = _config[key].value;
+                std::istringstream iss;
+
+                iss.str(buffer.substr(0, sep));
+                iss >> pair.first;
+                iss.clear();
+                iss.str(buffer.substr(sep + strlen(VALUE_FIELD_SEPARATOR),
+                                            buffer.size() - sep + strlen(VALUE_FIELD_SEPARATOR)));
+                iss >> pair.second;
+            }
             return (true);
         }
         return (false);
@@ -322,7 +277,21 @@ public:
     {
         if (_config.find(key) != _config.end())
         {
-            //fill array
+            std::istringstream iss;
+            typename T::value_type value;
+            std::string buffer = _config[key].value;
+
+            for (size_t sep = buffer.find(VALUE_FIELD_SEPARATOR); sep != std::string::npos; sep = buffer.find(VALUE_FIELD_SEPARATOR))
+            {
+                iss.str(buffer.substr(0, sep));
+                iss >> value;
+                container.insert(container.end(), value);
+                buffer.erase(0, sep + strlen(VALUE_FIELD_SEPARATOR));
+                iss.clear();
+            }
+            iss.str(buffer);
+            iss >> value;
+            container.insert(container.end(), value);
 		    return (true);
         }
         return (false);
@@ -338,7 +307,7 @@ public:
      * @param key : The key indentifier to set
      * @param value : The formatted string value to set in key field
      */
-    void setNode(const std::string key, const std::shared_ptr<config::SNode> value)
+    void set(const std::string key, const Node &value)
     {
         if (_config.find(key) != _config.end())
         {
@@ -358,7 +327,20 @@ public:
     template <typename T>
     void set(const std::string key, const T &value)
     {
-        setNode(key, std::make_shared<config::Node<T>>(value));
+         std::ostringstream out;
+
+        out << std::setprecision(DECIMAL_PRECISION) << value;
+        set(key, Node(out.str(), Node::ValueType::String));
+    }
+
+    /*!
+     * @brief Set configuration values with arithmetic types.
+     * @param key : The key indentifier to set
+     * @param value : The primitive-typed value to set in key field
+     */
+    void set(const std::string key, const std::string &value)
+    {
+        set(key, Node(value, Node::ValueType::String));
     }
 
     /*!
@@ -369,7 +351,12 @@ public:
     template<typename Tx, typename Ty>
     void setPair(const std::string key, const std::pair<Tx, Ty> &pair)
     {
-        /* Find a way to set pair */
+        std::string fValue;
+
+        fValue += std::to_string(pair.first);
+        fValue += VALUE_FIELD_SEPARATOR;
+        fValue += std::to_string(pair.second);
+        set(key, Node(fValue, Node::ValueType::String));
     }
 
     /*!
@@ -380,7 +367,17 @@ public:
     template <typename T>
     void setArray(const std::string key, const T &container)
     {
-        /* Find a way to set array */
+        std::string fValue;
+
+        for (typename T::const_iterator it = container.begin(); it != container.end(); it++)
+        {
+            if (it != container.begin())
+            {
+                fValue += VALUE_FIELD_SEPARATOR;
+            }
+            fValue += std::to_string(*it);
+        }
+        set(key, Node(fValue, Node::ValueType::String));
     }
 
     //
@@ -402,7 +399,7 @@ public:
             }
             else
             {
-                //_config.emplace(destKey, srcKey);
+                _config.emplace(destKey, srcKey);
             }
         }
         else
@@ -489,14 +486,13 @@ public:
         {
             size_t cursor = sep + strlen(KEY_VALUE_SEPARATOR);
 
-            if (buffer.compare(cursor, strlen(STRING_IDENTIFIER), STRING_IDENTIFIER) //Beginning of a string value, valid
-             || buffer.compare(cursor, strlen(CHAR_IDENTIFIER), CHAR_IDENTIFIER)) //Beginning of a char value, valid
+            if (STRING_IDENTIFIER != buffer.substr(cursor, strlen(STRING_IDENTIFIER))) //Beginning of a string value, valid
                 return (sep);
             while (cursor < buffer.length()) //Check for numeric values
             {
                 if (isdigit(buffer[cursor]) != 0 && buffer[cursor] != '.') //Not a number or decimal
                 {
-                    if (buffer.compare(cursor, strlen(VALUE_FIELD_SEPARATOR), VALUE_FIELD_SEPARATOR) == 0) //If value is not part of an array
+                    if (VALUE_FIELD_SEPARATOR != buffer.substr(cursor, strlen(VALUE_FIELD_SEPARATOR))) //If value is not part of an array
                         return (getSeparator(buffer.substr(0, sep))); //The separator was a false positive, backtrack
                 }
                 sep++;
@@ -507,116 +503,12 @@ public:
     }
 
     /*!
-     * @brief Factory that creates a Node based on given predicted type
-     * @param type : The predicted type of node
-     * @return A Node built from the given predicted type
+     * @brief Load config stored in the associated file.
+     * @return true on success, false on failure.
      */
-    std::shared_ptr<config::SNode> createNodeFromString(config::SNode::ValueType type, const std::string &value)
+    association extractNode(const std::string &buffer)
     {
-        switch (type)
-        {
-            case config::SNode::ValueType::Boolean:
-                return (std::make_shared<config::Node<bool>>(type, value));
-                break;
-            case config::SNode::ValueType::Char:
-                return (std::make_shared<config::Node<char>>(type, value));
-                break;
-            case config::SNode::ValueType::String:
-                return (std::make_shared<config::Node<std::string>>(type, value));
-                break;
-            case config::SNode::ValueType::Integral:
-                return (std::make_shared<config::Node<int>>(type, value));
-                break;
-            case config::SNode::ValueType::Floating:
-                return (std::make_shared<config::Node<float>>(type, value));
-                break;
-            default:
-                return (nullptr);
-                break;
-        }
-    }
 
-    /*!
-     * @brief parse a buffer and extract a Node from it
-     * @param buffer : The buffer to parse for Node
-     * @return An association built from the value with its predicted type
-     */
-    std::shared_ptr<config::SNode> extractNode(const std::string &buffer)
-    {
-        size_t bov = 0, eov;
-		config::SNode::ValueType type;
-        bool array = false, eol = false, vfound;
-        std::shared_ptr<config::SNode> node, pnode;
-
-        while (!eol && bov < buffer.length())
-        {
-			type = config::SNode::ValueType::None;
-			vfound = false;
-            if (buffer.compare(bov, strlen(CHAR_IDENTIFIER), CHAR_IDENTIFIER) == 0) //Value is a char
-            {
-                type = config::SNode::ValueType::Char;
-                bov = bov + strlen(CHAR_IDENTIFIER);
-            }
-            else if (buffer.compare(bov, strlen(STRING_IDENTIFIER), STRING_IDENTIFIER) == 0) //Value is a string
-            {
-                type = config::SNode::ValueType::String;
-                bov = bov + strlen(STRING_IDENTIFIER);
-            }
-            else if (buffer[0] == 't' || buffer[0] == 'f') //Value is bool
-            {
-                type = config::SNode::ValueType::Boolean;
-				vfound = true;
-				if (buffer.compare(bov, 4, "true") == 0)
-					eov += 4;
-				else if (buffer.compare(bov, 5, "false") == 0)
-					eov += 5;
-            }
-			//Beginning found. Now we need to predicate if not done already, and find eov
-			eov = 0;
-            while (eov < buffer.length() && !vfound)
-            {
-                if (type != config::SNode::ValueType::None) //Braced expression
-                {
-                    if (type == config::SNode::ValueType::Char && buffer.compare(eov, strlen(STRING_IDENTIFIER), STRING_IDENTIFIER) == 0) //End of Char
-                    {
-                        vfound = true;
-                    }
-                    else if (type == config::SNode::ValueType::String && buffer.compare(eov, strlen(STRING_IDENTIFIER), STRING_IDENTIFIER) == 0) //End of String
-                    {
-                        vfound = true;
-                    }
-                }
-                if (buffer[eov] == '.' || buffer[eov] == ',') //Value is Floating
-                {
-                    type = config::SNode::ValueType::Floating;
-                }
-                if (buffer.compare(eov, strlen(VALUE_FIELD_SEPARATOR), VALUE_FIELD_SEPARATOR) == 0) //End of value, is an array
-                {
-                    array = true;
-                    vfound = true;
-                }
-                else if (!isdigit(buffer[eov]) && buffer[eov] != '.' && buffer[eov] != ',') //End of any value
-                {
-                    vfound = true;
-                    eol = true;
-                }
-				if (type == config::SNode::ValueType::None) type = config::SNode::ValueType::Integral;
-                eov++;
-            }
-            if (node == nullptr) //First item, create node
-            {
-                node = createNodeFromString(type, buffer.substr(bov, eov - bov));
-            }
-            //node.value = push!!
-            if (array)
-            {
-                node->prev = pnode;
-                pnode->next = node;
-                pnode = node;
-            }
-			bov = eov;
-        }
-        return (node);
     }
 
     /*!
@@ -638,8 +530,8 @@ public:
                 size_t bov = separator;
                 while (bov > 0 && buffer[i][bov-1] != ' ') bov--;
                 pair.first = buffer[i].substr(bov, separator - bov);
-                pair.second = extractNode(buffer[i].substr(separator + strlen(KEY_VALUE_SEPARATOR), buffer[i].length() - separator));
-                setNode(pair.first, pair.second);
+                pair.second = Node(buffer[i].substr(separator + strlen(KEY_VALUE_SEPARATOR), buffer[i].length() - separator), Node::ValueType::String);
+                set(pair.first, pair.second);
             }
         }
         return (true);
@@ -695,14 +587,14 @@ public:
                     size_t eov = separator + strlen(KEY_VALUE_SEPARATOR);
                     while (eov < buffer[i].length() && buffer[i][eov+1] != ' ') eov++;
                     eov -= separator + strlen(KEY_VALUE_SEPARATOR);
-                    buffer[i].replace(separator + strlen(KEY_VALUE_SEPARATOR), eov, config[key]->getValue<std::string>());
+                    buffer[i].replace(separator + strlen(KEY_VALUE_SEPARATOR), eov, config[key].value);
                     config.erase(key);
                 }
             }
         }
         for (associationMap::iterator it = config.begin(); it != config.end(); it++)
         {
-            buffer.push_back(it->first + KEY_VALUE_SEPARATOR + it->second->getValue<std::string>());
+            buffer.push_back(it->first + KEY_VALUE_SEPARATOR + it->second.value);
         }
         for (size_t i = 0; i < buffer.size(); i++)
         {

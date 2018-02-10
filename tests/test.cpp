@@ -5,7 +5,7 @@ int main(int argc, char **argv)
     stb::Config test("./test.cfg");
     std::vector<int> sArray, array = {1, 2, 3};
     std::pair<int, float> sPair, pair = {42, 5.12345f};
-    char bstr[] = "ISOK", *sCharstr = new char[5], *charstr = bstr;
+    char *sCharstr = new char[3], charstr[] = "ISOK";
     std::string sStr, str("OK");
     int8_t sInteger8, integer8 = 1;
     int16_t sInteger16, integer16 = 2;
@@ -17,7 +17,7 @@ int main(int argc, char **argv)
     std::cout << "TinyConf Tests:\n";
     std::cout << "Setting tests into config\n";
 
-    // test.set("CharTest", charstr);
+    test.set("CharTest", charstr);
     test.set("StringTest", str);
     test.set("Int8Test", integer8);
     test.set("Int16Test", integer16);
@@ -34,11 +34,9 @@ int main(int argc, char **argv)
     test.relocate("./test.cfg");  
     std::cout << "Reloading file \"" << test.getPath() << "\"\n";
 
-    /*
     std::cout << "Char Test => ";
     test.get("CharTest", sCharstr);
     std::cout << (strcmp(sCharstr, charstr) == 0 ? "OK" : "FAIL") << "\n";
-    */
 
     std::cout << "String Test => ";
     test.get("StringTest", sStr);
@@ -70,20 +68,15 @@ int main(int argc, char **argv)
 
     std::cout << "Vector Test => ";
     test.getArray("ArrayTest", sArray);
-	if (sArray.size() != array.size())
-		std::cout << "FAIL\n";
-	else
-	{
-		for (size_t i = 0; i < sArray.size(); i++)
-		{
-			if (sArray[i] != array[i])
-			{
-				std::cout << "FAIL\n";
-				break;
-			}
-			if (i == array.size() - 1) std::cout << "OK\n";
-		}
-	}
+    for (size_t i = 0; i < sArray.size(); i++)
+    {
+        if (sArray[i] != array[i])
+        {
+            std::cout << "FAIL\n";
+            break;
+        }
+        if (i == array.size() - 1) std::cout << "OK\n";
+    }
 
     std::cout << "Pair Test => ";
     test.getPair("PairTest", sPair);
