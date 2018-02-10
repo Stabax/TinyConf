@@ -113,7 +113,7 @@ public:
     //
 
     /*!
-     * @brief Test if a key exists in configuration
+     * @brief Tests if a key exists in configuration
      * @param key : The key to search for
      * @return true if found, false if failed
      */
@@ -223,9 +223,9 @@ public:
     }
 
     /*!
-     * @brief Used to get values from configuration array
-     * @param key : The key identifying wanted array of values
-     * @param container : The container where the array of values will be pushed
+     * @brief Used to get container-values from configuration
+     * @param key : The key identifying wanted container of values
+     * @param container : The container where the container of values will be pushed
 	 * @return true on success, false on failure.
      */
     template <typename T>
@@ -307,6 +307,16 @@ public:
         {
             _config.emplace(key, value);
         }
+    }
+
+    /*!
+     * @brief Set configuration values with bool types.
+     * @param key : The key indentifier to set
+     * @param value : The bool-typed value to set in key field
+     */
+    void set(const std::string key, const bool &value)
+    {        
+        set(key, (value ? "true" : "false"));
     }
 
     /*!
