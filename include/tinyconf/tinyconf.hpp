@@ -89,9 +89,9 @@ public:
      * @brief Removes associated configuration file from disk
      * @return true on success, false on failure
      */
-    bool deleteFile()
+    bool destroy()
     {
-        return (deleteFile(_path));
+        return (destroy(_path));
     }
 
     /*!
@@ -99,7 +99,7 @@ public:
      * @param path : The path to the configuration file to delete
      * @return true on success, false on failure
      */
-    static bool deleteFile(const std::string &path)
+    static bool destroy(const std::string &path)
     {
         if (remove(path.c_str()) != 0)
         {
@@ -433,11 +433,11 @@ public:
         }
         for (size_t i = 0; i < strlen(COMMENT_LINE_SEPARATORS); i++)
         {
-            while ((blocks = buffer.find(COMMENT_LINE_SEPARATORS[i])) != std::string::npos) //There is a line comment
+			for (size_t cursor = blocks; cursor < buffer.size(); cursor++)
             {
-                if (i > 0 && buffer[blocks-1] != CHARACTER_ESCAPE) // If the char is not escaped
+                if (buffer[cursor] == COMMENT_LINE_SEPARATORS[i] && cursor > 0 && buffer[blocks-1] == CHARACTER_ESCAPE)  //There is a line comment and the identifier is not escaped
                 {
-                    buffer = buffer.substr(0, blocks); //Removes comment from buffer
+					buffer = buffer.substr(0, blocks); //Removes comment from buffer
                 }
             }
         }

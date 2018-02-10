@@ -106,8 +106,48 @@ void containers_tests(stb::Config &test)
     std::cout << (sPair.first == pair.first && sPair.second == pair.second ? "OK" : "FAIL") << "\n";
 }
 
+void comments_tests(stb::Config &test)
+{
+    std::ofstream file("./test.cfg", std::ofstream::out | std::ofstream::app);
+    std::string lCom1, lCom2, fullLine, nak, iak;
+
+    if (!file.good()) return; //Error!
+    std::cout << "Filling configuration with comments\n";
+
+    file << "LineComment1=WORKSFORME # Basic Comment test\n";
+    file << "LineComment2=MEFORWORKS ; Basic Comment test\n";
+    file << "FullLineComment=# Full Line Comment test\n";
+    file << "/* Multiline\n";
+    file << "NotAKey=This is a comment\n";
+    file << "*/ IsAKey=but this is not\n";
+
+    file.close();
+    saveAndReload(test);
+
+    std::cout << "Single line \"#\" comment => ";
+    test.get("LineComment1", lCom1);
+    std::cout << (lCom1 == "WORKSFORME" ? "OK" : "FAIL") << "\n";
+
+    std::cout << "Single line \";\" comment => ";
+    test.get("LineComment2", lCom2);
+    std::cout << (lCom2 == "MEFORWORKS" ? "OK" : "FAIL") << "\n";
+
+    std::cout << "Full line comment => ";
+    test.get("FullLineComment", fullLine);
+    std::cout << (fullLine.empty() ? "OK" : "FAIL") << "\n";
+
+    std::cout << "Key Inside block => ";
+    test.get("IsAKey", nak);
+    std::cout << (nak.empty() ? "OK" : "FAIL") << "\n";
+
+    std::cout << "Past block comment => ";
+    test.get("IsAKey", iak);
+    std::cout << (iak == "but this is not" ? "OK" : "FAIL") << "\n";
+}
+
 int main(int argc, char **argv)
 {
+    stb::Config::destroy("./test.cfg");
     stb::Config test("./test.cfg");
 
     std::cout << "#####\nTinyConf Tests Program\n#####\n\n";
@@ -115,6 +155,8 @@ int main(int argc, char **argv)
     primitives_tests(test);
     std::cout << "\n#Containers tests:\n";
     containers_tests(test);
+    std::cout << "\n#Comments tests:\n";
+    comments_tests(test);
     std::cout << "\nTests done!\n";
     return (0);
 }
