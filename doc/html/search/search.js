@@ -7,14 +7,22 @@
 
 var indexSectionsWithContent =
 {
-  0: "t",
-  1: "t"
+  0: "acdefgklmprstv",
+  1: "c",
+  2: "t",
+  3: "acdefglmprs",
+  4: "a",
+  5: "cdksv"
 };
 
 var indexSectionNames =
 {
   0: "all",
-  1: "pages"
+  1: "classes",
+  2: "files",
+  3: "functions",
+  4: "typedefs",
+  5: "defines"
 };
 
 function convertToId(search)

@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['relocate',['relocate',['../classstb_1_1Config.html#a93f40242f6f306baa0933dad5976c74b',1,'stb::Config']]]
+  ['erase',['erase',['../classstb_1_1Config.html#ac9294e547f7e6a356cf2471626e88ec5',1,'stb::Config']]],
+  ['exists',['exists',['../classstb_1_1Config.html#a4d1677107a50f6dbce63b23732f0aa92',1,'stb::Config']]]
 ];

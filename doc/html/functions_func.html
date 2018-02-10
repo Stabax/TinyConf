@@ -38,7 +38,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -70,6 +69,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="functions.html"><span>All</span></a></li>
       <li class="current"><a href="functions_func.html"><span>Functions</span></a></li>
+      <li><a href="functions_type.html"><span>Typedefs</span></a></li>
     </ul>
   </div>
 </div><!-- top -->
@@ -78,7 +78,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Macros</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -89,17 +89,41 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div class="contents">
 &#160;<ul>
+<li>append()
+: <a class="el" href="classstb_1_1Config.html#a3c3ec1f96704651d2f5de689d3adffdd">stb::Config</a>
+</li>
 <li>Config()
 : <a class="el" href="classstb_1_1Config.html#a7fa2f692312c3ec311595d951bacdbdf">stb::Config</a>
 </li>
+<li>copy()
+: <a class="el" href="classstb_1_1Config.html#a240f98a4c9157d25ee5378e79b36f05d">stb::Config</a>
+</li>
+<li>copyTo()
+: <a class="el" href="classstb_1_1Config.html#a66e7e00f878df00770187bd5453e3698">stb::Config</a>
+</li>
+<li>destroy()
+: <a class="el" href="classstb_1_1Config.html#acc26cb3faea8fbcc3d9a8ba3369aaa5f">stb::Config</a>
+</li>
+<li>dump()
+: <a class="el" href="classstb_1_1Config.html#aa8aad56ca618eb250676c3d3b12cdc32">stb::Config</a>
+</li>
+<li>erase()
+: <a class="el" href="classstb_1_1Config.html#ac9294e547f7e6a356cf2471626e88ec5">stb::Config</a>
+</li>
+<li>exists()
+: <a class="el" href="classstb_1_1Config.html#a4d1677107a50f6dbce63b23732f0aa92">stb::Config</a>
+</li>
+<li>formatBuffer()
+: <a class="el" href="classstb_1_1Config.html#a0d0d7be9e2d31a2b93483ab1a40adc19">stb::Config</a>
+</li>
 <li>get()
-: <a class="el" href="classstb_1_1Config.html#a581a04720272fe81c7bf652faaa52484">stb::Config</a>
+: <a class="el" href="classstb_1_1Config.html#af1a5423b18bb8be156570c8ef6766262">stb::Config</a>
 </li>
-<li>getAggregate()
-: <a class="el" href="classstb_1_1Config.html#a1a361ce31a41fce62a3e2a52092b00ff">stb::Config</a>
+<li>getContainer()
+: <a class="el" href="classstb_1_1Config.html#ac8d24a0e795295157790da7a3ba2a4fc">stb::Config</a>
 </li>
-<li>getArray()
-: <a class="el" href="classstb_1_1Config.html#a984680fb3b926ccf24f8ccab9d33fcdf">stb::Config</a>
+<li>getPair()
+: <a class="el" href="classstb_1_1Config.html#a54837b5edfd2b50e4263768c4aef9774">stb::Config</a>
 </li>
 <li>getPath()
 : <a class="el" href="classstb_1_1Config.html#a99db3d9c7728a47ed03c87b5bdb8a035">stb::Config</a>
@@ -107,26 +131,32 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>load()
 : <a class="el" href="classstb_1_1Config.html#a5b07d2e4f85af5d6ecbf849a519c9fb9">stb::Config</a>
 </li>
+<li>moveTo()
+: <a class="el" href="classstb_1_1Config.html#a1c6e9188ec435fd727694f61ac282ad3">stb::Config</a>
+</li>
+<li>parseBuffer()
+: <a class="el" href="classstb_1_1Config.html#aece5ebabd463a743cb35d6c650465a9c">stb::Config</a>
+</li>
 <li>relocate()
 : <a class="el" href="classstb_1_1Config.html#a93f40242f6f306baa0933dad5976c74b">stb::Config</a>
 </li>
 <li>save()
-: <a class="el" href="classstb_1_1Config.html#a3721d5519e93abebefb8a29f5f4bd55c">stb::Config</a>
+: <a class="el" href="classstb_1_1Config.html#a0f2766f842b042127ded0b676c1fe349">stb::Config</a>
 </li>
 <li>set()
-: <a class="el" href="classstb_1_1Config.html#a1540f96e5ddeea535d4b27aee4d57523">stb::Config</a>
+: <a class="el" href="classstb_1_1Config.html#a2c7e4eac2d4cab2ae5f0a8a7e633c2ff">stb::Config</a>
 </li>
-<li>setAggregate()
-: <a class="el" href="classstb_1_1Config.html#aa0cbca6dd6324278a5f9e4e5f1585a42">stb::Config</a>
+<li>setContainer()
+: <a class="el" href="classstb_1_1Config.html#a08067cebbfe5c706e71741d9441a8dea">stb::Config</a>
 </li>
-<li>setArray()
-: <a class="el" href="classstb_1_1Config.html#a4ac5c915b9e3ddf61ed90ba70b5927ef">stb::Config</a>
+<li>setPair()
+: <a class="el" href="classstb_1_1Config.html#acc7f4c8524b016eeb5df31e9cf239434">stb::Config</a>
 </li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Feb 3 2018 04:59:10 for TinyConf by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Feb 10 2018 22:39:28 for TinyConf by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

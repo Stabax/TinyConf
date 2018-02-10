@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.8"/>
-<title>TinyConf: tinyconf.hpp File Reference</title>
+<title>TinyConf: include/tinyconf/tinyconf.hpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -38,7 +38,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -62,6 +61,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow2" class="tabs2">
     <ul class="tablist">
       <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>File&#160;Members</span></a></li>
     </ul>
   </div>
 <!-- window showing the filter options -->
@@ -69,7 +69,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Macros</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -78,6 +78,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </iframe>
 </div>
 
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_4f479d9436dbcd69df9e5556c36f5923.html">tinyconf</a></li>  </ul>
+</div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
@@ -96,22 +100,16 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <code>#include &lt;sstream&gt;</code><br />
 <code>#include &lt;type_traits&gt;</code><br />
 <code>#include &lt;iomanip&gt;</code><br />
+<code>#include &lt;cstdio&gt;</code><br />
 <code>#include &lt;iostream&gt;</code><br />
 <code>#include &lt;utility&gt;</code><br />
-<code>#include &lt;map&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
-<code>#include &lt;list&gt;</code><br />
-<code>#include &lt;queue&gt;</code><br />
-<code>#include &lt;deque&gt;</code><br />
-<code>#include &lt;set&gt;</code><br />
-<code>#include &lt;forward_list&gt;</code><br />
-<code>#include &lt;unordered_set&gt;</code><br />
-<code>#include &lt;unordered_map&gt;</code><br />
+<code>#include &lt;map&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for tinyconf.hpp:</div>
 <div class="dyncontent">
-<div class="center"><img src="tinyconf_8hpp__incl.png" border="0" usemap="#tinyconf_8hpp" alt=""/></div>
-<map name="tinyconf_8hpp" id="tinyconf_8hpp">
+<div class="center"><img src="tinyconf_8hpp__incl.png" border="0" usemap="#include_2tinyconf_2tinyconf_8hpp" alt=""/></div>
+<map name="include_2tinyconf_2tinyconf_8hpp" id="include_2tinyconf_2tinyconf_8hpp">
 </map>
 </div>
 </div>
@@ -120,18 +118,42 @@ Include dependency graph for tinyconf.hpp:</div>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstb_1_1Config.html">stb::Config</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Main <a class="el" href="classstb_1_1Config.html" title="Main Config class: Defines the whole library. ">Config</a> class: Defines the whole library.  <a href="classstb_1_1Config.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
+<tr class="memitem:ad9ddd3884f9c5dc3bd1a840b19412ff8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad9ddd3884f9c5dc3bd1a840b19412ff8"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tinyconf_8hpp.html#ad9ddd3884f9c5dc3bd1a840b19412ff8">CHARACTER_ESCAPE</a>&#160;&#160;&#160;'\\'</td></tr>
+<tr class="memdesc:ad9ddd3884f9c5dc3bd1a840b19412ff8"><td class="mdescLeft">&#160;</td><td class="mdescRight">This string contains the sequence that escapes the next char. <br /></td></tr>
+<tr class="separator:ad9ddd3884f9c5dc3bd1a840b19412ff8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a330d1c904a986ad30529a84eef9bd376"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a330d1c904a986ad30529a84eef9bd376"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tinyconf_8hpp.html#a330d1c904a986ad30529a84eef9bd376">COMMENT_LINE_SEPARATORS</a>&#160;&#160;&#160;&quot;;#&quot;</td></tr>
+<tr class="memdesc:a330d1c904a986ad30529a84eef9bd376"><td class="mdescLeft">&#160;</td><td class="mdescRight">This string contains the characters that indicate a single line comment. <br /></td></tr>
+<tr class="separator:a330d1c904a986ad30529a84eef9bd376"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad3f47281d3f82ae99e28d4a0762453eb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad3f47281d3f82ae99e28d4a0762453eb"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tinyconf_8hpp.html#ad3f47281d3f82ae99e28d4a0762453eb">COMMENT_BLOCK_BEGIN</a>&#160;&#160;&#160;&quot;/*&quot;</td></tr>
+<tr class="memdesc:ad3f47281d3f82ae99e28d4a0762453eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">This char represents the beginning of a comment block. <br /></td></tr>
+<tr class="separator:ad3f47281d3f82ae99e28d4a0762453eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a18759edd21038f0d9f3028269d6422b3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a18759edd21038f0d9f3028269d6422b3"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tinyconf_8hpp.html#a18759edd21038f0d9f3028269d6422b3">COMMENT_BLOCK_END</a>&#160;&#160;&#160;&quot;*/&quot;</td></tr>
+<tr class="memdesc:a18759edd21038f0d9f3028269d6422b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">This char represents the end of a comment block. <br /></td></tr>
+<tr class="separator:a18759edd21038f0d9f3028269d6422b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab7060f11a431ff9713e6b00eb624069d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab7060f11a431ff9713e6b00eb624069d"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tinyconf_8hpp.html#ab7060f11a431ff9713e6b00eb624069d">STRING_IDENTIFIERS</a>&#160;&#160;&#160;&quot;\&quot;'&quot;</td></tr>
+<tr class="memdesc:ab7060f11a431ff9713e6b00eb624069d"><td class="mdescLeft">&#160;</td><td class="mdescRight">This string contains characters that can brace strings for allowing use of forbidden chars. <br /></td></tr>
+<tr class="separator:ab7060f11a431ff9713e6b00eb624069d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab713c086d0b8d00fe2db0a46cb805ec7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab713c086d0b8d00fe2db0a46cb805ec7"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>KEY_VALUE_SEPARATOR</b>&#160;&#160;&#160;&quot;:=&quot;</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tinyconf_8hpp.html#ab713c086d0b8d00fe2db0a46cb805ec7">KEY_VALUE_SEPARATOR</a>&#160;&#160;&#160;&quot;=&quot;</td></tr>
+<tr class="memdesc:ab713c086d0b8d00fe2db0a46cb805ec7"><td class="mdescLeft">&#160;</td><td class="mdescRight">This is the char between the key and the value in configuration file. <br /></td></tr>
 <tr class="separator:ab713c086d0b8d00fe2db0a46cb805ec7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a59237e0e4117ba508faff00902865b68"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a59237e0e4117ba508faff00902865b68"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>VALUE_FIELD_SEPARATOR</b>&#160;&#160;&#160;&quot;:=:&quot;</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tinyconf_8hpp.html#a59237e0e4117ba508faff00902865b68">VALUE_FIELD_SEPARATOR</a>&#160;&#160;&#160;&quot;:&quot;</td></tr>
+<tr class="memdesc:a59237e0e4117ba508faff00902865b68"><td class="mdescLeft">&#160;</td><td class="mdescRight">This is the char that separates multiple values in the field. <br /></td></tr>
 <tr class="separator:a59237e0e4117ba508faff00902865b68"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:affe74f468bbe096b398a01dcaa8ea3dd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="affe74f468bbe096b398a01dcaa8ea3dd"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>DECIMAL_PRECISION</b>&#160;&#160;&#160;10</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tinyconf_8hpp.html#affe74f468bbe096b398a01dcaa8ea3dd">DECIMAL_PRECISION</a>&#160;&#160;&#160;100</td></tr>
+<tr class="memdesc:affe74f468bbe096b398a01dcaa8ea3dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">This is the number of digits that floats displays (including left-positioned digits) <br /></td></tr>
 <tr class="separator:affe74f468bbe096b398a01dcaa8ea3dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -143,7 +165,7 @@ Macros</h2></td></tr>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Feb 3 2018 04:59:10 for TinyConf by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Feb 10 2018 22:39:28 for TinyConf by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>
