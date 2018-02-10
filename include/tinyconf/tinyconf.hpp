@@ -433,11 +433,12 @@ public:
         }
         for (size_t i = 0; i < strlen(COMMENT_LINE_SEPARATORS); i++)
         {
-			for (size_t cursor = blocks; cursor < buffer.size(); cursor++)
+			for (size_t cursor = 0; cursor < buffer.size(); cursor++)
             {
-                if (buffer[cursor] == COMMENT_LINE_SEPARATORS[i] && cursor > 0 && buffer[blocks-1] == CHARACTER_ESCAPE)  //There is a line comment and the identifier is not escaped
+                if (buffer[cursor] == COMMENT_LINE_SEPARATORS[i])   //There is a line comment
                 {
-					buffer = buffer.substr(0, blocks); //Removes comment from buffer
+					if (cursor > 0 && buffer[cursor - 1] == CHARACTER_ESCAPE) continue; //the identifier is escaped, continue
+					buffer = buffer.substr(0, cursor); //Removes comment from buffer
                 }
             }
         }
@@ -493,6 +494,7 @@ public:
     bool load()
     {
 		std::vector<std::string> buffer = dump();
+		size_t separator, bov, eov;
         association pair;
         bool comment = false;
 
@@ -500,12 +502,15 @@ public:
         {
             if (filterComments(buffer[i], comment, true))
             {
-                size_t separator = getSeparator(buffer[i]);
+                separator = getSeparator(buffer[i]);
                 if (separator == std::string::npos) continue;
-                size_t bov = separator;
+                bov = separator;
                 while (bov > 0 && buffer[i][bov-1] != ' ') bov--;
                 pair.first = buffer[i].substr(bov, separator - bov);
-                pair.second = buffer[i].substr(separator + strlen(KEY_VALUE_SEPARATOR), buffer[i].length() - separator);
+				eov = separator + strlen(KEY_VALUE_SEPARATOR);
+				while (eov < buffer[i].length() && buffer[i][eov + 1] != ' ') eov++;
+				eov -= separator + strlen(KEY_VALUE_SEPARATOR);
+                pair.second = buffer[i].substr(separator + strlen(KEY_VALUE_SEPARATOR), eov);
                 set(pair.first, pair.second);
             }
         }
