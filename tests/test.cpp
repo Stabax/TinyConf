@@ -17,6 +17,7 @@ void primitives_tests(stb::Config &test)
     std::string sStr, str("OK");
     char sCharc, charc = 'o';
 
+    bool sBoolean, boolean = true;
     int16_t sInteger16, integer16 = 2;
     int32_t sInteger32, integer32 = 3;
     int64_t sInteger64, integer64 = 4;
@@ -28,6 +29,8 @@ void primitives_tests(stb::Config &test)
     test.set("CharArrayTest", charstr);
     test.set("StringTest", str);
     test.set("CharTest", charc);
+
+    test.set("BooleanTest", boolean);
     test.set("Int16Test", integer16);
     test.set("Int32Test", integer32);
     test.set("Int64Test", integer64);
@@ -47,6 +50,11 @@ void primitives_tests(stb::Config &test)
     std::cout << "Char Test => ";
     test.get("CharTest", sCharc);
     std::cout << (sCharc == charc ? "OK" : "FAIL") << "\n";
+    
+
+    std::cout << "Boolean Test => ";
+    test.get("BooleanTest", sBoolean);
+    std::cout << (sBoolean == boolean ? "OK" : "FAIL") << "\n";
     
     std::cout << "Int 16 Test => ";
     test.get("Int16Test", sInteger16);

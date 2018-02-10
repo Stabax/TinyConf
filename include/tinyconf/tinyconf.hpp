@@ -162,6 +162,22 @@ public:
     }
 
     /*!
+     * @brief Get bool values from configuration
+     * @param key : The key identifying wanted value
+     * @param value : The bool to set with value
+     * @return true if found, false if failed
+     */
+    bool get(const std::string key, bool &value)
+    {
+        if (_config.find(key) != _config.end())
+        {
+            value = (_config[key] == "true" ? true : false);
+            return (true);
+        }
+        return (false);
+    }
+
+    /*!
      * @brief Get string values from configuration
      * @param key : The key identifying wanted value
      * @param value : The string to set with value
@@ -264,6 +280,10 @@ public:
                 out << value;
             }
             sValue = out.str();
+        }
+        else if (std::is_same<T, bool>::value)
+        {
+            sValue = (value ? "true" : "false");
         }
         else
         {
@@ -388,7 +408,7 @@ public:
 
         if (inside)
         {
-            if ((blocke = buffer.find(COMMENT_BLOCK_END)) != std::string::npos) //Already inside, search for ending
+            if ((blocke = buffer.find(COMMENT_BLOCK_END)) != std::string::npos) //Already inside, ending found!
             {
 				buffer.erase(0, blocke + strlen(COMMENT_BLOCK_END)); //Removes comment from buffer
 				inside = false;
@@ -398,7 +418,7 @@ public:
                 return (false); //Comment does not end in this buffer, don't treat
             }
         }
-        while ((blocks = buffer.find(COMMENT_BLOCK_BEGIN)) != std::string::npos) //Search for block comments to remove
+        while ((blocks = buffer.find(COMMENT_BLOCK_BEGIN)) != std::string::npos) //Found block comment to remove
         {
             if ((blocke = buffer.find(COMMENT_BLOCK_END)) != std::string::npos && blocke > blocks) //It ends inside, and after opening
             {
