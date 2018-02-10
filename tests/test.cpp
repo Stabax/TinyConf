@@ -78,18 +78,18 @@ void containers_tests(stb::Config &test)
 
     std::cout << "Setting containers into memory\n";
 
-    test.setArray("VectorTest", vectori);
-    test.setArray("DequeTest", deque);
+    test.setContainer("VectorTest", vectori);
+    test.setContainer("DequeTest", deque);
     test.setPair("PairTest", pair);
  
     saveAndReload(test);
 
     std::cout << "Vector<int> Test => ";
-    test.getArray("VectorTest", sVectori);
+    test.getContainer("VectorTest", sVectori);
     std::cout << (sVectori == vectori ? "OK" : "FAIL") << "\n";
 
     std::cout << "Deque<double> Test => ";
-    test.getArray("DequeTest", sDeque);
+    test.getContainer("DequeTest", sDeque);
     std::cout << (sDeque == deque ? "OK" : "FAIL") << "\n";
 
 

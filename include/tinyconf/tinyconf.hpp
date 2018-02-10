@@ -211,7 +211,7 @@ public:
 	 * @return true on success, false on failure.
      */
     template <typename T>
-    bool getArray(const std::string key, T &container)
+    bool getContainer(const std::string key, T &container)
     {
         if (_config.find(key) != _config.end())
         {
@@ -309,7 +309,7 @@ public:
      * @param container : The container with values to fill in key field
      */
     template <typename T>
-    void setArray(const std::string key, const T &container)
+    void setContainer(const std::string key, const T &container)
     {
         std::string fValue;
 
