@@ -103,9 +103,9 @@ namespace config {
 			if (std::is_same<T, bool>::value) return (SNode::ValueType::Boolean);
 			else if (std::is_same<T, char *>::value
 				|| std::is_same<T, std::string>::value) return (SNode::ValueType::String);
+            else if (std::is_same<T, char>::value) return (SNode::ValueType::Char);
             else if (std::is_integral<T>::value) return (SNode::ValueType::Integral);
             else if (std::is_floating_point<T>::value) return (SNode::ValueType::Floating);
-            else if (std::is_same<T, char>::value) return (SNode::ValueType::Char);
         }
 
         bool modified;
@@ -551,6 +551,7 @@ public:
         while (!eol && bov < buffer.length())
         {
 			type = config::SNode::ValueType::None;
+			vfound = false;
             if (buffer.compare(bov, strlen(CHAR_IDENTIFIER), CHAR_IDENTIFIER) == 0) //Value is a char
             {
                 type = config::SNode::ValueType::Char;
@@ -561,12 +562,16 @@ public:
                 type = config::SNode::ValueType::String;
                 bov = bov + strlen(STRING_IDENTIFIER);
             }
-            else if (buffer.compare(bov, 4, "true") == 0 || buffer.compare(bov, 5, "false") == 0) //Value is bool
+            else if (buffer[0] == 't' || buffer[0] == 'f') //Value is bool
             {
                 type = config::SNode::ValueType::Boolean;
+				vfound = true;
+				if (buffer.compare(bov, 4, "true") == 0)
+					eov += 4;
+				else if (buffer.compare(bov, 5, "false") == 0)
+					eov += 5;
             }
-            //Beginning found. Now we need to predicate if not done already, and find eov
-            vfound = false;
+			//Beginning found. Now we need to predicate if not done already, and find eov
 			eov = 0;
             while (eov < buffer.length() && !vfound)
             {
@@ -592,10 +597,10 @@ public:
                 }
                 else if (!isdigit(buffer[eov]) && buffer[eov] != '.' && buffer[eov] != ',') //End of any value
                 {
-                    if (type == config::SNode::ValueType::None) type = config::SNode::ValueType::Integral;
                     vfound = true;
                     eol = true;
                 }
+				if (type == config::SNode::ValueType::None) type = config::SNode::ValueType::Integral;
                 eov++;
             }
             if (node == nullptr) //First item, create node
