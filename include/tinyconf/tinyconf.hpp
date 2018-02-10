@@ -37,7 +37,7 @@
 /*! @brief This is the char that separates multiple values in the field */
 #define VALUE_FIELD_SEPARATOR   ":"
 /*! @brief This is the number of digits that floats displays (including left-positioned digits) */
-#define DECIMAL_PRECISION       10
+#define DECIMAL_PRECISION       100
 
 /* Everything is defined within stb:: scope */
 namespace stb {
@@ -49,72 +49,10 @@ namespace stb {
 class Config
 {
 public:
-
-    /*!
-     * @class Node
-     * @brief Superclass holding templated node
-     */
-    struct SNode
-    {
-        /*! @brief Enum defining possible identifiable types from config file */
-        enum ValueType {
-            Integer,
-            Floating,
-            Boolean,
-            String,
-            Char
-        };
-
-        /*! @brief Node default constructor for stl container ordering */
-        SNode() { };
-        
-        /*!
-         * @brief Node constructor with value association
-         * @param kType : The predicted type of value associated to key
-         */
-        SNode(ValueType kType)
-         : type(kType)
-        {
-
-        }
-
-        /* Prepare for template
-        template <typename T>
-        T value() { return (dynamic_cast<Node<T>>(this)->value); }
-        */
-
-        ValueType type;
-    };
-
-    /*!
-     * @class Node
-     * @brief Represent a key/value association in memory
-     */
-    struct Node : public SNode
-    {
-        /*!
-         * @brief Node default constructor for stl container ordering
-         */
-        Node() { };
-
-        /*!
-         * @brief Node constructor with value association
-         * @param kValue : The string holding value associated to key
-         * @param kType : The predicted type of value associated to key
-         */
-        Node(const std::string &kValue, ValueType kType = String)
-         : value(kValue), SNode(kType)
-        {
-
-        }
-
-        std::string value;
-    };
-
     /*! @brief Type used to represent associations in memory */
-    typedef std::pair<std::string, Node> association;
+    typedef std::pair<std::string, std::string> association;
     /*! @brief Container used to store associations in memory */
-    typedef std::map<std::string, Node> associationMap;
+    typedef std::map<std::string, std::string> associationMap;
 
     /*!
      * @brief Config default constructor
@@ -198,7 +136,7 @@ public:
         if (_config.find(key) != _config.end())
         {
             std::istringstream iss;
-            iss.str(_config[key].value);
+            iss.str(_config[key]);
             iss >> value;
             return (true);
         }
@@ -215,7 +153,7 @@ public:
     {
         if (_config.find(key) != _config.end())
         {
-            strcpy(value, _config[key].value.c_str());
+            strcpy(value, _config[key].c_str());
             return (true);
         }
         return (false);
@@ -231,7 +169,7 @@ public:
     {
         if (_config.find(key) != _config.end())
         {
-            value = _config[key].value;
+            value = _config[key];
             return (true);
         }
         return (false);
@@ -248,10 +186,10 @@ public:
     {
         if (_config.find(key) != _config.end())
         {
-            size_t sep = _config[key].value.find(VALUE_FIELD_SEPARATOR);
+            size_t sep = _config[key].find(VALUE_FIELD_SEPARATOR);
             if (sep != std::string::npos)
             {
-                std::string buffer = _config[key].value;
+                std::string buffer = _config[key];
                 std::istringstream iss;
 
                 iss.str(buffer.substr(0, sep));
@@ -279,7 +217,7 @@ public:
         {
             std::istringstream iss;
             typename T::value_type value;
-            std::string buffer = _config[key].value;
+            std::string buffer = _config[key];
 
             for (size_t sep = buffer.find(VALUE_FIELD_SEPARATOR); sep != std::string::npos; sep = buffer.find(VALUE_FIELD_SEPARATOR))
             {
@@ -303,23 +241,6 @@ public:
     //
 
     /*!
-     * @brief Set configuration values with string type.
-     * @param key : The key indentifier to set
-     * @param value : The formatted string value to set in key field
-     */
-    void set(const std::string key, const Node &value)
-    {
-        if (_config.find(key) != _config.end())
-        {
-            _config[key] = value;
-        }
-        else
-        {
-            _config.emplace(key, value);
-        }
-    }
-
-    /*!
      * @brief Set configuration values with arithmetic types.
      * @param key : The key indentifier to set
      * @param value : The primitive-typed value to set in key field
@@ -327,10 +248,22 @@ public:
     template <typename T>
     void set(const std::string key, const T &value)
     {
-         std::ostringstream out;
+        std::string sValue;
+        if (std::is_arithmetic<T>::value)
+        {
+            std::ostringstream out;
 
-        out << std::setprecision(DECIMAL_PRECISION) << value;
-        set(key, Node(out.str(), Node::ValueType::String));
+            if (std::is_floating_point<T>::value)
+            {
+                out << std::setprecision(DECIMAL_PRECISION) << value;
+            }
+            else
+            {
+                out << value;
+            }
+            sValue = out.str();
+        }
+        set(key, sValue);
     }
 
     /*!
@@ -339,8 +272,15 @@ public:
      * @param value : The primitive-typed value to set in key field
      */
     void set(const std::string key, const std::string &value)
-    {
-        set(key, Node(value, Node::ValueType::String));
+    {        
+        if (_config.find(key) != _config.end())
+        {
+            _config[key] = value;
+        }
+        else
+        {
+            _config.emplace(key, value);
+        }
     }
 
     /*!
@@ -356,7 +296,7 @@ public:
         fValue += std::to_string(pair.first);
         fValue += VALUE_FIELD_SEPARATOR;
         fValue += std::to_string(pair.second);
-        set(key, Node(fValue, Node::ValueType::String));
+        set(key, fValue);
     }
 
     /*!
@@ -377,7 +317,7 @@ public:
             }
             fValue += std::to_string(*it);
         }
-        set(key, Node(fValue, Node::ValueType::String));
+        set(key, fValue);
     }
 
     //
@@ -530,7 +470,7 @@ public:
                 size_t bov = separator;
                 while (bov > 0 && buffer[i][bov-1] != ' ') bov--;
                 pair.first = buffer[i].substr(bov, separator - bov);
-                pair.second = Node(buffer[i].substr(separator + strlen(KEY_VALUE_SEPARATOR), buffer[i].length() - separator), Node::ValueType::String);
+                pair.second = buffer[i].substr(separator + strlen(KEY_VALUE_SEPARATOR), buffer[i].length() - separator);
                 set(pair.first, pair.second);
             }
         }
@@ -587,14 +527,14 @@ public:
                     size_t eov = separator + strlen(KEY_VALUE_SEPARATOR);
                     while (eov < buffer[i].length() && buffer[i][eov+1] != ' ') eov++;
                     eov -= separator + strlen(KEY_VALUE_SEPARATOR);
-                    buffer[i].replace(separator + strlen(KEY_VALUE_SEPARATOR), eov, config[key].value);
+                    buffer[i].replace(separator + strlen(KEY_VALUE_SEPARATOR), eov, config[key]);
                     config.erase(key);
                 }
             }
         }
         for (associationMap::iterator it = config.begin(); it != config.end(); it++)
         {
-            buffer.push_back(it->first + KEY_VALUE_SEPARATOR + it->second.value);
+            buffer.push_back(it->first + KEY_VALUE_SEPARATOR + it->second);
         }
         for (size_t i = 0; i < buffer.size(); i++)
         {
