@@ -263,6 +263,10 @@ public:
             }
             sValue = out.str();
         }
+        else
+        {
+            sValue = value;
+        }
         set(key, sValue);
     }
 
