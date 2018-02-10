@@ -313,7 +313,7 @@ public:
     {
         std::string fValue;
 
-        for (typename T::const_iterator it = container.begin(); it != container.end(); it++)
+        for (typename T::const_iterator it = container.cbegin(); it != container.cend(); it++)
         {
             if (it != container.begin())
             {
