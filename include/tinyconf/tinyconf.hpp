@@ -24,14 +24,16 @@
 #include <vector>
 #include <map>
 
-/*! @brief This char represents the beginning of single line comment */
-#define COMMENT_LINE_SEPARATOR  "#"
-/*! @brief This char represents the beginning of a multi or single line comment block */
+/*! @brief This string contains the sequence that escapes the next char */
+#define CHARACTER_ESCAPE  '\\'
+/*! @brief This string contains the characters that indicate a single line comment */
+#define COMMENT_LINE_SEPARATORS  ";#"
+/*! @brief This char represents the beginning of a comment block */
 #define COMMENT_BLOCK_BEGIN     "/*"
-/*! @brief This char represents the end of a multi or single line comment block */
+/*! @brief This char represents the end of a comment block */
 #define COMMENT_BLOCK_END       "*/"
-/*! @brief This is the char between the key and the value in configuration file */
-#define STRING_IDENTIFIER       "\""
+/*! @brief This string contains characters that can brace strings for allowing use of forbidden chars */
+#define STRING_IDENTIFIERS       "\"'"
 /*! @brief This is the char between the key and the value in configuration file */
 #define KEY_VALUE_SEPARATOR     "="
 /*! @brief This is the char that separates multiple values in the field */
@@ -408,10 +410,16 @@ public:
 				inside = true;
 				return (true); //EOL inside comment block
 			}
-        }        
-        while ((blocks = buffer.find(COMMENT_LINE_SEPARATOR)) != std::string::npos) //There is a line comment
+        }
+        for (size_t i = 0; i < strlen(COMMENT_LINE_SEPARATORS); i++)
         {
-            buffer = buffer.substr(0, blocks); //Removes comment from buffer
+            while ((blocks = buffer.find(COMMENT_LINE_SEPARATORS[i])) != std::string::npos) //There is a line comment
+            {
+                if (i > 0 && buffer[blocks-1] != CHARACTER_ESCAPE) // If the char is not escaped
+                {
+                    buffer = buffer.substr(0, blocks); //Removes comment from buffer
+                }
+            }
         }
         if (remove) line = buffer;
         return (true); //Comments were removed from buffer
@@ -426,12 +434,15 @@ public:
     {
         size_t sep;
 
-        if ((sep = buffer.find_last_of(KEY_VALUE_SEPARATOR)) != std::string::npos)
+        if ((sep = buffer.find_last_of(KEY_VALUE_SEPARATOR)) != std::string::npos) //A k/v separator was found
         {
-            size_t cursor = sep + strlen(KEY_VALUE_SEPARATOR);
+            size_t cursor = sep + strlen(KEY_VALUE_SEPARATOR); //Increment past separator
 
-            if (STRING_IDENTIFIER != buffer.substr(cursor, strlen(STRING_IDENTIFIER))) //Beginning of a string value, valid
+            if (STRING_IDENTIFIERS != buffer.substr(cursor, strlen(STRING_IDENTIFIERS))) //Beginning of a string value, if it closes later, valid
+            {
+
                 return (sep);
+            }
             while (cursor < buffer.length()) //Check for numeric values
             {
                 if (isdigit(buffer[cursor]) != 0 && buffer[cursor] != '.') //Not a number or decimal
