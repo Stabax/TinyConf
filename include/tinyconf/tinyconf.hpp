@@ -56,11 +56,14 @@ public:
     /*! @brief Container used to store associations in memory */
     typedef std::map<std::string, std::string> associationMap;
 
+    /*! @brief Config empty constructor */
+    Config() {}
+
     /*!
-     * @brief Config default constructor
+     * @brief Config standard constructor
      * @param path : The path where the file.cfg will reside
      */
-    Config(const std::string &path) : _path(path)
+    Config(const std::string &path, bool overwrite = false) : _path(path)
     {
         load();
     }
@@ -72,6 +75,23 @@ public:
     std::string getPath()
     {
         return (_path);
+    }
+
+    /*!
+     * @brief Set path of associated configuration file
+     * @param path :  The path where the file.cfg will reside
+     */
+    void setPath(const std::string &path)
+    {
+        return (_path);
+    }
+
+    /*!
+     * @brief Reload configuration from associated file
+     */
+    void reload()
+    {
+        relocate(_path);
     }
 
     /*!
@@ -108,10 +128,6 @@ public:
         return (true);
     }
 
-    //
-    // GETTERS
-    //
-
     /*!
      * @brief Tests if a key exists in configuration
      * @param key : The key to search for
@@ -125,6 +141,26 @@ public:
         }
         return (false);
     }
+
+    /*!
+     * @brief Tests if a value equals a given param in configuration
+     * @param key : The key to search for
+     * @return true if equals, false if not
+     */
+    template <typename T>
+    bool compare(const std::string key, const T &value)
+    {
+        if (_config.find(key) != _config.end())
+        {
+            if (_config[key] == value)
+                return (true);
+        }
+        return (false);
+    }
+
+    //
+    // GETTERS
+    //
 
     /*!
      * @brief Get arithmetic values from configuration
@@ -359,6 +395,26 @@ public:
     //
     // MODIFIERS
     //
+
+    /*!
+     * @brief Used to rename configuration key
+     * @param srcKey : The source key containing the value to copy
+     * @param destKey : The destination key fill with source value
+     */
+    void move(const std::string srcKey, const std::string destKey)
+    {
+        if (_config.find(srcKey) != _config.end())
+        {
+           copy(srcKey, destKey);
+           erase(srcKey);
+        }
+        else
+        {
+            throw (-1); //No source to move from !
+        }
+    }
+
+
 
     /*!
      * @brief Used to copy configuration value into another
