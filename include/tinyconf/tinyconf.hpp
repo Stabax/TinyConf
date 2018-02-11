@@ -32,6 +32,14 @@
 #define COMMENT_BLOCK_BEGIN     "/*"
 /*! @brief This char represents the end of a comment block */
 #define COMMENT_BLOCK_END       "*/"
+
+/*! @brief This is the char that separates the section from the key in the field */
+#define SECTION_FIELD_SEPARATOR   ":"
+/*! @brief This char represents the beginning of a comment block */
+#define SECTION_BLOCK_BEGIN     "/*"
+/*! @brief This char represents the end of a comment block */
+#define SECTION_BLOCK_END       "*/"
+
 /*! @brief This string contains characters that can brace strings for allowing use of forbidden chars */
 #define STRING_IDENTIFIERS       "\"'"
 /*! @brief This is the char between the key and the value in configuration file */
@@ -463,15 +471,17 @@ public:
     /*!
      * @brief Check for comments in a given string, and removes them if any
      * @param buffer : string to parse for comments
+     * @param section : string to fill with detected section
      * @return true when the buffer contains a valid key/value node
      */
-    bool formatBuffer(std::string &buffer)
+    bool formatBuffer(std::string &buffer, std::string &section)
     {
         static bool inside = false;
         size_t begin = 0;
 
         for (size_t cursor = 0; cursor < buffer.length(); cursor++) //Parse line
         {
+            while (cursor < buffer.length() && buffer[cursor] == ' ') cursor++;
             if (inside) //If we are inside block
             {
                 if (buffer.compare(cursor, strlen(COMMENT_BLOCK_END), COMMENT_BLOCK_END) == 0) //End found
@@ -496,6 +506,19 @@ public:
                             buffer = buffer.substr(0, cursor);
                         }
                     }
+                    if (buffer.compare(cursor, strlen(SECTION_BLOCK_BEGIN), SECTION_BLOCK_BEGIN) == 0) //This is a section declaration
+                    {
+                        begin = cursor;
+                        while (cursor < buffer.length()) //while not at the end
+                        {
+                            if (buffer.compare(cursor, strlen(SECTION_BLOCK_END), SECTION_BLOCK_END) == 0) //end of block found
+                            {
+                                section = buffer.substr(begin + strlen(SECTION_BLOCK_BEGIN), cursor - begin + strlen(SECTION_BLOCK_BEGIN));
+                                return (false); //ret
+                            }
+                            cursor++;
+                        }
+                    }
                 }
             }
         }
@@ -515,7 +538,7 @@ public:
         
         for (size_t cursor = 0; cursor < buffer.length(); cursor++) //Parse line
         {
-            while (buffer[cursor] == ' ') cursor++;
+            while (cursor < buffer.length() && buffer[cursor] == ' ') cursor++;
             for (size_t i = 0; i < strlen(STRING_IDENTIFIERS); i++) //check for string identifiers
             {
                 if (buffer[cursor] == STRING_IDENTIFIERS[i] //identifier found
@@ -555,20 +578,44 @@ public:
     }
 
     /*!
+     * @brief Filter the key for section
+     * @param section : true to return section, false to return key
+     * @return key or section based on param section
+     */
+    std::string getKeySection(const std::string &key, bool section = true)
+    {
+        size_t sep;
+
+        for (size_t cursor = 0; cursor < key.length(); cursor++)
+        {
+          if (key.compare(cursor, strlen(SECTION_FIELD_SEPARATOR), SECTION_FIELD_SEPARATOR) == 0//identifier found
+          && (cursor == 0 || (cursor > 0 && key[cursor-1] != CHARACTER_ESCAPE))) //check for non escaped sequence
+            {
+                if (section)
+                    return (key.substr(0, cursor));
+                else
+                    return (key.substr(cursor + strlen(SECTION_FIELD_SEPARATOR), key.length() - cursor + strlen(SECTION_FIELD_SEPARATOR)));
+            }
+        }
+    }
+
+    /*!
      * @brief Load config stored in the associated file.
      * @return true on success, false on failure.
      */
     bool load()
     {
 		std::vector<std::string> buffer = dump();
+        std::string section;
 		size_t separator, bov, eov;
         association pair;
 
         for (size_t i = 0; i < buffer.size(); i++)
         {
-            if (formatBuffer(buffer[i]))
+            if (formatBuffer(buffer[i], section))
             {
                 pair = parseBuffer(buffer[i]);
+                if (!section.empty()) pair.first = section+SECTION_FIELD_SEPARATOR+pair.first;
                 set(pair.first, pair.second);
             }
         }
@@ -604,6 +651,7 @@ public:
         associationMap config = _config;
         std::vector<std::string> buffer = dump(), serialized = buffer;
         std::ofstream file(_path, std::ofstream::out | std::ofstream::trunc);
+        std::string section, prevSection;
         association pair;
 
         if (!file.good())
@@ -612,13 +660,24 @@ public:
         }
         for (size_t i = 0; i < buffer.size(); i++)
         {
-            if (formatBuffer(serialized[i]))
+            if (formatBuffer(serialized[i], section))
             {
                 pair = parseBuffer(serialized[i]);
                 if (config.find(pair.first) != config.end())
                 {
+                    if (!section.empty() && section != prevSection) //We are changing section, push all remaining new keys
+                    {
+                        for (associationMap::iterator it = config.begin(); it != config.end(); it++)
+                        {
+                            if (getKeySection(it->first) == prevSection)
+                            {
+                                buffer.insert(buffer.begin() + i - 1, getKeySection(it->first, false) + KEY_VALUE_SEPARATOR + it->second);
+                            }
+                        }
+                    }
                     buffer[i].replace(buffer[i].find(pair.second), pair.second.length(), pair.second);
                     config.erase(pair.first);
+                    prevSection = section;
                 }
             }
         }
