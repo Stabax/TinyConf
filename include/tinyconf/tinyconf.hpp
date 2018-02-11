@@ -83,7 +83,7 @@ public:
      */
     void setPath(const std::string &path)
     {
-        return (_path);
+        _path = path;
     }
 
     /*!
