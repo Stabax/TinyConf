@@ -12,7 +12,8 @@ var indexSectionsWithContent =
   2: "t",
   3: "acdefglmprs",
   4: "a",
-  5: "cdksv"
+  5: "cdksv",
+  6: "g"
 };
 
 var indexSectionNames =
@@ -22,7 +23,8 @@ var indexSectionNames =
   2: "files",
   3: "functions",
   4: "typedefs",
-  5: "defines"
+  5: "defines",
+  6: "pages"
 };
 
 function convertToId(search)

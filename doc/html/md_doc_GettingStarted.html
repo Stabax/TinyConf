@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.8"/>
-<title>TinyConf: include Directory Reference</title>
+<title>TinyConf: Getting Started</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -38,7 +38,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li class="current"><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -73,30 +73,66 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </iframe>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li>  </ul>
-</div>
 </div><!-- top -->
 <div class="header">
   <div class="headertitle">
-<div class="title">include Directory Reference</div>  </div>
+<div class="title">Getting Started </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="dynheader">
-Directory dependency graph for include:</div>
-<div class="dyncontent">
-<div class="center"><img src="dir_d44c64559bbebec7f509842c48db8b23_dep.png" border="0" usemap="#dir__d44c64559bbebec7f509842c48db8b23__dep" alt="include"/></div>
-<map name="dir__d44c64559bbebec7f509842c48db8b23__dep" id="dir__d44c64559bbebec7f509842c48db8b23__dep">
-<area shape="rect" id="node2" href="dir_4f479d9436dbcd69df9e5556c36f5923.html" title="tinyconf" alt="" coords="27,27,99,75"/><area shape="rect" id="clust1" href="dir_d44c64559bbebec7f509842c48db8b23.html" alt="" coords="16,16,205,85"/></map>
-</div>
-<table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="subdirs"></a>
-Directories</h2></td></tr>
-<tr class="memitem:dir_4f479d9436dbcd69df9e5556c36f5923"><td class="memItemLeft" align="right" valign="top">directory &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dir_4f479d9436dbcd69df9e5556c36f5923.html">tinyconf</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table>
-</div><!-- contents -->
+<div class="textblock"><h2>Using tinyConf in your projects</h2>
+<ol type="1">
+<li>include <a class="el" href="tinyconf_8hpp.html" title="Single header for Config class. ">tinyconf.hpp</a></li>
+<li>???</li>
+<li>Profit</li>
+</ol>
+<h3>The <a class="el" href="classstb_1_1Config.html" title="Main Config class: Defines the whole library. ">stb::Config</a> class</h3>
+<p>The <a class="el" href="classstb_1_1Config.html" title="Main Config class: Defines the whole library. ">stb::Config</a> class represent a Configuration.<br />
+To create a configuration just construct it with the desired path: </p><pre class="fragment">stb::Config cfg("./path/to/file.cfg");
+</pre><p>Or if you want you can create it and bind it to a file later:<br />
+(Please note you can't save, load or reload config in this state until you set path) </p><pre class="fragment">stb::Config cfg;
+
+cfg.setPath("./file.cfg"); //Associates a file for serialization
+</pre><h3>Basic Get/Set mechanism</h3>
+<p>You can fill configuration with values by using its set method: </p><pre class="fragment">int val = 5;
+cfg.set("MyVal", val); //Store "MyVal" key in config with value of 5
+</pre><p>Grab them back anytime with get: </p><pre class="fragment">int val;
+cfg.get("MyVal", val);
+std::cout &lt;&lt; "val was " &lt;&lt; val &lt;&lt; " !\n"; //Produces "val was 5 !"
+</pre><p>Or throw it away with erase: </p><pre class="fragment">cfg.erase("MyVal"); //Removes "MyVal" key from config
+</pre><h3>Serialization</h3>
+<p>When you feel like saving your keys to file, just use the save method: </p><pre class="fragment">cfg.save(); //Writes to file
+</pre><p>You can reload the file from disk into config:<br />
+(warning: this will erase any unsaved change) </p><pre class="fragment">cfg.reload(); //Update config values from file
+</pre><h3>Multi-Value support</h3>
+<p>Alright, too easy for your C++ master level ?<br />
+Getting and setting values works for any STL container and std::pair, for example the following code is valid </p><pre class="fragment">std::vector&lt;int&gt; vec = {0, 1, 2, 3, 4};
+std::vector&lt;int&gt; copy;
+
+cfg.setContainer("MyVector", vec);
+cfg.getContainer("MyVector", copy); //copy equals {0, 1, 2, 3, 4}
+</pre><h3>Sections of keys</h3>
+<p>You can use Sections to order keys, and store duplicate keys in config. Each section acts as a namespace, and is reachable via get methods with a simple operator </p><pre class="fragment">cfg.set("Section:Key", "Value"); //Sets the Key in Section with Value
+
+std::string value;
+cfg.get("Section:Key", value); //Fills value with Key of Section value
+</pre><h3>Remove config file</h3>
+<p>Now to erase the config file, the destroy method is available:<br />
+(please note the config stays the same in memory) </p><pre class="fragment">cfg.destroy();
+</pre><h3>Comments in config file</h3>
+<p>TinyConf is non-destructive, and supports comments in configuration files.<br />
+The parser is non-destructive and keep comments untouched.<br />
+The syntax allows the following comment-styles: </p><pre class="fragment">Key=Value #Comment
+Key2=Value ;Comment
+/*
+ * Multi Line Comment
+ */
+</pre><h3>Customize syntax</h3>
+<p>You can customize every single "control" character or sequence that is used to recognize Keys/Values, Multivalues, Comments, Sections...<br />
+To do so, you can check the defines inside tinyconf.config.hpp file which are documented as they are defined.<br />
+</p>
+<p>There is nothing more to learn to start using TinyConf !<br />
+More advanced methods are nevertheless available and documented in the stb::Class documentation page. </p>
+</div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated on Mon Feb 12 2018 00:50:07 for TinyConf by &#160;<a href="http://www.doxygen.org/index.html">
