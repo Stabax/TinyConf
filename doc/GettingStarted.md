@@ -13,9 +13,16 @@ To create a configuration just construct it with the desired path:
 
     stb::Config cfg("./path/to/file.cfg");
 
+Or if you want you can create it and bind it to a file later:\n
+(Please note you can't save, load or reload config in this state until you set path)
+
+    stb::Config cfg;
+
+    cfg.setPath("./file.cfg"); //Associates a file for serialization
+
 ### Basic Get/Set mechanism ###
 
-You can therefore fill it with values by using its set method:
+You can fill configuration with values by using its set method:
 
     int val = 5;
     cfg.set("MyVal", val); //Store "MyVal" key in config with value of 5
@@ -36,6 +43,11 @@ When you feel like saving your keys to file, just use the save method:
 
     cfg.save(); //Writes to file
 
+You can reload the file from disk into config:\n
+(warning: this will erase any unsaved change)
+
+    cfg.reload(); //Update config values from file
+
 ### Multi-Value support ###
 
 Alright, too easy for your C++ master level ?\n
@@ -45,8 +57,18 @@ the following code is valid
     std::vector<int> vec = {0, 1, 2, 3, 4};
     std::vector<int> copy;
  
-    cfg.set("MyVector", vec);
-    cfg.get("MyVector", copy); //copy equals {0, 1, 2, 3, 4}
+    cfg.setContainer("MyVector", vec);
+    cfg.getContainer("MyVector", copy); //copy equals {0, 1, 2, 3, 4}
+
+### Sections of keys ###
+
+You can use Sections to order keys, and store duplicate keys in config.
+Each section acts as a namespace, and is reachable via get methods with a simple operator
+
+    cfg.set("Section:Key", "Value"); //Sets the Key in Section with Value
+
+    std::string value;
+    cfg.get("Section:Key", value); //Fills value with Key of Section value
 
 ### Remove config file ###
 
@@ -66,6 +88,13 @@ The syntax allows the following comment-styles:
     /*
      * Multi Line Comment
      */
+
+### Customize syntax ###
+
+You can customize every single "control" character or sequence that is used to recognize Keys/Values, Multivalues, Comments, Sections...\n
+To do so, you can check the defines inside tinyconf.config.hpp file which are documented as they are defined.\n
+
+
 
 There is nothing more to learn to start using TinyConf !\n
 More advanced methods are nevertheless available and documented in the stb::Class documentation page.
