@@ -6,12 +6,14 @@
  2. ???
  3. Profit
 
-## The stb::Config class ##
+### The stb::Config class ###
 
 The stb::Config class represent a Configuration.\n
 To create a configuration just construct it with the desired path:
 
     stb::Config cfg("./path/to/file.cfg");
+
+### Basic Get/Set mechanism ###
 
 You can therefore fill it with values by using its set method:
 
@@ -28,9 +30,13 @@ Or throw it away with erase:
 
     cfg.erase("MyVal"); //Removes "MyVal" key from config
 
+### Serialization ###
+
 When you feel like saving your keys to file, just use the save method:
 
     cfg.save(); //Writes to file
+
+### Multi-Value support ###
 
 Alright, too easy for your C++ master level ?\n
 Getting and setting values works for any STL container and std::pair, for example
@@ -42,11 +48,15 @@ the following code is valid
     cfg.set("MyVector", vec);
     cfg.get("MyVector", copy); //copy equals {0, 1, 2, 3, 4}
 
+### Remove config file ###
+
 Now to erase the config file, the destroy method is available:\n
 (please note the config stays the same in memory)
 
     cfg.destroy();
-    
+
+### Comments in config file ###
+
 TinyConf is non-destructive, and supports comments in configuration files.\n
 The parser is non-destructive and keep comments untouched.\n
 The syntax allows the following comment-styles:
