@@ -36,9 +36,9 @@
 /*! @brief This is the char that separates the section from the key in the field */
 #define SECTION_FIELD_SEPARATOR   ":"
 /*! @brief This char represents the beginning of a comment block */
-#define SECTION_BLOCK_BEGIN     "/*"
+#define SECTION_BLOCK_BEGIN     "["
 /*! @brief This char represents the end of a comment block */
-#define SECTION_BLOCK_END       "*/"
+#define SECTION_BLOCK_END       "]"
 
 /*! @brief This string contains characters that can brace strings for allowing use of forbidden chars */
 #define STRING_IDENTIFIERS       "\"'"
@@ -485,7 +485,7 @@ public:
 					if (buffer.compare(end, strlen(SECTION_BLOCK_END), SECTION_BLOCK_END) == 0//identifier found
 						&& (end == 0 || (end > 0 && buffer[end - 1] != CHARACTER_ESCAPE))) //check for non escaped sequence
 					{
-						return (buffer.substr(begin, end - begin));
+						return (buffer.substr(begin + strlen(SECTION_BLOCK_BEGIN), end - (begin + strlen(SECTION_BLOCK_BEGIN))));
 					}
 				}
 			}
@@ -616,7 +616,7 @@ public:
                     return (key.substr(cursor + strlen(SECTION_FIELD_SEPARATOR), key.length() - cursor + strlen(SECTION_FIELD_SEPARATOR)));
             }
         }
-		return ("");
+		return (key);
     }
 
     /*!
