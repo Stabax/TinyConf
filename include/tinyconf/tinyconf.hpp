@@ -468,6 +468,31 @@ public:
     // BASIC MECHANICS & PARSER
     //
 
+	/*!
+	* @brief Filter the buffer for section
+	* @param buffer : buffer to search for section
+	* @return key or section based on param section
+	*/
+	std::string getSection(const std::string &buffer)
+	{
+		for (size_t begin = 0; begin < buffer.length(); begin++)
+		{
+			if (buffer.compare(begin, strlen(SECTION_BLOCK_BEGIN), SECTION_BLOCK_BEGIN) == 0//identifier found
+				&& (begin == 0 || (begin > 0 && buffer[begin - 1] != CHARACTER_ESCAPE))) //check for non escaped sequence
+			{
+				for (size_t end = 0; end < buffer.length(); end++)
+				{
+					if (buffer.compare(end, strlen(SECTION_BLOCK_END), SECTION_BLOCK_END) == 0//identifier found
+						&& (end == 0 || (end > 0 && buffer[end - 1] != CHARACTER_ESCAPE))) //check for non escaped sequence
+					{
+						return (buffer.substr(begin, end - begin));
+					}
+				}
+			}
+		}
+		return ("");
+	}
+
     /*!
      * @brief Check for comments in a given string, and removes them if any
      * @param buffer : string to parse for comments
@@ -477,6 +502,7 @@ public:
     bool formatBuffer(std::string &buffer, std::string &section)
     {
         static bool inside = false;
+		std::string newsection;
         size_t begin = 0;
 
         for (size_t cursor = 0; cursor < buffer.length(); cursor++) //Parse line
@@ -506,22 +532,15 @@ public:
                             buffer = buffer.substr(0, cursor);
                         }
                     }
-                    if (buffer.compare(cursor, strlen(SECTION_BLOCK_BEGIN), SECTION_BLOCK_BEGIN) == 0) //This is a section declaration
-                    {
-                        begin = cursor;
-                        while (cursor < buffer.length()) //while not at the end
-                        {
-                            if (buffer.compare(cursor, strlen(SECTION_BLOCK_END), SECTION_BLOCK_END) == 0) //end of block found
-                            {
-                                section = buffer.substr(begin + strlen(SECTION_BLOCK_BEGIN), cursor - begin + strlen(SECTION_BLOCK_BEGIN));
-                                return (false); //ret
-                            }
-                            cursor++;
-                        }
-                    }
                 }
             }
         }
+		newsection = getSection(buffer);
+		if (!newsection.empty())
+		{
+			section = newsection;
+			return (false);
+		}
         return (!inside);
     }
 
@@ -533,7 +552,7 @@ public:
     association parseBuffer(std::string &buffer)
     {
         association pair;
-        size_t separator, begin;
+        size_t separator = 0, begin = 0;
         bool sepFound = false;
         
         for (size_t cursor = 0; cursor < buffer.length(); cursor++) //Parse line
@@ -597,6 +616,7 @@ public:
                     return (key.substr(cursor + strlen(SECTION_FIELD_SEPARATOR), key.length() - cursor + strlen(SECTION_FIELD_SEPARATOR)));
             }
         }
+		return ("");
     }
 
     /*!
@@ -672,6 +692,7 @@ public:
                             if (getKeySection(it->first) == prevSection)
                             {
                                 buffer.insert(buffer.begin() + i - 1, getKeySection(it->first, false) + KEY_VALUE_SEPARATOR + it->second);
+                                config.erase(it);
                             }
                         }
                     }
@@ -683,7 +704,7 @@ public:
         }
         for (associationMap::iterator it = config.begin(); it != config.end(); it++)
         {
-            buffer.push_back(it->first + KEY_VALUE_SEPARATOR + it->second);
+            buffer.push_back(getKeySection(it->first, false) + KEY_VALUE_SEPARATOR + it->second);
         }
         for (size_t i = 0; i < buffer.size(); i++)
         {

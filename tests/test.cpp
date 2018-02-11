@@ -15,7 +15,8 @@ void basic_tests()
 {
     std::string buffer;
 
-    std::cout << "Creating config object =>";
+    std::cout << "Destroying/Creating config =>";
+	stb::Config::destroy("./copy.cfg");
     stb::Config test("./basic.cfg");
     std::cout << "OK\n";
 
@@ -32,6 +33,7 @@ void basic_tests()
     test.erase("BasicKeyCopy");
     std::cout << (!test.get("BasicKeyCopy", buffer) ? "OK" : "FAIL") << "\n";
 
+	stb::Config::destroy("./copy.cfg");
     stb::Config copy("./copy.cfg");
     
     std::cout << "Copying key to another config => ";
@@ -48,6 +50,23 @@ void basic_tests()
     test.append(copy);
     test.get("UniqueKey", buffer);
     std::cout << (buffer == "BasicKey" ? "OK" : "FAIL") << "\n";
+
+    std::cout << "Testing section reading => ";
+    std::ofstream file(copy.getPath(), std::ofstream::out | std::ofstream::app);
+    if (!file.good()) return; //Error!
+    file << "[SectionTest]\n";
+    file << "SectionKey=ISOK\n";
+    file.close();
+    copy.reload();
+    copy.get("SectionTest:SectionKey", buffer);
+    std::cout << (buffer == "ISOK" ? "OK" : "FAIL") << "\n";
+
+
+    copy.set("SectionTest:OK", "ISOK");
+    saveAndReload(copy);
+    std::cout << "Testing section writing => ";
+    copy.get("SectionTest:OK", buffer);
+    std::cout << (buffer == "ISOK" ? "OK" : "FAIL") << "\n";
 
     std::cout << "Destroying configs\n";
     copy.destroy();
