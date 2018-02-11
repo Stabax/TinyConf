@@ -11,6 +11,49 @@ void saveAndReload(stb::Config &test)
     std::cout << "Relocating to file \"" << test.getPath() << "\"\n";
 }
 
+void basic_tests()
+{
+    std::string buffer;
+
+    std::cout << "Creating config object =>";
+    stb::Config test("./basic.cfg");
+    std::cout << "OK\n";
+
+    std::cout << "Setting & Getting basic key => ";
+    test.set("BasicKey", "BasicKey");
+    std::cout << (test.get("BasicKey", buffer) ? "OK" : "FAIL") << "\n";
+
+    std::cout << "Copying key => ";
+    test.copy("BasicKey", "BasicKeyCopy");
+    test.get("BasicKeyCopy", buffer);
+    std::cout << (buffer == "BasicKey" ? "OK" : "FAIL") << "\n";
+
+    std::cout << "Erasing key => ";
+    test.erase("BasicKeyCopy");
+    std::cout << (!test.get("BasicKeyCopy", buffer) ? "OK" : "FAIL") << "\n";
+
+    stb::Config copy("./copy.cfg");
+    
+    std::cout << "Copying key to another config => ";
+    test.copyTo("BasicKey", copy);
+    std::cout << (copy.get("BasicKey", buffer) ? "OK" : "FAIL") << "\n";
+
+    std::cout << "Moving key to another config => ";
+    test.set("UniqueKey", "BasicKey");
+    test.moveTo("UniqueKey", copy);
+    copy.get("UniqueKey", buffer);
+    std::cout << (buffer == "BasicKey" && !test.get("UniqueKey", buffer) ? "OK" : "FAIL") << "\n";
+
+    std::cout << "Appending another config to current => ";
+    test.append(copy);
+    test.get("UniqueKey", buffer);
+    std::cout << (buffer == "BasicKey" ? "OK" : "FAIL") << "\n";
+
+    std::cout << "Destroying configs\n";
+    copy.destroy();
+    test.destroy();
+}
+
 void primitives_tests(stb::Config &test)
 {
     char *sCharstr = new char[3], charstr[] = "ISOK";
@@ -147,11 +190,12 @@ void comments_tests(stb::Config &test)
 
 int main(int argc, char **argv)
 {
+    std::cout << "#####\nTinyConf Tests Program\n#####\n\n";
+    std::cout << "#Basic tests:\n";
+    basic_tests();
     stb::Config::destroy("./test.cfg");
     stb::Config test("./test.cfg");
-
-    std::cout << "#####\nTinyConf Tests Program\n#####\n\n";
-    std::cout << "#Primitives tests:\n";
+    std::cout << "\n#Primitives tests:\n";
     primitives_tests(test);
     std::cout << "\n#Containers tests:\n";
     containers_tests(test);

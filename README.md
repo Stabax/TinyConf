@@ -5,12 +5,13 @@
 + Maxime 'stalker2106' Martens
 
 ## About ##
-TinyConf is an extra-small, header only configuration creator/accessor/mutator/validator library.
-It may be used for any project that needs to store, access and/or serialize key/value based configurations.
+
+TinyConf is a lightweight, header only configuration file manager.\n
+It supports setting/getting values of any types identified by string keys.
 
 ## Documentation ##
 
-This library is NOT documented online (yet)
+This library is documented online
 
 ## License ##
 
