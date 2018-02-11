@@ -13,23 +13,27 @@ To create a configuration just construct it with the desired path:
 
     stb::Config cfg("./path/to/file.cfg");
 
- You can therefore fill it with values by using its set method:
+You can therefore fill it with values by using its set method:
 
     int val = 5;
     cfg.set("MyVal", val); //Store "MyVal" key in config with value of 5
 
-And get them back anytime with get:
+Grab them back anytime with get:
 
     int val;
     cfg.get("MyVal", val);
     std::cout << "val was " << val << " !\n"; //Produces "val was 5 !"
 
+Or throw it away with erase:
+
+    cfg.erase("MyVal"); //Removes "MyVal" key from config
+
 When you feel like saving your keys to file, just use the save method:
 
     cfg.save(); //Writes to file
 
-Alright, alright, too easy ?\n
-Getting and setting values can work for any STL container or std::pair, for example
+Alright, too easy for your C++ master level ?\n
+Getting and setting values works for any STL container and std::pair, for example
 the following code is valid
 
     std::vector<int> vec = {0, 1, 2, 3, 4};
@@ -38,3 +42,20 @@ the following code is valid
     cfg.set("MyVector", vec);
     cfg.get("MyVector", copy); //copy equals {0, 1, 2, 3, 4}
 
+Now to erase the config file, the destroy method is available:\n
+(please note the config stays the same in memory)
+
+    cfg.destroy();
+    
+TinyConf is non-destructive, and supports comments in configuration files.\n
+The parser is non-destructive and keep comments untouched.\n
+The syntax allows the following comment-styles:
+
+    Key=Value #Comment
+    Key2=Value ;Comment
+    /*
+     * Multi Line Comment
+     */
+
+There is nothing more to learn to start using TinyConf !\n
+More advanced methods are nevertheless available and documented in the stb::Class documentation page.
