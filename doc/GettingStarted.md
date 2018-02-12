@@ -70,6 +70,15 @@ Each section acts as a namespace, and is reachable via get methods with a simple
     std::string value;
     cfg.get("Section:Key", value); //Fills value with Key of Section value
 
+### Reserved characters ###
+
+The library forbids the use of certain characters in keys, values or sections.\n
+By default, the following chars are not allowed : ", ', [, ], #, ;, /*, */, :, =\n
+You can still use the characters by escaping them with the defined escape char.\n
+for example:
+
+    this \#key isn\'t invalid=this aint \; \*/ either   //Note that the */ sequence was escaped with a single escape char
+
 ### Remove config file ###
 
 Now to erase the config file, the destroy method is available:\n
@@ -93,6 +102,18 @@ The syntax allows the following comment-styles:
 
 You can customize every single "control" character or sequence that is used to recognize Keys/Values, Multivalues, Comments, Sections...\n
 To do so, you can check the defines inside tinyconf.config.hpp file which are documented as they are defined.\n
+
+### Example configuration file ###
+
+    /*
+     * TinyConf example configuration file
+     */
+    StringTest=OK
+    DequeTest=1.900000:1.234568:0.777000:420.000000
+    PairTest=42:5.123450
+    [Serious Section]
+    VectorTest=1:2:3
+    LineComment1=WORKSFORME# Basic Comment
 
 
 
