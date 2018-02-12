@@ -5,49 +5,20 @@
  * TinyConf Library
  * @version 0.1
  * @file tinyconf.hpp
- * @brief Single header for Config class
  * @author Maxime 'Stalker2106' Martens
+ * @brief Single header for Config class
  * * * * * * * * * * * * * * * * * * * * */
 
-#include <string>
 #include <cstring>
 #include <fstream>
 #include <sstream>
-#include <type_traits>
 #include <iomanip>
-#include <cstdio>
-// Tmp
-#include <iostream>
-// Stl Aggregate
-#include <utility>
 // Stl Containers
 #include <vector>
 #include <map>
 
-/*! @brief This string contains the sequence that escapes the next char */
-#define CHARACTER_ESCAPE  '\\'
-/*! @brief This string contains the characters that indicate a single line comment */
-#define COMMENT_LINE_SEPARATORS  ";#"
-/*! @brief This char represents the beginning of a comment block */
-#define COMMENT_BLOCK_BEGIN     "/*"
-/*! @brief This char represents the end of a comment block */
-#define COMMENT_BLOCK_END       "*/"
-
-/*! @brief This is the char that separates the section from the key in the field */
-#define SECTION_FIELD_SEPARATOR   ":"
-/*! @brief This char represents the beginning of a comment block */
-#define SECTION_BLOCK_BEGIN     "["
-/*! @brief This char represents the end of a comment block */
-#define SECTION_BLOCK_END       "]"
-
-/*! @brief This string contains characters that can brace strings for allowing use of forbidden chars */
-#define STRING_IDENTIFIERS       "\"'"
-/*! @brief This is the char between the key and the value in configuration file */
-#define KEY_VALUE_SEPARATOR     "="
-/*! @brief This is the char that separates multiple values in the field */
-#define VALUE_FIELD_SEPARATOR   ":"
-/*! @brief This is the number of digits that floats displays (including left-positioned digits) */
-#define DECIMAL_PRECISION       100
+/* include configuration of parser */
+#include "tinyconf.config.hpp"
 
 /* Everything is defined within stb:: scope */
 namespace stb {
@@ -603,8 +574,6 @@ public:
      */
     std::string getKeySection(const std::string &key, bool section = true)
     {
-        size_t sep;
-
         for (size_t cursor = 0; cursor < key.length(); cursor++)
         {
           if (key.compare(cursor, strlen(SECTION_FIELD_SEPARATOR), SECTION_FIELD_SEPARATOR) == 0//identifier found
@@ -627,7 +596,6 @@ public:
     {
 		std::vector<std::string> buffer = dump();
         std::string section;
-		size_t separator, bov, eov;
         association pair;
 
         for (size_t i = 0; i < buffer.size(); i++)
@@ -691,7 +659,7 @@ public:
                         {
                             if (getKeySection(it->first) == prevSection)
                             {
-                                buffer.insert(buffer.begin() + i - 1, getKeySection(it->first, false) + KEY_VALUE_SEPARATOR + it->second);
+                                buffer.insert(std::next(buffer.begin(), static_cast<int64_t>(i)), getKeySection(it->first, false) + KEY_VALUE_SEPARATOR + it->second);
                                 config.erase(it);
                             }
                         }

@@ -111,6 +111,7 @@ To do so, you can check the defines inside tinyconf.config.hpp file which are do
     StringTest=OK
     DequeTest=1.900000:1.234568:0.777000:420.000000
     PairTest=42:5.123450
+
     [Serious Section]
     VectorTest=1:2:3
     LineComment1=WORKSFORME# Basic Comment
@@ -118,4 +119,4 @@ To do so, you can check the defines inside tinyconf.config.hpp file which are do
 
 
 There is nothing more to learn to start using TinyConf !\n
-More advanced methods are nevertheless available and documented in the stb::Class documentation page.
+More advanced methods are nevertheless available and documented in the stb::Config class documentation page.
