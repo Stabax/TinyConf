@@ -1,7 +1,7 @@
 # TINYCONF #
 
 ## Contributors ##
-+ Stabax Corp. ([http://stabax.org](http://stabax.org))
++ Stabax ([http://stabax.org](http://stabax.org))
 + Maxime 'stalker2106' Martens
 
 ## About ##
