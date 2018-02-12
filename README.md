@@ -6,7 +6,7 @@
 
 ## About ##
 
-TinyConf is a lightweight, header only configuration file manager.\n
+TinyConf is a lightweight, header only configuration file manager.<br>
 It supports setting/getting values of any types identified by string keys.
 
 ## Documentation ##
@@ -34,12 +34,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ### The stb::Config class ###
 
-The stb::Config class represent a Configuration.\n
+The stb::Config class represent a Configuration.<br>
 To create a configuration just construct it with the desired path:
 
     stb::Config cfg("./path/to/file.cfg");
 
-Or if you want you can create it and bind it to a file later:\n
+Or if you want you can create it and bind it to a file later:<br>
 (Please note you can't save, load or reload config in this state until you set path)
 
     stb::Config cfg;
@@ -57,7 +57,7 @@ Grab them back anytime with get:
 
     int val;
     cfg.get("MyVal", val);
-    std::cout << "val was " << val << " !\n"; //Produces "val was 5 !"
+    std::cout << "val was " << val << " !<br>"; //Produces "val was 5 !"
 
 Or throw it away with erase:
 
@@ -69,14 +69,14 @@ When you feel like saving your keys to file, just use the save method:
 
     cfg.save(); //Writes to file
 
-You can reload the file from disk into config:\n
+You can reload the file from disk into config:<br>
 (warning: this will erase any unsaved change)
 
     cfg.reload(); //Update config values from file
 
 ### Multi-Value support ###
 
-Alright, too easy for your C++ master level ?\n
+Alright, too easy for your C++ master level ?<br>
 Getting and setting values works for any STL container and std::pair, for example
 the following code is valid
 
@@ -98,24 +98,24 @@ Each section acts as a namespace, and is reachable via get methods with a simple
 
 ### Reserved characters ###
 
-The library forbids the use of certain characters in keys, values or sections.\n
-By default, the following chars are not allowed : ", ', [, ], #, ;, /*, */, :, =\n
-You can still use the characters by escaping them with the defined escape char.\n
+The library forbids the use of certain characters in keys, values or sections.<br>
+By default, the following chars are not allowed : ", ', [, ], #, ;, /*, */, :, =<br>
+You can still use the characters by escaping them with the defined escape char.<br>
 for example:
 
     this \#key isn\'t invalid=this aint \; \*/ either   //Note that the */ sequence was escaped with a single escape char
 
 ### Remove config file ###
 
-Now to erase the config file, the destroy method is available:\n
+Now to erase the config file, the destroy method is available:<br>
 (please note the config stays the same in memory)
 
     cfg.destroy();
 
 ### Comments in config file ###
 
-TinyConf is non-destructive, and supports comments in configuration files.\n
-The parser is non-destructive and keep comments untouched.\n
+TinyConf is non-destructive, and supports comments in configuration files.<br>
+The parser is non-destructive and keep comments untouched.<br>
 The syntax allows the following comment-styles:
 
     Key=Value #Comment
@@ -126,8 +126,8 @@ The syntax allows the following comment-styles:
 
 ### Customize syntax ###
 
-You can customize every single "control" character or sequence that is used to recognize Keys/Values, Multivalues, Comments, Sections...\n
-To do so, you can check the defines inside tinyconf.config.hpp file which are documented as they are defined.\n
+You can customize every single "control" character or sequence that is used to recognize Keys/Values, Multivalues, Comments, Sections...<br>
+To do so, you can check the defines inside tinyconf.config.hpp file which are documented as they are defined.<br>
 
 ### Example configuration file ###
 
@@ -142,5 +142,5 @@ To do so, you can check the defines inside tinyconf.config.hpp file which are do
     VectorTest=1:2:3
     LineComment1=WORKSFORME# Basic Comment
 
-There is nothing more to learn to start using TinyConf !\n
+There is nothing more to learn to start using TinyConf !<br>
 More advanced methods are nevertheless available and documented in the stb::Config class documentation page.
