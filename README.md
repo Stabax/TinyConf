@@ -1,7 +1,7 @@
 # TINYCONF #
 
 ## Contributors ##
-+ Stabax Corp.
++ Stabax Corp. ([http://stabax.org](http://stabax.org))
 + Maxime 'stalker2106' Martens
 
 ## About ##
@@ -11,7 +11,7 @@ It supports setting/getting values of any types identified by string keys.
 
 ## Documentation ##
 
-This library is documented online
+This library is documented online [at this adress](http://doc.stabax.org/tinyconf/)
 
 ## License ##
 
