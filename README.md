@@ -7,7 +7,18 @@
 ## About ##
 
 TinyConf is a lightweight, header only configuration file manager.<br>
-It supports setting/getting values of any types identified by string keys.
+It handles setting/getting on Key=Value associations of any types.
+The (basic and outdated) INI format is fully supported by default, and you can re-configure parser to support any syntax (a few defines required!)
+The library is cross platform, and C++11 compliant.
+
+## Yet another configuration library ?! ##
+
+Yes, you are right, there are tons of configuration libraries out there, so why bother using TinyConf you wonder ?
+The purpose of this library unlike its concurrents is not to have a massive load of features, but to be as small and efficient as possible.
+For example, the tests program that reads/write or append around a hundred keys and sections only takes about 70ms to complete.
+Most small programs or utilities need a "save/restore" system that is capable, unpretentious, and robust:
+This is why TinyConf exist. A couple thousand lines in a header, and you're ready to serialize any data lightning fast!
+
 
 ## Documentation ##
 
