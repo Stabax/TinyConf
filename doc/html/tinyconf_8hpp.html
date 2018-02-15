@@ -38,6 +38,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -69,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Macros</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -109,8 +110,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 Include dependency graph for tinyconf.hpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="tinyconf_8hpp__incl.png" border="0" usemap="#include_2tinyconf_2tinyconf_8hpp" alt=""/></div>
-<map name="include_2tinyconf_2tinyconf_8hpp" id="include_2tinyconf_2tinyconf_8hpp">
-</map>
 </div>
 </div>
 <p><a href="tinyconf_8hpp_source.html">Go to the source code of this file.</a></p>
@@ -139,6 +138,18 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tinyconf_8hpp.html#a18759edd21038f0d9f3028269d6422b3">COMMENT_BLOCK_END</a>&#160;&#160;&#160;&quot;*/&quot;</td></tr>
 <tr class="memdesc:a18759edd21038f0d9f3028269d6422b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">This char represents the end of a comment block. <br /></td></tr>
 <tr class="separator:a18759edd21038f0d9f3028269d6422b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a83707b9bb9c4c47ec13ba3d181485996"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a83707b9bb9c4c47ec13ba3d181485996"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tinyconf_8hpp.html#a83707b9bb9c4c47ec13ba3d181485996">SECTION_FIELD_SEPARATOR</a>&#160;&#160;&#160;&quot;:&quot;</td></tr>
+<tr class="memdesc:a83707b9bb9c4c47ec13ba3d181485996"><td class="mdescLeft">&#160;</td><td class="mdescRight">This is the char that separates the section from the key in the field. <br /></td></tr>
+<tr class="separator:a83707b9bb9c4c47ec13ba3d181485996"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2efa83dd916a9b6430a538fb232f204d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2efa83dd916a9b6430a538fb232f204d"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tinyconf_8hpp.html#a2efa83dd916a9b6430a538fb232f204d">SECTION_BLOCK_BEGIN</a>&#160;&#160;&#160;&quot;[&quot;</td></tr>
+<tr class="memdesc:a2efa83dd916a9b6430a538fb232f204d"><td class="mdescLeft">&#160;</td><td class="mdescRight">This char represents the beginning of a comment block. <br /></td></tr>
+<tr class="separator:a2efa83dd916a9b6430a538fb232f204d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a56eaa2c5e16062f33a0415680b429f88"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a56eaa2c5e16062f33a0415680b429f88"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tinyconf_8hpp.html#a56eaa2c5e16062f33a0415680b429f88">SECTION_BLOCK_END</a>&#160;&#160;&#160;&quot;]&quot;</td></tr>
+<tr class="memdesc:a56eaa2c5e16062f33a0415680b429f88"><td class="mdescLeft">&#160;</td><td class="mdescRight">This char represents the end of a comment block. <br /></td></tr>
+<tr class="separator:a56eaa2c5e16062f33a0415680b429f88"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab7060f11a431ff9713e6b00eb624069d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab7060f11a431ff9713e6b00eb624069d"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tinyconf_8hpp.html#ab7060f11a431ff9713e6b00eb624069d">STRING_IDENTIFIERS</a>&#160;&#160;&#160;&quot;\&quot;'&quot;</td></tr>
 <tr class="memdesc:ab7060f11a431ff9713e6b00eb624069d"><td class="mdescLeft">&#160;</td><td class="mdescRight">This string contains characters that can brace strings for allowing use of forbidden chars. <br /></td></tr>
@@ -165,7 +176,7 @@ Macros</h2></td></tr>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Feb 10 2018 22:39:28 for TinyConf by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Feb 12 2018 00:50:07 for TinyConf by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

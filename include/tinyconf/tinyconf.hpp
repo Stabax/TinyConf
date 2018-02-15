@@ -5,49 +5,20 @@
  * TinyConf Library
  * @version 0.1
  * @file tinyconf.hpp
- * @brief Single header for Config class
  * @author Maxime 'Stalker2106' Martens
+ * @brief Single header for Config class
  * * * * * * * * * * * * * * * * * * * * */
 
-#include <string>
 #include <cstring>
 #include <fstream>
 #include <sstream>
-#include <type_traits>
 #include <iomanip>
-#include <cstdio>
-// Tmp
-#include <iostream>
-// Stl Aggregate
-#include <utility>
 // Stl Containers
 #include <vector>
 #include <map>
 
-/*! @brief This string contains the sequence that escapes the next char */
-#define CHARACTER_ESCAPE  '\\'
-/*! @brief This string contains the characters that indicate a single line comment */
-#define COMMENT_LINE_SEPARATORS  ";#"
-/*! @brief This char represents the beginning of a comment block */
-#define COMMENT_BLOCK_BEGIN     "/*"
-/*! @brief This char represents the end of a comment block */
-#define COMMENT_BLOCK_END       "*/"
-
-/*! @brief This is the char that separates the section from the key in the field */
-#define SECTION_FIELD_SEPARATOR   ":"
-/*! @brief This char represents the beginning of a comment block */
-#define SECTION_BLOCK_BEGIN     "["
-/*! @brief This char represents the end of a comment block */
-#define SECTION_BLOCK_END       "]"
-
-/*! @brief This string contains characters that can brace strings for allowing use of forbidden chars */
-#define STRING_IDENTIFIERS       "\"'"
-/*! @brief This is the char between the key and the value in configuration file */
-#define KEY_VALUE_SEPARATOR     "="
-/*! @brief This is the char that separates multiple values in the field */
-#define VALUE_FIELD_SEPARATOR   ":"
-/*! @brief This is the number of digits that floats displays (including left-positioned digits) */
-#define DECIMAL_PRECISION       100
+/* include configuration of parser */
+#include "tinyconf.config.hpp"
 
 /* Everything is defined within stb:: scope */
 namespace stb {
@@ -75,6 +46,10 @@ public:
     {
         load();
     }
+
+    //
+    // FILE MANAGEMENT
+    //
 
     /*!
      * @brief Get path of associated configuration file
@@ -136,6 +111,10 @@ public:
         return (true);
     }
 
+    //
+    // GETTERS
+    //
+
     /*!
      * @brief Tests if a key exists in configuration
      * @param key : The key to search for
@@ -165,10 +144,6 @@ public:
         }
         return (false);
     }
-
-    //
-    // GETTERS
-    //
 
     /*!
      * @brief Get arithmetic values from configuration
@@ -465,9 +440,10 @@ public:
     }
 
     //
-    // BASIC MECHANICS & PARSER
+    // LOAD / SAVE
     //
 
+<<<<<<< HEAD
 	/*!
 	* @brief Filter the buffer for section
 	* @param buffer : buffer to search for section
@@ -619,6 +595,8 @@ public:
 		return (key);
     }
 
+=======
+>>>>>>> 3cb56dd30b1ba273ea83421c2660a1d5ddb02993
     /*!
      * @brief Load config stored in the associated file.
      * @return true on success, false on failure.
@@ -627,7 +605,6 @@ public:
     {
 		std::vector<std::string> buffer = dump();
         std::string section;
-		size_t separator, bov, eov;
         association pair;
 
         for (size_t i = 0; i < buffer.size(); i++)
@@ -640,26 +617,6 @@ public:
             }
         }
         return (true);
-    }
-
-    /*!
-     * @brief Dump current config file into a vector buffer.
-     * @return A vector buffer containing a dump of the config file.
-     */
-    std::vector<std::string> dump() const
-    {
-        std::ifstream file(_path, std::ifstream::in);
-        std::vector<std::string> buffer;
-        std::string line;
-
-        if (!file.good()) //No config, or could not open
-        {
-			return (buffer);
-        }
-        while (std::getline(file, line))
-            buffer.push_back(line);
-        file.close();
-        return (buffer);
     }
 
     /*!
@@ -691,7 +648,7 @@ public:
                         {
                             if (getKeySection(it->first) == prevSection)
                             {
-                                buffer.insert(buffer.begin() + i - 1, getKeySection(it->first, false) + KEY_VALUE_SEPARATOR + it->second);
+                                buffer.insert(std::next(buffer.begin(), static_cast<int64_t>(i)), getKeySection(it->first, false) + KEY_VALUE_SEPARATOR + it->second);
                                 config.erase(it);
                             }
                         }
@@ -783,6 +740,187 @@ public:
     }
 
 protected:
+
+    //
+    // PARSING HELPERS
+    //
+
+    /*!
+     * @brief Dump current config file into a vector buffer.
+     * @return A vector buffer containing a dump of the config file.
+     */
+    std::vector<std::string> dump() const
+    {
+        std::ifstream file(_path, std::ifstream::in);
+        std::vector<std::string> buffer;
+        std::string line;
+
+        if (!file.good()) //No config, or could not open
+        {
+			return (buffer);
+        }
+        while (std::getline(file, line))
+            buffer.push_back(line);
+        file.close();
+        return (buffer);
+    }
+
+    /*!
+	 * @brief Filter the buffer for section
+	 * @param buffer : buffer to search for section
+	 * @return key or section based on param section
+	 */
+	std::string getSection(const std::string &buffer)
+	{
+		for (size_t begin = 0; begin < buffer.length(); begin++)
+		{
+			if (buffer.compare(begin, strlen(SECTION_BLOCK_BEGIN), SECTION_BLOCK_BEGIN) == 0//identifier found
+				&& (begin == 0 || (begin > 0 && buffer[begin - 1] != CHARACTER_ESCAPE))) //check for non escaped sequence
+			{
+				for (size_t end = 0; end < buffer.length(); end++)
+				{
+					if (buffer.compare(end, strlen(SECTION_BLOCK_END), SECTION_BLOCK_END) == 0//identifier found
+						&& (end == 0 || (end > 0 && buffer[end - 1] != CHARACTER_ESCAPE))) //check for non escaped sequence
+					{
+						return (buffer.substr(begin + strlen(SECTION_BLOCK_BEGIN), end - (begin + strlen(SECTION_BLOCK_BEGIN))));
+					}
+				}
+			}
+		}
+		return ("");
+	}
+    /*!
+     * @brief Filter the key for section
+     * @param section : true to return section, false to return key
+     * @return key or section based on param section
+     */
+    std::string getKeySection(const std::string &key, bool section = true)
+    {
+        for (size_t cursor = 0; cursor < key.length(); cursor++)
+        {
+          if (key.compare(cursor, strlen(SECTION_FIELD_SEPARATOR), SECTION_FIELD_SEPARATOR) == 0//identifier found
+          && (cursor == 0 || (cursor > 0 && key[cursor-1] != CHARACTER_ESCAPE))) //check for non escaped sequence
+            {
+                if (section)
+                    return (key.substr(0, cursor));
+                else
+                    return (key.substr(cursor + strlen(SECTION_FIELD_SEPARATOR), key.length() - cursor + strlen(SECTION_FIELD_SEPARATOR)));
+            }
+        }
+		return (key);
+    }
+
+    //
+    // PARSER
+    //
+
+    /*!
+     * @brief Check for comments in a given string, and removes them if any
+     * @param buffer : string to parse for comments
+     * @param section : string to fill with detected section
+     * @return true when the buffer contains a valid key/value node
+     */
+    bool formatBuffer(std::string &buffer, std::string &section)
+    {
+        static bool inside = false;
+		std::string newsection;
+        size_t begin = 0;
+
+        for (size_t cursor = 0; cursor < buffer.length(); cursor++) //Parse line
+        {
+            while (cursor < buffer.length() && buffer[cursor] == ' ') cursor++;
+            if (inside) //If we are inside block
+            {
+                if (buffer.compare(cursor, strlen(COMMENT_BLOCK_END), COMMENT_BLOCK_END) == 0) //End found
+                {
+                    inside = false;
+                    buffer.erase(begin, cursor + strlen(COMMENT_BLOCK_END));
+                }
+            }
+            else //If not inside block
+            {
+                if (buffer.compare(cursor, strlen(COMMENT_BLOCK_BEGIN), COMMENT_BLOCK_BEGIN) == 0) //Block found
+                {
+                    inside = true;
+                    begin = cursor;
+                }
+                else //check for line separator
+                {
+                    for (size_t i = 0; i < strlen(COMMENT_LINE_SEPARATORS); i++)
+                    {
+                        if (buffer[cursor] == COMMENT_LINE_SEPARATORS[i]) //separator found
+                        {
+                            buffer = buffer.substr(0, cursor);
+                        }
+                    }
+                }
+            }
+        }
+		newsection = getSection(buffer);
+		if (!newsection.empty())
+		{
+			section = newsection;
+			return (false);
+		}
+        return (!inside);
+    }
+
+    /*!
+     * @brief Check for key and value in a given string, and returns the association
+     * @param line : string to parse for key/value
+     * @return pair of key and value
+     */
+    association parseBuffer(std::string &buffer)
+    {
+        association pair;
+        size_t separator = 0, begin = 0;
+        bool sepFound = false;
+        
+        for (size_t cursor = 0; cursor < buffer.length(); cursor++) //Parse line
+        {
+            while (cursor < buffer.length() && buffer[cursor] == ' ') cursor++;
+            for (size_t i = 0; i < strlen(STRING_IDENTIFIERS); i++) //check for string identifiers
+            {
+                if (buffer[cursor] == STRING_IDENTIFIERS[i] //identifier found
+                && (cursor == 0 || (cursor > 0 && buffer[cursor-1] != CHARACTER_ESCAPE))) //check for non escaped sequence
+                {
+                    begin = cursor;
+                    while (cursor < buffer.length()) //while not at the end
+                    {
+                        if (buffer[cursor] == STRING_IDENTIFIERS[i] //if we are on an identifier
+                        && (cursor == 0 || (cursor > 0 && buffer[cursor-1] != CHARACTER_ESCAPE))) //check for non escaped sequence
+                        {
+                            if (!sepFound)
+                            {
+                                pair.first = buffer.substr(begin, cursor);
+                            }
+                            else
+                            {
+                                pair.second = buffer.substr(begin, cursor);
+                                return (pair);
+                            }
+                        }
+                        cursor++;
+                    }
+                }
+            }
+            if (buffer.compare(cursor, strlen(KEY_VALUE_SEPARATOR), KEY_VALUE_SEPARATOR) == 0 //sep found
+            && (cursor == 0 || (cursor > 0 && buffer[cursor-1] != CHARACTER_ESCAPE))) //check for non escaped sequence
+            {
+                separator = cursor;
+                sepFound = true;
+            }
+        }
+        //If we end here, no identifiers were found
+        pair.first = buffer.substr(0, separator);
+        pair.second = buffer.substr(separator + strlen(KEY_VALUE_SEPARATOR), buffer.length() - separator + strlen(KEY_VALUE_SEPARATOR));
+        return (pair);
+    }
+    
+    //
+    // MEMBERS
+    //
+
     associationMap _config;
     std::string _path;
 };

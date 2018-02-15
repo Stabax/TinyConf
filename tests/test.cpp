@@ -1,5 +1,6 @@
 #include "../include/tinyconf/tinyconf.hpp"
 
+#include <iostream>
 #include <deque>
 
 void saveAndReload(stb::Config &test)
