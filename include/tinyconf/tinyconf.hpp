@@ -471,7 +471,6 @@ public:
 	/*!
 	* @brief Filter the buffer for section
 	* @param buffer : buffer to search for section
-	* @return key or section based on param section
 	*/
 	std::string getSection(const std::string &buffer)
 	{
@@ -616,6 +615,7 @@ public:
                     return (key.substr(cursor + strlen(SECTION_FIELD_SEPARATOR), key.length() - cursor + strlen(SECTION_FIELD_SEPARATOR)));
             }
         }
+        if (section) return (""); //no section
 		return (key);
     }
 
@@ -702,9 +702,16 @@ public:
                 }
             }
         }
+        //Push keys that are not inside file already
         for (associationMap::iterator it = config.begin(); it != config.end(); it++)
         {
+            section = getKeySection(it->first, true);
+            if (!section.empty() && section != prevSection) //We are changing section create it!
+            {
+                file << SECTION_BLOCK_BEGIN+section+SECTION_BLOCK_END;
+            }
             buffer.push_back(getKeySection(it->first, false) + KEY_VALUE_SEPARATOR + it->second);
+            prevSection = section;
         }
         for (size_t i = 0; i < buffer.size(); i++)
         {
