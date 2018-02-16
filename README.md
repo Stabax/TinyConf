@@ -23,12 +23,16 @@ This is why TinyConf exist. A couple thousand lines in a header, and you're read
 
 ##  1.3. License
 
-This library is released under MIT License, which is defined inside "LICENSE" file.
+This library is released under MIT License, which is defined inside "LICENSE" file.  
+  
+
 
 #  2. Documentation
 
 This library is documented online [at this adress](http://doc.stabax.org/tinyconf/)
+  
 
+  
 #  3. Getting Started
 
 ##  3.1. Using tinyConf in your projects
