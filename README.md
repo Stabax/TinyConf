@@ -1,7 +1,9 @@
-# Table of contents
-
+# Contents
+  
 [TOC]
-
+  
+  
+  
 #  1. Contributors
 + Stabax ([http://stabax.org](http://stabax.org))
 + Maxime 'stalker2106' Martens
@@ -133,6 +135,10 @@ The syntax allows the following comment-styles:
 
 You can customize every single "control" character or sequence that is used to recognize Keys/Values, Multivalues, Comments, Sections...  
 To do so, you can check the defines inside tinyconf.config.hpp file which are documented as they are defined.  
+
+For example this key/value association use a different character set (= replaced with @, : replaced with -) :
+
+    MyKeyArray @ 1-2-3
 
 ##  6.11. Example configuration file
 
