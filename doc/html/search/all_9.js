@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['parsebuffer',['parseBuffer',['../classstb_1_1Config.html#aece5ebabd463a743cb35d6c650465a9c',1,'stb::Config']]]
+  ['reload',['reload',['../classstb_1_1Config.html#ae2cb14d02ed1a383ca03134f71fabc0f',1,'stb::Config']]],
+  ['relocate',['relocate',['../classstb_1_1Config.html#a93f40242f6f306baa0933dad5976c74b',1,'stb::Config']]]
 ];

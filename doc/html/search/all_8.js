@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['move',['move',['../classstb_1_1Config.html#a0dbe44a525bb4cf436649981776bd195',1,'stb::Config']]],
-  ['moveto',['moveTo',['../classstb_1_1Config.html#a1c6e9188ec435fd727694f61ac282ad3',1,'stb::Config']]]
+  ['parsebuffer',['parseBuffer',['../classstb_1_1Config.html#aece5ebabd463a743cb35d6c650465a9c',1,'stb::Config']]],
+  ['parsesection',['parseSection',['../classstb_1_1Config.html#ad54c330a6ebd2838474b39d3eebfc67e',1,'stb::Config']]]
 ];

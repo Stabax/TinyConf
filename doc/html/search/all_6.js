@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['key_5fvalue_5fseparator',['KEY_VALUE_SEPARATOR',['../tinyconf_8hpp.html#ab713c086d0b8d00fe2db0a46cb805ec7',1,'tinyconf.hpp']]]
+  ['load',['load',['../classstb_1_1Config.html#a5b07d2e4f85af5d6ecbf849a519c9fb9',1,'stb::Config']]]
 ];

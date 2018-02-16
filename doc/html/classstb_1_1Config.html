@@ -38,7 +38,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -71,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Typedefs</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -90,6 +89,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classstb_1_1Config-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -195,24 +195,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:ac9294e547f7e6a356cf2471626e88ec5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstb_1_1Config.html#ac9294e547f7e6a356cf2471626e88ec5">erase</a> (const std::string key)</td></tr>
 <tr class="memdesc:ac9294e547f7e6a356cf2471626e88ec5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Erase a key from configuration.  <a href="#ac9294e547f7e6a356cf2471626e88ec5">More...</a><br /></td></tr>
 <tr class="separator:ac9294e547f7e6a356cf2471626e88ec5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a596f86010fb7d222ab0760de7b1b0f49"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstb_1_1Config.html#a596f86010fb7d222ab0760de7b1b0f49">getSection</a> (const std::string &amp;buffer)</td></tr>
-<tr class="memdesc:a596f86010fb7d222ab0760de7b1b0f49"><td class="mdescLeft">&#160;</td><td class="mdescRight">Filter the buffer for section.  <a href="#a596f86010fb7d222ab0760de7b1b0f49">More...</a><br /></td></tr>
-<tr class="separator:a596f86010fb7d222ab0760de7b1b0f49"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a19d79ac5abc5194f7bd7aca7bef82ffb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstb_1_1Config.html#a19d79ac5abc5194f7bd7aca7bef82ffb">formatBuffer</a> (std::string &amp;buffer, std::string &amp;section)</td></tr>
-<tr class="memdesc:a19d79ac5abc5194f7bd7aca7bef82ffb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check for comments in a given string, and removes them if any.  <a href="#a19d79ac5abc5194f7bd7aca7bef82ffb">More...</a><br /></td></tr>
-<tr class="separator:a19d79ac5abc5194f7bd7aca7bef82ffb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aece5ebabd463a743cb35d6c650465a9c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classstb_1_1Config.html#ab415f2c686ffa9c28f9ea1ce280b0929">association</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstb_1_1Config.html#aece5ebabd463a743cb35d6c650465a9c">parseBuffer</a> (std::string &amp;buffer)</td></tr>
-<tr class="memdesc:aece5ebabd463a743cb35d6c650465a9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check for key and value in a given string, and returns the association.  <a href="#aece5ebabd463a743cb35d6c650465a9c">More...</a><br /></td></tr>
-<tr class="separator:aece5ebabd463a743cb35d6c650465a9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aca523f73598b2e4daa35d62480fb6533"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstb_1_1Config.html#aca523f73598b2e4daa35d62480fb6533">getKeySection</a> (const std::string &amp;key, bool section=true)</td></tr>
-<tr class="memdesc:aca523f73598b2e4daa35d62480fb6533"><td class="mdescLeft">&#160;</td><td class="mdescRight">Filter the key for section.  <a href="#aca523f73598b2e4daa35d62480fb6533">More...</a><br /></td></tr>
-<tr class="separator:aca523f73598b2e4daa35d62480fb6533"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5b07d2e4f85af5d6ecbf849a519c9fb9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstb_1_1Config.html#a5b07d2e4f85af5d6ecbf849a519c9fb9">load</a> ()</td></tr>
 <tr class="memdesc:a5b07d2e4f85af5d6ecbf849a519c9fb9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load config stored in the associated file.  <a href="#a5b07d2e4f85af5d6ecbf849a519c9fb9">More...</a><br /></td></tr>
 <tr class="separator:a5b07d2e4f85af5d6ecbf849a519c9fb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa8aad56ca618eb250676c3d3b12cdc32"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstb_1_1Config.html#aa8aad56ca618eb250676c3d3b12cdc32">dump</a> () const </td></tr>
-<tr class="memdesc:aa8aad56ca618eb250676c3d3b12cdc32"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dump current config file into a vector buffer.  <a href="#aa8aad56ca618eb250676c3d3b12cdc32">More...</a><br /></td></tr>
-<tr class="separator:aa8aad56ca618eb250676c3d3b12cdc32"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0f2766f842b042127ded0b676c1fe349"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstb_1_1Config.html#a0f2766f842b042127ded0b676c1fe349">save</a> ()</td></tr>
 <tr class="memdesc:a0f2766f842b042127ded0b676c1fe349"><td class="mdescLeft">&#160;</td><td class="mdescRight">Save current config state inside associated file.  <a href="#a0f2766f842b042127ded0b676c1fe349">More...</a><br /></td></tr>
 <tr class="separator:a0f2766f842b042127ded0b676c1fe349"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -234,6 +219,24 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a6e5f738304745430a28e74a8d07b1710"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstb_1_1Config.html#a6e5f738304745430a28e74a8d07b1710">destroy</a> (const std::string &amp;path)</td></tr>
 <tr class="memdesc:a6e5f738304745430a28e74a8d07b1710"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes a given configuration file from disk.  <a href="#a6e5f738304745430a28e74a8d07b1710">More...</a><br /></td></tr>
 <tr class="separator:a6e5f738304745430a28e74a8d07b1710"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:aa8aad56ca618eb250676c3d3b12cdc32"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstb_1_1Config.html#aa8aad56ca618eb250676c3d3b12cdc32">dump</a> () const </td></tr>
+<tr class="memdesc:aa8aad56ca618eb250676c3d3b12cdc32"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dump current config file into a vector buffer.  <a href="#aa8aad56ca618eb250676c3d3b12cdc32">More...</a><br /></td></tr>
+<tr class="separator:aa8aad56ca618eb250676c3d3b12cdc32"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad54c330a6ebd2838474b39d3eebfc67e"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstb_1_1Config.html#ad54c330a6ebd2838474b39d3eebfc67e">parseSection</a> (const std::string &amp;buffer)</td></tr>
+<tr class="memdesc:ad54c330a6ebd2838474b39d3eebfc67e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Filter the buffer for section.  <a href="#ad54c330a6ebd2838474b39d3eebfc67e">More...</a><br /></td></tr>
+<tr class="separator:ad54c330a6ebd2838474b39d3eebfc67e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca523f73598b2e4daa35d62480fb6533"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstb_1_1Config.html#aca523f73598b2e4daa35d62480fb6533">getKeySection</a> (const std::string &amp;key, bool section=true)</td></tr>
+<tr class="memdesc:aca523f73598b2e4daa35d62480fb6533"><td class="mdescLeft">&#160;</td><td class="mdescRight">Filter the key for section.  <a href="#aca523f73598b2e4daa35d62480fb6533">More...</a><br /></td></tr>
+<tr class="separator:aca523f73598b2e4daa35d62480fb6533"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a19d79ac5abc5194f7bd7aca7bef82ffb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstb_1_1Config.html#a19d79ac5abc5194f7bd7aca7bef82ffb">formatBuffer</a> (std::string &amp;buffer, std::string &amp;section)</td></tr>
+<tr class="memdesc:a19d79ac5abc5194f7bd7aca7bef82ffb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check for comments in a given string, and removes them if any.  <a href="#a19d79ac5abc5194f7bd7aca7bef82ffb">More...</a><br /></td></tr>
+<tr class="separator:a19d79ac5abc5194f7bd7aca7bef82ffb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aece5ebabd463a743cb35d6c650465a9c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classstb_1_1Config.html#ab415f2c686ffa9c28f9ea1ce280b0929">association</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstb_1_1Config.html#aece5ebabd463a743cb35d6c650465a9c">parseBuffer</a> (std::string &amp;buffer)</td></tr>
+<tr class="memdesc:aece5ebabd463a743cb35d6c650465a9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check for key and value in a given string, and returns the association.  <a href="#aece5ebabd463a743cb35d6c650465a9c">More...</a><br /></td></tr>
+<tr class="separator:aece5ebabd463a743cb35d6c650465a9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -560,7 +563,7 @@ template&lt;typename T &gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -662,7 +665,7 @@ template&lt;typename T &gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -930,7 +933,7 @@ template&lt;typename T &gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -1015,39 +1018,6 @@ template&lt;typename Tx , typename Ty &gt; </div>
 
 <p>Get path of associated configuration file. </p>
 <dl class="section return"><dt>Returns</dt><dd>String containing the path of the current associated cfg file </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="a596f86010fb7d222ab0760de7b1b0f49"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string stb::Config::getSection </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>buffer</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Filter the buffer for section. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">buffer</td><td>: buffer to search for section </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>key or section based on param section </dd></dl>
 
 </div>
 </div>
@@ -1180,7 +1150,7 @@ template&lt;typename Tx , typename Ty &gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -1193,6 +1163,39 @@ template&lt;typename Tx , typename Ty &gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>pair of key and value </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ad54c330a6ebd2838474b39d3eebfc67e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string stb::Config::parseSection </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>buffer</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Filter the buffer for section. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">buffer</td><td>: buffer to search for section </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>key or section based on param section </dd></dl>
 
 </div>
 </div>
@@ -1513,7 +1516,7 @@ template&lt;typename Tx , typename Ty &gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Feb 12 2018 00:50:07 for TinyConf by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Feb 16 2018 01:15:24 for TinyConf by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

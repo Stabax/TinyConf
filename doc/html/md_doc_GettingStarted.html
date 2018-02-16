@@ -115,6 +115,11 @@ cfg.getContainer("MyVector", copy); //copy equals {0, 1, 2, 3, 4}
 
 std::string value;
 cfg.get("Section:Key", value); //Fills value with Key of Section value
+</pre><h3>Reserved characters</h3>
+<p>The library forbids the use of certain characters in keys, values or sections.<br />
+By default, the following chars are not allowed : ", ', [, ], #, ;, /*, */, :, =<br />
+You can still use the characters by escaping them with the defined escape char.<br />
+for example: </p><pre class="fragment">this \#key isn\'t invalid=this aint \; \*/ either   //Note that the */ sequence was escaped with a single escape char
 </pre><h3>Remove config file</h3>
 <p>Now to erase the config file, the destroy method is available:<br />
 (please note the config stays the same in memory) </p><pre class="fragment">cfg.destroy();
@@ -129,13 +134,22 @@ Key2=Value ;Comment
 </pre><h3>Customize syntax</h3>
 <p>You can customize every single "control" character or sequence that is used to recognize Keys/Values, Multivalues, Comments, Sections...<br />
 To do so, you can check the defines inside tinyconf.config.hpp file which are documented as they are defined.<br />
-</p>
-<p>There is nothing more to learn to start using TinyConf !<br />
+ </p><h3>Example configuration file</h3>
+<pre class="fragment">/*
+ * TinyConf example configuration file
+ */
+StringTest=OK
+DequeTest=1.900000:1.234568:0.777000:420.000000
+PairTest=42:5.123450
+[Serious Section]
+VectorTest=1:2:3
+LineComment1=WORKSFORME# Basic Comment
+</pre><p>There is nothing more to learn to start using TinyConf !<br />
 More advanced methods are nevertheless available and documented in the stb::Class documentation page. </p>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Feb 12 2018 00:50:07 for TinyConf by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Feb 12 2018 01:01:10 for TinyConf by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>

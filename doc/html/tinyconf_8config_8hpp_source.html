@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.8"/>
-<title>TinyConf: include/tinyconf/tinyconf.hpp File Reference</title>
+<title>TinyConf: include/tinyconf/tinyconf.config.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -83,50 +83,36 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div>
 </div><!-- top -->
 <div class="header">
-  <div class="summary">
-<a href="#nested-classes">Classes</a>  </div>
   <div class="headertitle">
-<div class="title">tinyconf.hpp File Reference</div>  </div>
+<div class="title">tinyconf.config.hpp</div>  </div>
 </div><!--header-->
 <div class="contents">
-
-<p>Additional header for parser configuration.  
-<a href="#details">More...</a></p>
-<div class="textblock"><code>#include &lt;cstring&gt;</code><br />
-<code>#include &lt;fstream&gt;</code><br />
-<code>#include &lt;sstream&gt;</code><br />
-<code>#include &lt;iomanip&gt;</code><br />
-<code>#include &lt;vector&gt;</code><br />
-<code>#include &lt;map&gt;</code><br />
-<code>#include &quot;tinyconf.config.hpp&quot;</code><br />
-</div><div class="textblock"><div class="dynheader">
-Include dependency graph for tinyconf.hpp:</div>
-<div class="dyncontent">
-<div class="center"><img src="tinyconf_8hpp__incl.png" border="0" usemap="#include_2tinyconf_2tinyconf_8hpp" alt=""/></div>
-<map name="include_2tinyconf_2tinyconf_8hpp" id="include_2tinyconf_2tinyconf_8hpp">
-<area shape="rect" id="node8" href="tinyconf_8config_8hpp_source.html" title="tinyconf.config.hpp" alt="" coords="519,80,651,107"/></map>
-</div>
-</div>
-<p><a href="tinyconf_8hpp_source.html">Go to the source code of this file.</a></p>
-<table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
-Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstb_1_1Config.html">stb::Config</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Main <a class="el" href="classstb_1_1Config.html" title="Main Config class: Defines the whole library. ">Config</a> class: Defines the whole library.  <a href="classstb_1_1Config.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table>
-<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Additional header for parser configuration. </p>
-<p>Single header for Config class.</p>
-<hr/>
-<p> TinyConf Library </p><dl class="section version"><dt>Version</dt><dd>0.1</dd></dl>
-<dl class="section author"><dt>Author</dt><dd>Maxime 'Stalker2106' Martens Any of the following values are modifiable without incidence in the parser behaviour Be aware that any changes made unvalidate previously created configuration files Separators (note the plural) represent "possible characters", where you can add custom values inside the define Blocks and Separator values are string sequences to identify entities The escape char should always be a single character. <hr/>
-</dd></dl>
-<hr/>
-<p> TinyConf Library </p><dl class="section version"><dt>Version</dt><dd>0.1</dd></dl>
-<dl class="section author"><dt>Author</dt><dd>Maxime 'Stalker2106' Martens <hr/>
-</dd></dl>
-</div></div><!-- contents -->
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef TINYCONF_CONFIG_HPP</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define TINYCONF_CONFIG_HPP</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#define CHARACTER_ESCAPE  &#39;\\&#39;</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#define COMMENT_LINE_SEPARATORS  &quot;;#&quot;</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#define COMMENT_BLOCK_BEGIN     &quot;</span><span class="comment">/*&quot;</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="comment">#define COMMENT_BLOCK_END       &quot;*/</span><span class="preprocessor">&quot;</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#define SECTION_FIELD_SEPARATOR   &quot;:&quot;</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#define SECTION_BLOCK_BEGIN     &quot;[&quot;</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#define SECTION_BLOCK_END       &quot;]&quot;</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#define STRING_IDENTIFIERS       &quot;\&quot;&#39;&quot;</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#define KEY_VALUE_SEPARATOR     &quot;=&quot;</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#define VALUE_FIELD_SEPARATOR   &quot;:&quot;</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">#define DECIMAL_PRECISION       100</span></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* !TINYCONF_CONFIG_HPP */</span><span class="preprocessor"></span></div>
+</div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated on Fri Feb 16 2018 01:15:24 for TinyConf by &#160;<a href="http://www.doxygen.org/index.html">

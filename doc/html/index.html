@@ -38,7 +38,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li class="current"><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -65,7 +64,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Typedefs</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -81,25 +80,79 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="contents">
 <div class="textblock"><h2>Contributors</h2>
 <ul>
-<li>Stabax Corp.</li>
+<li>Stabax (<a href="http://stabax.org">http://stabax.org</a>)</li>
 <li>Maxime 'stalker2106' Martens</li>
 </ul>
 <h2>About</h2>
-<p>TinyConf is a lightweight, header only configuration file manager.<br />
-It supports setting/getting values of any types identified by string keys.</p>
+<p>TinyConf is a lightweight, header only configuration file manager. It handles setting/getting on Key=Value associations of any types. The (basic and outdated) INI format is fully supported by default, and you can re-configure parser to support any syntax (a few defines required!) The library is cross platform, and C++11 compliant.</p>
+<h2>Yet another configuration library ?!</h2>
+<p>Yes, you are right, there are tons of configuration libraries out there, so why bother using TinyConf you wonder ? The purpose of this library unlike its concurrents is not to have a massive load of features, but to be as small and efficient as possible. For example, the tests program that reads/write or append around a hundred keys and sections only takes about 70ms to complete. Most small programs or utilities need a "save/restore" system that is capable, unpretentious, and robust: This is why TinyConf exist. A couple thousand lines in a header, and you're ready to serialize any data lightning fast!</p>
 <h2>Documentation</h2>
-<p>This library is documented online</p>
+<p>This library is documented online <a href="http://doc.stabax.org/tinyconf/">at this adress</a></p>
 <h2>License</h2>
 <p>This library is released under MIT License Copyright 2017 Stabax Ltd.</p>
-<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
-<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
-<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
-<h3>Getting started</h3>
-<p>Check out our <a href="http://stabax.org/doc/tinyconf/">latest guide here</a> </p>
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+<h2>Getting Started</h2>
+<h3>Using tinyConf in your projects</h3>
+<ol type="1">
+<li>include <a class="el" href="tinyconf_8hpp.html" title="Additional header for parser configuration. ">tinyconf.hpp</a></li>
+<li>???</li>
+<li>Profit</li>
+</ol>
+<h3>The <a class="el" href="classstb_1_1Config.html" title="Main Config class: Defines the whole library. ">stb::Config</a> class</h3>
+<p>The <a class="el" href="classstb_1_1Config.html" title="Main Config class: Defines the whole library. ">stb::Config</a> class represent a Configuration. To create a configuration just construct it with the desired path: </p><pre class="fragment">stb::Config cfg("./path/to/file.cfg");
+</pre><p>Or if you want you can create it and bind it to a file later: (Please note you can't save, load or reload config in this state until you set path) </p><pre class="fragment">stb::Config cfg;
+
+cfg.setPath("./file.cfg"); //Associates a file for serialization
+</pre><h3>Basic Get/Set mechanism</h3>
+<p>You can fill configuration with values by using its set method: </p><pre class="fragment">int val = 5;
+cfg.set("MyVal", val); //Store "MyVal" key in config with value of 5
+</pre><p>Grab them back anytime with get: </p><pre class="fragment">int val;
+cfg.get("MyVal", val);
+std::cout &lt;&lt; "val was " &lt;&lt; val &lt;&lt; " !\n"; //Produces "val was 5 !"
+</pre><p>Or throw it away with erase: </p><pre class="fragment">cfg.erase("MyVal"); //Removes "MyVal" key from config
+</pre><h3>Serialization</h3>
+<p>When you feel like saving your keys to file, just use the save method: </p><pre class="fragment">cfg.save(); //Writes to file
+</pre><p>You can reload the file from disk into config: (warning: this will erase any unsaved change) </p><pre class="fragment">cfg.reload(); //Update config values from file
+</pre><h3>Multi-Value support</h3>
+<p>Alright, too easy for your C++ master level ? Getting and setting values works for any STL container and std::pair, for example the following code is valid </p><pre class="fragment">std::vector&lt;int&gt; vec = {0, 1, 2, 3, 4};
+std::vector&lt;int&gt; copy;
+
+cfg.setContainer("MyVector", vec);
+cfg.getContainer("MyVector", copy); //copy equals {0, 1, 2, 3, 4}
+</pre><h3>Sections of keys</h3>
+<p>You can use Sections to order keys, and store duplicate keys in config. Each section acts as a namespace, and is reachable via get methods with a simple operator </p><pre class="fragment">cfg.set("Section:Key", "Value"); //Sets the Key in Section with Value
+
+std::string value;
+cfg.get("Section:Key", value); //Fills value with Key of Section value
+</pre><h3>Reserved characters</h3>
+<p>The library forbids the use of certain characters in keys, values or sections. By default, the following chars are not allowed : ", ', [, ], #, ;, /*, */, :, =, \ You can still use the characters by escaping them with the defined escape char (default is \ ). for example: </p><pre class="fragment">this \#key isn\'t invalid=this aint \; \*/ either   //Note that the */ sequence was escaped with a single escape char
+</pre><h3>Remove config file</h3>
+<p>Now to erase the config file, the destroy method is available: (please note the config stays the same in memory) </p><pre class="fragment">cfg.destroy();
+</pre><h3>Comments in config file</h3>
+<p>TinyConf is non-destructive, and supports comments in configuration files. The parser is non-destructive and keep comments untouched. The syntax allows the following comment-styles: </p><pre class="fragment">Key=Value #Comment
+Key2=Value ;Comment
+/*
+ * Multi Line Comment
+ */
+</pre><h3>Customize syntax</h3>
+<p>You can customize every single "control" character or sequence that is used to recognize Keys/Values, Multivalues, Comments, Sections... To do so, you can check the defines inside <a class="el" href="tinyconf_8config_8hpp_source.html">tinyconf.config.hpp</a> file which are documented as they are defined.</p>
+<h3>Example configuration file</h3>
+<pre class="fragment">/*
+ * TinyConf example configuration file
+ */
+StringTest=OK
+DequeTest=1.900000:1.234568:0.777000:420.000000
+PairTest=42:5.123450
+
+[Serious Section]
+VectorTest=1:2:3
+LineComment1=WORKSFORME# Basic Comment
+</pre><p>There is nothing more to learn to start using TinyConf ! More advanced methods are nevertheless available and documented in the <a class="el" href="classstb_1_1Config.html" title="Main Config class: Defines the whole library. ">stb::Config</a> class documentation page. </p>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Feb 12 2018 00:50:07 for TinyConf by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Feb 16 2018 01:15:24 for TinyConf by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>
