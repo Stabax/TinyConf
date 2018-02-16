@@ -69,6 +69,12 @@ void basic_tests()
     copy.get("SectionTest:OK", buffer);
     std::cout << (buffer == "ISOK" ? "OK" : "FAIL") << "\n";
 
+    copy.set("NewSection:OK", "Test");
+    saveAndReload(copy);
+    std::cout << "Testing section creation => ";
+    copy.get("NewSection:OK", buffer);
+    std::cout << (buffer == "Test" ? "OK" : "FAIL") << "\n";
+
     std::cout << "Destroying configs\n";
     copy.destroy();
     test.destroy();

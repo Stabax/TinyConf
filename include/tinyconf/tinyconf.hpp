@@ -474,7 +474,7 @@ public:
         associationMap config = _config;
         std::vector<std::string> buffer = dump(), serialized = buffer;
         std::ofstream file(_path, std::ofstream::out | std::ofstream::trunc);
-        std::string section, prevSection;
+        std::string section, prevSection, fileSection;
         association pair;
 
         if (!file.good())
@@ -508,7 +508,8 @@ public:
         //Push keys that are not inside file already
         for (associationMap::iterator it = config.begin(); it != config.end(); it++)
         {
-            section = getKeySection(it->first, true);
+            fileSection = getKeySection(it->first, true);
+            if (!fileSection.empty()) section = fileSection;
             if (!section.empty() && section != prevSection) //We are changing section create it!
             {
                 file << SECTION_BLOCK_BEGIN+section+SECTION_BLOCK_END;
@@ -616,7 +617,7 @@ protected:
 	 * @param buffer : buffer to search for section
 	 * @return key or section based on param section
 	 */
-	std::string getSection(const std::string &buffer)
+	std::string parseSection(const std::string &buffer)
 	{
 		for (size_t begin = 0; begin < buffer.length(); begin++)
 		{
@@ -635,6 +636,7 @@ protected:
 		}
 		return ("");
 	}
+
     /*!
      * @brief Filter the key for section
      * @param section : true to return section, false to return key
@@ -642,6 +644,8 @@ protected:
      */
     std::string getKeySection(const std::string &key, bool section = true)
     {
+        size_t sep;
+
         for (size_t cursor = 0; cursor < key.length(); cursor++)
         {
           if (key.compare(cursor, strlen(SECTION_FIELD_SEPARATOR), SECTION_FIELD_SEPARATOR) == 0//identifier found
@@ -653,6 +657,7 @@ protected:
                     return (key.substr(cursor + strlen(SECTION_FIELD_SEPARATOR), key.length() - cursor + strlen(SECTION_FIELD_SEPARATOR)));
             }
         }
+        if (section) return (""); //no section
 		return (key);
     }
 
@@ -702,7 +707,7 @@ protected:
                 }
             }
         }
-		newsection = getSection(buffer);
+		newsection = parseSection(buffer);
 		if (!newsection.empty())
 		{
 			section = newsection;
