@@ -1,4 +1,4 @@
-# TINYCONF
+# Table of contents
 
 [TOC]
 
