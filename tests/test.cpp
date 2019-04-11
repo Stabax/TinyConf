@@ -4,11 +4,11 @@
 #include <deque>
 
 void saveAndReload(stb::Config &test)
-{   
+{
     std::cout << "Serializing to file \"" << test.getPath() << "\"\n";
     test.save();
 
-    test.relocate("./test.cfg");  
+    test.relocate("./test.cfg");
     std::cout << "Relocating to file \"" << test.getPath() << "\"\n";
 }
 

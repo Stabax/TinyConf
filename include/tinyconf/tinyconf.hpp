@@ -13,6 +13,8 @@
 #include <fstream>
 #include <sstream>
 #include <iomanip>
+#include <unistd.h>
+#include <limits>
 // Stl Containers
 #include <vector>
 #include <map>
@@ -33,7 +35,7 @@ public:
     /*! @brief Type used to represent associations in memory */
     typedef std::pair<std::string, std::string> association;
     /*! @brief Container used to store associations in memory */
-    typedef std::map<std::string, std::string> associationMap;
+    typedef std::map<std::string, std::string> association_map;
 
     /*! @brief Config empty constructor */
     Config() {}
@@ -69,6 +71,24 @@ public:
         _path = path;
     }
 
+
+    /*!
+     * @brief Checks if configuration is empty
+     * @return true if empty, false if not
+     */
+    bool empty()
+    {
+        return (_config.empty());
+    }
+
+    /*!
+     * @brief Empties configuration keys and values in memory
+     */
+    void clear()
+    {
+        _config.clear();
+    }
+
     /*!
      * @brief Reload configuration from associated file
      */
@@ -84,7 +104,7 @@ public:
     void relocate(const std::string &path)
     {
         _path = path;
-        _config.clear();
+        clear();
         load();
     }
 
@@ -94,6 +114,7 @@ public:
      */
     bool destroy()
     {
+        if (getPath().empty()) throw(std::runtime_error("no_file_bound")); //No file bound to configuration
         return (destroy(_path));
     }
 
@@ -104,11 +125,7 @@ public:
      */
     static bool destroy(const std::string &path)
     {
-        if (remove(path.c_str()) != 0)
-        {
-            return (false); //Error on delete
-        }
-        return (true);
+        return (remove(path.c_str()) == 0);
     }
 
     //
@@ -120,13 +137,9 @@ public:
      * @param key : The key to search for
      * @return true if found, false if failed
      */
-    bool exists(const std::string key)
+    bool exists(const std::string &key)
     {
-        if (_config.find(key) != _config.end())
-        {
-            return (true);
-        }
-        return (false);
+        return (_config.find(key) != _config.end());
     }
 
     /*!
@@ -135,7 +148,7 @@ public:
      * @return true if equals, false if not
      */
     template <typename T>
-    bool compare(const std::string key, const T &value)
+    bool compare(const std::string &key, const T &value)
     {
         if (_config.find(key) != _config.end())
         {
@@ -152,16 +165,13 @@ public:
      * @return true if found, false if failed
      */
     template <typename T>
-    bool get(const std::string key, T &value)
+    bool get(const std::string &key, T &value)
     {
-        if (_config.find(key) != _config.end())
-        {
-            std::istringstream iss;
-            iss.str(_config[key]);
-            iss >> value;
-            return (true);
-        }
-        return (false);
+        if (!exists(key)) return (false);
+        std::istringstream iss;
+        iss.str(_config[key]);
+        iss >> value;
+        return (true);
     }
 
     /*!
@@ -170,14 +180,11 @@ public:
      * @param value : The char array to set with value
      * @return true if found, false if failed
      */
-    bool get(const std::string key, char *value)
+    bool get(const std::string &key, char *value)
     {
-        if (_config.find(key) != _config.end())
-        {
-            strcpy(value, _config[key].c_str());
-            return (true);
-        }
-        return (false);
+        if (!exists(key)) return (false);
+        strcpy(value, _config[key].c_str());
+        return (true);
     }
 
     /*!
@@ -186,14 +193,11 @@ public:
      * @param value : The bool to set with value
      * @return true if found, false if failed
      */
-    bool get(const std::string key, bool &value)
+    bool get(const std::string &key, bool &value)
     {
-        if (_config.find(key) != _config.end())
-        {
-            value = (_config[key] == "true" ? true : false);
-            return (true);
-        }
-        return (false);
+        if (!exists(key)) return (false);
+        value = (_config[key] == "true" ? true : false);
+        return (true);
     }
 
     /*!
@@ -202,14 +206,11 @@ public:
      * @param value : The string to set with value
      * @return true if found, false if failed
      */
-    bool get(const std::string key, std::string &value)
+    bool get(const std::string &key, std::string &value)
     {
-        if (_config.find(key) != _config.end())
-        {
-            value = _config[key];
-            return (true);
-        }
-        return (false);
+        if (!exists(key)) return (false);
+        value = _config[key];
+        return (true);
     }
 
     /*!
@@ -219,24 +220,22 @@ public:
      * @return true if found, false if failed
      */
     template<typename Tx, typename Ty>
-    bool getPair(const std::string key,  std::pair<Tx, Ty> &pair)
+    bool getPair(const std::string &key,  std::pair<Tx, Ty> &pair)
     {
-        if (_config.find(key) != _config.end())
+        if (!exists(key)) return (false);
+        size_t sep = _config[key].find(VALUE_FIELD_SEPARATOR);
+        if (sep != std::string::npos)
         {
-            size_t sep = _config[key].find(VALUE_FIELD_SEPARATOR);
-            if (sep != std::string::npos)
-            {
-                std::string buffer = _config[key];
-                std::istringstream iss;
+            std::string buffer = _config[key];
+            std::istringstream iss;
 
-                iss.str(buffer.substr(0, sep));
-                iss >> pair.first;
-                iss.clear();
-                iss.str(buffer.substr(sep + strlen(VALUE_FIELD_SEPARATOR),
-                                            buffer.size() - sep + strlen(VALUE_FIELD_SEPARATOR)));
-                iss >> pair.second;
-            }
-            return (true);
+            iss.str(buffer.substr(0, sep));
+            iss >> pair.first;
+            iss.clear();
+            iss.str(buffer.substr(sep + strlen(VALUE_FIELD_SEPARATOR),
+                                        buffer.size() - sep + strlen(VALUE_FIELD_SEPARATOR)));
+            iss >> pair.second;
+			return (true);
         }
         return (false);
     }
@@ -248,28 +247,25 @@ public:
 	 * @return true on success, false on failure.
      */
     template <typename T>
-    bool getContainer(const std::string key, T &container)
+    bool getContainer(const std::string &key, T &container)
     {
-        if (_config.find(key) != _config.end())
-        {
-            std::istringstream iss;
-            typename T::value_type value;
-            std::string buffer = _config[key];
+        if (!exists(key)) return (false);
+        std::istringstream iss;
+        typename T::value_type value;
+        std::string buffer = _config[key];
 
-            for (size_t sep = buffer.find(VALUE_FIELD_SEPARATOR); sep != std::string::npos; sep = buffer.find(VALUE_FIELD_SEPARATOR))
-            {
-                iss.str(buffer.substr(0, sep));
-                iss >> value;
-                container.insert(container.end(), value);
-                buffer.erase(0, sep + strlen(VALUE_FIELD_SEPARATOR));
-                iss.clear();
-            }
-            iss.str(buffer);
+        for (size_t sep = buffer.find(VALUE_FIELD_SEPARATOR); sep != std::string::npos; sep = buffer.find(VALUE_FIELD_SEPARATOR))
+        {
+            iss.str(buffer.substr(0, sep));
             iss >> value;
             container.insert(container.end(), value);
-		    return (true);
+            buffer.erase(0, sep + strlen(VALUE_FIELD_SEPARATOR));
+            iss.clear();
         }
-        return (false);
+        iss.str(buffer);
+        iss >> value;
+        container.insert(container.end(), value);
+        return (true);
     }
 
 
@@ -283,32 +279,9 @@ public:
      * @param value : The primitive-typed value to set in key field
      */
     template <typename T>
-    void set(const std::string key, const T &value)
+    void set(const std::string &key, const T &value)
     {
-        std::string sValue;
-        if (std::is_arithmetic<T>::value)
-        {
-            std::ostringstream out;
-
-            if (std::is_floating_point<T>::value)
-            {
-                out << std::setprecision(DECIMAL_PRECISION) << value;
-            }
-            else
-            {
-                out << value;
-            }
-            sValue = out.str();
-        }
-        else if (std::is_same<T, bool>::value)
-        {
-            sValue = (value ? "true" : "false");
-        }
-        else
-        {
-            sValue = value;
-        }
-        set(key, sValue);
+        set(key, stringify(value));
     }
 
     /*!
@@ -316,16 +289,10 @@ public:
      * @param key : The key indentifier to set
      * @param value : The primitive-typed value to set in key field
      */
-    void set(const std::string key, const std::string &value)
-    {        
-        if (_config.find(key) != _config.end())
-        {
-            _config[key] = value;
-        }
-        else
-        {
-            _config.emplace(key, value);
-        }
+    void set(const std::string &key, const std::string &value)
+    {
+        if (exists(key)) _config[key] = value;
+        else _config.emplace(key, value);
     }
 
     /*!
@@ -334,7 +301,7 @@ public:
      * @param value : The bool-typed value to set in key field
      */
     void set(const std::string key, const bool &value)
-    {        
+    {
         set(key, (value ? "true" : "false"));
     }
 
@@ -344,14 +311,9 @@ public:
      * @param pair : The pair with values to fill in key field
      */
     template<typename Tx, typename Ty>
-    void setPair(const std::string key, const std::pair<Tx, Ty> &pair)
+    void setPair(const std::string &key, const std::pair<Tx, Ty> &pair)
     {
-        std::string fValue;
-
-        fValue += std::to_string(pair.first);
-        fValue += VALUE_FIELD_SEPARATOR;
-        fValue += std::to_string(pair.second);
-        set(key, fValue);
+        set(key, stringify(pair.first) + VALUE_FIELD_SEPARATOR + stringify(pair.second));
     }
 
     /*!
@@ -360,7 +322,7 @@ public:
      * @param container : The container with values to fill in key field
      */
     template <typename T>
-    void setContainer(const std::string key, const T &container)
+    void setContainer(const std::string &key, const T &container)
     {
         std::string fValue;
 
@@ -370,7 +332,7 @@ public:
             {
                 fValue += VALUE_FIELD_SEPARATOR;
             }
-            fValue += std::to_string(*it);
+            fValue += stringify(*it);
         }
         set(key, fValue);
     }
@@ -384,16 +346,16 @@ public:
      * @param srcKey : The source key containing the value to copy
      * @param destKey : The destination key fill with source value
      */
-    void move(const std::string srcKey, const std::string destKey)
+    void move(const std::string &srcKey, const std::string &destKey)
     {
-        if (_config.find(srcKey) != _config.end())
+        if (exists(srcKey))
         {
            copy(srcKey, destKey);
            erase(srcKey);
         }
         else
         {
-            throw (-1); //No source to move from !
+            throw (std::runtime_error("undefined key: "+srcKey)); //No source to move from !
         }
     }
 
@@ -404,9 +366,9 @@ public:
      * @param srcKey : The source key containing the value to copy
      * @param destKey : The destination key fill with source value
      */
-    void copy(const std::string srcKey, const std::string destKey)
+    void copy(const std::string &srcKey, const std::string &destKey)
     {
-        if (_config.find(srcKey) != _config.end())
+        if (exists(srcKey))
         {
             if (_config.find(destKey) != _config.end())
             {
@@ -419,7 +381,7 @@ public:
         }
         else
         {
-            throw (-1); //No source to copy from !
+            throw (std::runtime_error("undefined key: "+srcKey)); //No source to move from !
         }
     }
 
@@ -427,15 +389,15 @@ public:
      * @brief Erase a key from configuration
      * @param key : The key to erase
      */
-    void erase(const std::string key)
+    void erase(const std::string &key)
     {
-        if (_config.find(key) != _config.end())
+        if (exists(key))
         {
             _config.erase(key);
         }
         else
         {
-            throw (-1); //No key to erase !
+            throw (std::runtime_error("undefined key:"+key)); //No key to erase !
         }
     }
 
@@ -469,9 +431,9 @@ public:
      * @brief Save current config state inside associated file.
      * @return true on success, false on failure.
      */
-    bool save()
+    void save()
     {
-        associationMap config = _config;
+        association_map config = _config;
         std::vector<std::string> buffer = dump(), serialized = buffer;
         std::ofstream file(_path, std::ofstream::out | std::ofstream::trunc);
         std::string section, prevSection, fileSection;
@@ -479,7 +441,7 @@ public:
 
         if (!file.good())
         {
-            return (false); //Couldnt open
+            throw (std::runtime_error("unable to open file")); //Couldnt open
         }
         for (size_t i = 0; i < buffer.size(); i++)
         {
@@ -490,7 +452,7 @@ public:
                 {
                     if (!section.empty() && section != prevSection) //We are changing section, push all remaining new keys
                     {
-                        for (associationMap::iterator it = config.begin(); it != config.end(); it++)
+                        for (association_map::iterator it = config.begin(); it != config.end(); it++)
                         {
                             if (getKeySection(it->first) == prevSection)
                             {
@@ -506,7 +468,7 @@ public:
             }
         }
         //Push keys that are not inside file already
-        for (associationMap::iterator it = config.begin(); it != config.end(); it++)
+        for (association_map::iterator it = config.begin(); it != config.end(); it++)
         {
             fileSection = getKeySection(it->first, true);
             if (!fileSection.empty()) section = fileSection;
@@ -522,7 +484,6 @@ public:
             file << buffer[i] << '\n';
         }
         file.close();
-        return (true);
     }
 
     //
@@ -534,7 +495,7 @@ public:
      * @param key : The key to copy
      * @param target : The target configuration to copy to
      */
-    void copyTo(const std::string key, Config &target)
+    void copyTo(const std::string &key, Config &target)
     {
         if (exists(key))
         {
@@ -542,7 +503,7 @@ public:
         }
         else
         {
-            throw (-1); //No key to copy !
+            throw (std::runtime_error("undefined key: "+key)); //No key to copy !
         }
     }
 
@@ -551,7 +512,7 @@ public:
      * @param key : The key to move
      * @param target : The target configuration to move to
      */
-    void moveTo(const std::string key, Config &target)
+    void moveTo(const std::string &key, Config &target)
     {
         try {
             copyTo(key, target);
@@ -569,7 +530,7 @@ public:
      */
     void append(const Config &source)
     {
-        for (associationMap::const_iterator it = source._config.begin(); it != source._config.end(); it++)
+        for (association_map::const_iterator it = source._config.begin(); it != source._config.end(); it++)
         {
             set(it->first, it->second);
         }
@@ -581,16 +542,53 @@ public:
      */
     void append(const std::string &path)
     {
-        Config source(path);
-
-        append(source);
+        append(Config(path));
     }
 
 protected:
 
     //
+    // VALUE MANIPULATION
+    //
+
+    /*!
+     * @brief Converts any value to string, correctly.
+     * @param value : the T typed value to convert
+     * @return a string containing the value.
+     */
+    template <typename T>
+    static std::string stringify(const T &value) 
+    {
+        std::string sValue;
+        if (std::is_same<T, bool>::value)
+        {
+            sValue = (value ? "true" : "false");
+        }
+        else if (std::is_scalar<T>::value)
+        {
+            std::ostringstream out;
+
+            if (std::is_floating_point<T>::value)
+            {
+                out << std::setprecision(std::numeric_limits<long double>::digits10 + 1) << value;
+            }
+            else
+            {
+                out << value;
+            }
+            sValue = out.str();
+        }
+        else
+        {
+            sValue = value;
+        }
+        return (sValue);
+    }
+
+    //
     // PARSING HELPERS
     //
+
 
     /*!
      * @brief Dump current config file into a vector buffer.
@@ -613,21 +611,76 @@ protected:
     }
 
     /*!
+     * @brief Dump current config file into a vector buffer.
+     * @return A vector buffer containing a dump of the config file.
+     */
+    std::vector<std::string> dumpFile() const
+    {
+        std::ifstream file(_path, std::ifstream::in);
+        std::vector<std::string> buffer;
+        std::string line;
+
+        if (access(_path.c_str(), F_OK) == -1) return (buffer); //No config file exists, return empty buffer
+        else if (!file.good()) //Could not open
+        {
+            throw (std::runtime_error("bad file: "+_path));
+        }
+        while (std::getline(file, line))
+            buffer.push_back(line);
+        file.close();
+        return (buffer);
+    }
+
+    /*!
+     * @brief Dump current configuration into a vector buffer.
+     * @param config : an optionnal configuration array to dump, if not specified, member will be used
+     * @return A vector buffer containing a dump of the configuration.
+     */
+    std::vector<std::string> dumpSection() const
+    {
+        return (dumpSection(_config));
+    }
+
+    /*!
+     * @brief Dump current configuration into a vector buffer.
+     * @param config : an optionnal configuration array to dump, if not specified, member will be used
+     * @return A vector buffer containing a dump of the configuration.
+     */
+    static std::vector<std::string> dumpSection(const association_map &config)
+    {
+        std::string section, prevSection, keySection;
+        std::vector<std::string> buffer;
+
+        for (association_map::const_iterator it = config.begin(); it != config.end(); it++)
+        {
+            keySection = getKeySection(it->first, true);
+            if (!keySection.empty()) section = keySection;
+            if (section != prevSection) //We are changing section create it!
+            {
+                buffer.push_back(SECTION_BLOCK_BEGIN+section+SECTION_BLOCK_END);
+            }
+            buffer.push_back(getKeySection(it->first, false) + KEY_VALUE_SEPARATOR + it->second);
+            prevSection = section;
+        }
+        return (buffer);
+    }
+
+    /*!
 	 * @brief Filter the buffer for section
 	 * @param buffer : buffer to search for section
 	 * @return key or section based on param section
 	 */
-	std::string parseSection(const std::string &buffer)
+	static std::string parseSection(const std::string &buffer)
 	{
 		for (size_t begin = 0; begin < buffer.length(); begin++)
 		{
 			if (buffer.compare(begin, strlen(SECTION_BLOCK_BEGIN), SECTION_BLOCK_BEGIN) == 0//identifier found
-				&& (begin == 0 || (begin > 0 && buffer[begin - 1] != CHARACTER_ESCAPE))) //check for non escaped sequence
+				&& (begin == 0 || (begin > 0 && buffer[begin - 1] != ESCAPE_CHARACTER))) //check for non escaped sequence
 			{
 				for (size_t end = 0; end < buffer.length(); end++)
 				{
 					if (buffer.compare(end, strlen(SECTION_BLOCK_END), SECTION_BLOCK_END) == 0//identifier found
-						&& (end == 0 || (end > 0 && buffer[end - 1] != CHARACTER_ESCAPE))) //check for non escaped sequence
+						&& (end == 0 || (end > 0 && buffer[end - 1] != ESCAPE_CHARACTER))) //check for non escaped sequence
 					{
 						return (buffer.substr(begin + strlen(SECTION_BLOCK_BEGIN), end - (begin + strlen(SECTION_BLOCK_BEGIN))));
 					}
@@ -642,14 +695,14 @@ protected:
      * @param section : true to return section, false to return key
      * @return key or section based on param section
      */
-    std::string getKeySection(const std::string &key, bool section = true)
+    static std::string getKeySection(const std::string &key, bool section = true)
     {
         size_t sep;
 
         for (size_t cursor = 0; cursor < key.length(); cursor++)
         {
           if (key.compare(cursor, strlen(SECTION_FIELD_SEPARATOR), SECTION_FIELD_SEPARATOR) == 0//identifier found
-          && (cursor == 0 || (cursor > 0 && key[cursor-1] != CHARACTER_ESCAPE))) //check for non escaped sequence
+          && (cursor == 0 || (cursor > 0 && key[cursor-1] != ESCAPE_CHARACTER))) //check for non escaped sequence
             {
                 if (section)
                     return (key.substr(0, cursor));
@@ -726,20 +779,20 @@ protected:
         association pair;
         size_t separator = 0, begin = 0;
         bool sepFound = false;
-        
+
         for (size_t cursor = 0; cursor < buffer.length(); cursor++) //Parse line
         {
             while (cursor < buffer.length() && buffer[cursor] == ' ') cursor++;
             for (size_t i = 0; i < strlen(STRING_IDENTIFIERS); i++) //check for string identifiers
             {
                 if (buffer[cursor] == STRING_IDENTIFIERS[i] //identifier found
-                && (cursor == 0 || (cursor > 0 && buffer[cursor-1] != CHARACTER_ESCAPE))) //check for non escaped sequence
+                && (cursor == 0 || (cursor > 0 && buffer[cursor-1] != ESCAPE_CHARACTER))) //check for non escaped sequence
                 {
                     begin = cursor;
                     while (cursor < buffer.length()) //while not at the end
                     {
                         if (buffer[cursor] == STRING_IDENTIFIERS[i] //if we are on an identifier
-                        && (cursor == 0 || (cursor > 0 && buffer[cursor-1] != CHARACTER_ESCAPE))) //check for non escaped sequence
+                        && (cursor == 0 || (cursor > 0 && buffer[cursor-1] != ESCAPE_CHARACTER))) //check for non escaped sequence
                         {
                             if (!sepFound)
                             {
@@ -756,7 +809,7 @@ protected:
                 }
             }
             if (buffer.compare(cursor, strlen(KEY_VALUE_SEPARATOR), KEY_VALUE_SEPARATOR) == 0 //sep found
-            && (cursor == 0 || (cursor > 0 && buffer[cursor-1] != CHARACTER_ESCAPE))) //check for non escaped sequence
+            && (cursor == 0 || (cursor > 0 && buffer[cursor-1] != ESCAPE_CHARACTER))) //check for non escaped sequence
             {
                 separator = cursor;
                 sepFound = true;
@@ -767,12 +820,12 @@ protected:
         pair.second = buffer.substr(separator + strlen(KEY_VALUE_SEPARATOR), buffer.length() - separator + strlen(KEY_VALUE_SEPARATOR));
         return (pair);
     }
-    
+
     //
     // MEMBERS
     //
 
-    associationMap _config;
+    association_map _config;
     std::string _path;
 };
 

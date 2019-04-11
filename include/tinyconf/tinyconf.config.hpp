@@ -16,16 +16,16 @@
  * * * * * * * * * * * * * * * * * * * * */
 
 /*! @brief This string contains the sequence that escapes the next char */
-#define CHARACTER_ESCAPE  '\\'
+#define ESCAPE_CHARACTER        '\\'
 /*! @brief This string contains the characters that indicate a single line comment */
-#define COMMENT_LINE_SEPARATORS  ";#"
+#define COMMENT_LINE_SEPARATORS ";#"
 /*! @brief This char represents the beginning of a comment block */
 #define COMMENT_BLOCK_BEGIN     "/*"
 /*! @brief This char represents the end of a comment block */
 #define COMMENT_BLOCK_END       "*/"
 
 /*! @brief This is the char that separates the section from the key in the field */
-#define SECTION_FIELD_SEPARATOR   ":"
+#define SECTION_FIELD_SEPARATOR ":"
 /*! @brief This char represents the beginning of a comment block */
 #define SECTION_BLOCK_BEGIN     "["
 /*! @brief This char represents the end of a comment block */
