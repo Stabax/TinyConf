@@ -1,0 +1,38 @@
+language: cpp
+
+compiler:
+  - gcc
+  - clang
+
+addons:
+  apt:
+    packages:
+      - cmake
+      - lcov
+  coverity_scan:
+    project:
+      name: "Stabax/tinyconf"
+      description: "XML/Lua Menu Framework"
+    notification_email: contact@maximemartens.fr
+    build_command_prepend: "before_script"
+    build_command: "script"
+    branch_pattern: coverity_scan
+
+before_script:
+  - gem install coveralls-lcov
+  - mkdir build
+  - cd build
+  - cmake .. -DCMAKE_BUILD_TYPE=Coverage
+
+script:
+  - make
+
+after_success:
+  - cd ../bin/
+  - ./TinyConf_fulltest
+  - lcov --directory ../ --capture --output-file coverage.info
+  # filter out system and extra files.
+  - lcov --remove coverage.info '/test/*' '/usr/*' "${HOME}"'/.cache/*' --output-file coverage.info
+  # output coverage data for debugging (optional)
+  - lcov --list coverage.info
+  - coveralls-lcov coverage.info
